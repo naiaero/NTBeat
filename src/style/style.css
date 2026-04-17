@@ -2,6 +2,8 @@ body {
     background: radial-gradient(black, rgb(92, 7, 7));
     margin: 0;
     padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
 }
 
 .header {

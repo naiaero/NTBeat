@@ -139,7 +139,6 @@ body {
 }
 
 .footer-bottom {
-<<<<<<< HEAD
     text-align: center; 
     margin-top: 50px;
     padding-top: 20px;
@@ -171,13 +170,6 @@ body {
 
 .login-form {
     text-align: left;
-}
-=======
-  text-align: center;
-  margin-top: 50px;
-  padding-top: 20px;
-  border-top: 1px solid #333333;
-  font-size: 14px;
 }
 
 /* --- HALAMAN LOGIN --- */
@@ -299,4 +291,3 @@ body {
 }
 
 /* --- HALAMAN Register --- */
->>>>>>> d49da1c5df62af1864dbe88ee8684c76265d9d23

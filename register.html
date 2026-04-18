@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daftar</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="assets/style/style.css">
 </head>
 <body>
     <!-- halaman login -->
@@ -13,8 +13,8 @@
             <!-- bagian kiri -->
             <div class="login-left">
                 <!-- logo ntbeat -->
-                <div>
-                    <img src="src/image/logo.png" alt="">
+                <div class="login-logo">
+                    <img src="assets/img/logo.png" alt="">
                 </div>
                 <!-- tulisan ntbeat -->
                 <div>
@@ -22,12 +22,18 @@
                 </div>
             </div>
             <!-- bagian kanan -->
-            <div class="login-right">
+            <form>
                 <h2>Selamat datang di NTBeat</h2>
-                <input type="text" class="login-box" placeholder="username/email">
-                <input type="text" class="login-box" placeholder="password">
+                <label class="login-form">Nama</label> <br>
+                <input type="text" class="login-box" placeholder="Lyodra Ginting" required> <br>
+
+                <label class="login-form">Email</label> <br>
+                <input type="email" class="login-box" placeholder="lily@gmail.com" required> <br>
+
+                <label class="login-form">Password</label> <br>
+                <input type="text" class="login-box" placeholder="lily04**" required> <br> <br>
                 <button class="btn-login">Daftar</button>
-            </div>
+            </form>
         </div>
     </div>
 </body>

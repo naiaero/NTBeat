@@ -146,3 +146,29 @@ body {
     border-top: 1px solid #333333;
     font-size: 14px;
 }
+
+.login-logo img {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+}
+
+.login-in {
+    text-align: center;
+}
+
+.login-box {
+    width:30%;
+    padding:8px;
+    margin-top:5px;
+}
+
+.btn-login {
+    width:13%;
+    padding:8px;
+    border-radius: 15px;
+}
+
+.login-form {
+    text-align: left;
+}

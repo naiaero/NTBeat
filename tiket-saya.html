@@ -1,11 +1,63 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tiket Saya</title>
+    <title>Tiket Saya - NTBeat</title>
+    <link rel="stylesheet" href="assets/style/style.css">
 </head>
 <body>
-    
+    <nav class="header-user">
+        <div class="logo-area" onclick="window.location.href='halaman-user.html'">
+            <img src="assets/img/logo.png" alt="NTBeat Logo">
+            <label>NTBeat</label>
+        </div>
+        <div class="user-profile-nav">
+            <span>Halo, User!</span>
+            <div class="avatar-placeholder">S</div>
+        </div>
+    </nav>
+
+    <div class="dashboard-layout">
+        
+        <aside class="sidebar">
+            <ul class="sidebar-menu">
+                <li onclick="window.location.href='halaman-awal.html'">📅 Daftar Konser</li>
+                <li class="active">🎟️ Tiket Saya</li>
+                <li>🕒 Riwayat Pembelian</li>
+                <li>⚙️ Profil Akun</li>
+            </ul>
+        </aside>
+
+        <main class="content-area">
+            <div class="section-header">
+                <h2>Tiket Aktif Saya</h2>
+                <p>Tunjukkan e-ticket ini pada petugas saat hari H acara.</p>
+            </div>
+
+            <div class="e-ticket-list">
+                <div class="e-ticket-card">
+                    <div class="ticket-main-info">
+                        <div class="ticket-header">
+                            <span class="badge-active">Tiket Aktif</span>
+                            <span class="order-id">Order ID: #NTB-2605-88XQ</span>
+                        </div>
+                        <h3>Symphony of Lombok</h3>
+                        <p class="ticket-detail">📅 Jumat, 15 Mei 2026</p>
+                        <p class="ticket-detail">📍 Taman Budaya NTB, Mataram</p>
+                        <p class="ticket-detail">👤 Nama: Kim Doyoung</p>
+                    </div>
+                    
+                    <div class="ticket-qr-section">
+                        <div class="qr-placeholder">
+                            <span>[QR Code]</span>
+                        </div>
+                        <button class="btn-unduh">Unduh PDF</button>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
 </body>
 </html>

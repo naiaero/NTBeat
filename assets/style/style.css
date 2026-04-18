@@ -15,6 +15,11 @@ body {
     font-family: Georgia;
     font-weight: 500;
     color: white;
+    background-color: green;
+}
+
+.header img {
+    height: 50px;
 }
 
 .shortcut {

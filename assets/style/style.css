@@ -27,11 +27,6 @@ body {
   object-fit: cover;
 }
 
-.btn {
-  border-radius: 5px;
-  padding: 10px;
-}
-
 .btn-masuk {
   width: 100px;
 }
@@ -290,4 +285,109 @@ body {
   font-weight: bold;
 }
 
-/* --- HALAMAN Register --- */
+/* halaman awal user */
+
+/* Mengatur container utama nav bar dengan warna background maroon baru */
+.header-user {
+    display: flex;
+    align-items: center; /* Menyelaraskan item di tengah secara vertikal */
+    padding: 15px 5%; /* Memberikan jarak atas-bawah dan kiri-kanan */
+    background-color: #5D1016; /* Warna maroon yang dalam, diambil dari gambar */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Bayangan yang sedikit lebih kuat untuk latar belakang gelap */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    gap: 15px; /* Jarak standar antar elemen */
+}
+
+/* Mengatur ukuran logo */
+.header-user img {
+    height: 40px; /* Sesuaikan dengan tinggi logomu */
+    width: auto;
+    object-fit: contain;
+}
+
+/* Mengatur teks label "NTBeat" dengan warna kontras */
+.header-user label {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #ffffff; /* Warna putih agar kontras dengan latar belakang gelap */
+    margin-right: 20px; /* Memberi jarak lebih sebelum search bar */
+    white-space: nowrap; /* Mencegah teks turun ke baris baru */
+    cursor: pointer;
+}
+
+/* Mengatur Search Bar agar memanjang otomatis dengan warna yang disesuaikan */
+.search-bar {
+    flex-grow: 1; /* Membuat search bar mengambil sisa ruang kosong */
+    max-width: 400px;
+    padding: 10px 20px;
+    background-color: #ffffff; /* Latar belakang search bar tetap putih */
+    border: 1px solid #7E191B; /* Border sedikit lebih gelap untuk sedikit kontras */
+    border-radius: 25px; /* Membuat ujungnya membulat (pill shape) */
+    outline: none;
+    font-size: 0.95rem;
+    color: #333333; /* Warna teks di dalam search bar */
+    transition: border-color 0.3s ease;
+    margin-right: auto; /* Mendorong elemen menu dan tombol ke ujung kanan */
+}
+
+.search-bar::placeholder {
+  color: #888888; /* Warna teks placeholder agar mudah dibaca */
+}
+
+.search-bar:focus {
+    border-color: #f1c40f; /* Berubah warna emas saat diklik agar terlihat jelas di latar gelap */
+}
+
+/* Mengatur daftar menu (Tiket Saya, Riwayat) dengan warna teks baru */
+.shortcut {
+    display: flex;
+    list-style: none; /* Menghilangkan titik (bullet) bawaan ul */
+    margin: 0;
+    padding: 0;
+    gap: 25px; /* Jarak antar menu */
+    margin-right: 10px;
+}
+
+.shortcut li {
+    font-weight: 500;
+    color: #f0f0f0; /* Warna putih keabu-abuan agar tidak terlalu mencolok tapi tetap terbaca */
+    cursor: pointer;
+    transition: color 0.3s ease;
+    white-space: nowrap;
+}
+
+.shortcut li:hover {
+    color: #f1c40f; /* Efek hover berubah warna emas agar serasi */
+}
+
+/* Gaya dasar untuk tombol */
+.btn {
+    padding: 10px 24px;
+    border: none;
+    border-radius: 25px;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+/* Tombol Masuk (Outline style disesuaikan) */
+.btn-masuk {
+    background-color: transparent;
+    color: #ffffff; /* Teks putih */
+    border: 1.5px solid #ffffff; /* Border putih */
+}
+
+.btn-masuk:hover {
+    background-color: rgba(255, 255, 255, 0.1); /* Efek hover latar sedikit transparan */
+}
+
+/* Tombol Daftar (Solid style disesuaikan) */
+.btn-daftar {
+    background-color: #f1c40f; /* Warna emas agar menonjol di latar gelap */
+    color: #5D1016; /* Teks warna maroon agar serasi dengan latar */
+}
+
+.btn-daftar:hover {
+    background-color: #e2b40d; /* Sedikit menggelap saat di-hover */
+}

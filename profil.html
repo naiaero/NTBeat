@@ -1,9 +1,114 @@
 <!doctype html>
-<html lang="en">
+<html lang="id">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Profil</title>
+    <title>Profil Akun - NTBeat</title>
+    <link rel="stylesheet" href="assets/style/style.css" />
   </head>
-  <body></body>
+  <body>
+    <nav class="header-user">
+      <div
+        class="logo-area"
+        onclick="window.location.href = 'halaman-awal.html'"
+      >
+        <img src="assets/img/logo.png" alt="NTBeat Logo" />
+        <label>NTBeat</label>
+      </div>
+      <div class="user-profile-nav">
+        <span>Halo, Alfatih!</span>
+        <div class="avatar-placeholder">A</div>
+      </div>
+    </nav>
+
+    <div class="dashboard-layout">
+      <aside class="sidebar">
+        <ul class="sidebar-menu">
+          <li onclick="window.location.href = 'halaman-awal.html'">
+            📅 Daftar Konser
+          </li>
+          <li onclick="window.location.href = 'tiket-saya.html'">
+            🎟️ Tiket Saya & Riwayat
+          </li>
+          <li class="active">⚙️ Profil Akun</li>
+          <li onclick="window.location.href = 'logout.html'">🚪 Keluar</li>
+        </ul>
+      </aside>
+
+      <main class="content-area">
+        <div class="ps-container">
+          <div class="section-header">
+            <h2>Pengaturan Profil</h2>
+            <p>
+              Ubah profil dan kata sandi anda untuk kenyamanan pengelolaan akun.
+            </p>
+          </div>
+
+          <div class="ps-card">
+            <div class="ps-avatar-section">
+              <div class="ps-avatar-wrapper">
+                <img src="assets/img/tds4.jpg" alt="Foto Profil" />
+                <div class="ps-edit-icon">✏️</div>
+              </div>
+            </div>
+
+            <form class="ps-form" action="#">
+              <div class="ps-form-group">
+                <label for="username">Username</label>
+                <input
+                  type="text"
+                  id="username"
+                  class="ps-input"
+                  value="alfatih_unram"
+                />
+              </div>
+
+              <div class="ps-form-group">
+                <label for="email">Alamat Email</label>
+                <input
+                  type="email"
+                  id="email"
+                  class="ps-input"
+                  value="alfatih@student.unram.ac.id"
+                />
+              </div>
+
+              <h3 class="ps-subheading">Ubah Kata Sandi</h3>
+
+              <div class="ps-form-group">
+                <label for="current_password">Password saat ini</label>
+                <input
+                  type="password"
+                  id="current_password"
+                  class="ps-input"
+                  placeholder="Masukkan password lama"
+                />
+              </div>
+
+              <div class="ps-form-group">
+                <label for="new_password">Password baru</label>
+                <input
+                  type="password"
+                  id="new_password"
+                  class="ps-input"
+                  placeholder="Masukkan password baru"
+                />
+              </div>
+
+              <div class="ps-action-bar">
+                <button
+                  type="button"
+                  class="btn-ps-cancel"
+                  onclick="window.location.href = 'halaman-awal.html'"
+                >
+                  Cancel
+                </button>
+                <button type="submit" class="btn-ps-save">Save</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
 </html>

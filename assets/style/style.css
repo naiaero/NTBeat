@@ -821,6 +821,18 @@ body {
 /* =========================================
    STYLE UNTUK E-TICKET (TIKET SAYA)
 ========================================= */
+
+/* =========================================
+   STYLE UNTUK E-TICKET (TATA LETAK DUA KOLOM)
+========================================= */
+
+.tickets-split-view {
+    display: grid;
+    grid-template-columns: 1fr 1fr; 
+    gap: 40px; 
+    align-items: start; 
+}
+
 .e-ticket-list {
     display: flex;
     flex-direction: column;
@@ -829,33 +841,35 @@ body {
 
 .e-ticket-card {
     display: flex;
+    flex-wrap: wrap; /* Mengizinkan konten turun jika sempit */
     background-color: #1a1a1a;
     border: 1px solid #333;
     border-radius: 15px;
     overflow: hidden;
     position: relative;
-    max-width: 800px;
+    width: 100%;
 }
 
-/* Efek bolongan pada tiket (seperti tiket fisik) */
+/* Efek bolongan pada tiket */
 .e-ticket-card::before, .e-ticket-card::after {
     content: '';
     position: absolute;
     width: 30px;
     height: 30px;
-    background-color: #0d0d0d; /* Harus sama dengan warna background body */
+    background-color: #0d0d0d; 
     border-radius: 50%;
     top: 50%;
     transform: translateY(-50%);
+    z-index: 1;
 }
 
 .e-ticket-card::before { left: -15px; }
-.e-ticket-card::after { right: 235px; } /* Menyesuaikan garis putus-putus */
+.e-ticket-card::after { right: -15px; } /* Diubah agar pas di pinggir kanan jika layout menyempit */
 
 .ticket-main-info {
-    flex-grow: 1;
-    padding: 25px 40px;
-    border-right: 2px dashed #444; /* Garis putus-putus pemisah */
+    flex: 1 1 60%; 
+    padding: 25px;
+    border-right: 2px dashed #444; 
 }
 
 .ticket-header {
@@ -881,18 +895,18 @@ body {
 
 .ticket-main-info h3 {
     margin: 0 0 15px 0;
-    font-size: 1.8rem;
+    font-size: 1.5rem;
     color: #f1c40f;
 }
 
 .ticket-detail {
     margin: 5px 0;
     color: #cccccc;
-    font-size: 1rem;
+    font-size: 0.95rem;
 }
 
 .ticket-qr-section {
-    width: 250px;
+    flex: 1 1 30%; 
     padding: 25px;
     display: flex;
     flex-direction: column;
@@ -902,8 +916,8 @@ body {
 }
 
 .qr-placeholder {
-    width: 120px;
-    height: 120px;
+    width: 100px;
+    height: 100px;
     background-color: #fff;
     color: #000;
     display: flex;
@@ -912,6 +926,7 @@ body {
     border-radius: 10px;
     margin-bottom: 15px;
     font-weight: bold;
+    font-size: 0.8rem;
 }
 
 .btn-unduh {
@@ -928,5 +943,38 @@ body {
 .btn-unduh:hover {
     background-color: #f1c40f;
     color: #1a1a1a;
+}
+
+/* --- Gaya untuk tiket yang sudah kedaluwarsa/riwayat --- */
+.expired-ticket {
+    opacity: 0.6; 
+    filter: grayscale(80%); 
+    transition: opacity 0.3s ease, filter 0.3s ease;
+}
+
+.expired-ticket:hover {
+    opacity: 0.9;
+    filter: grayscale(0%);
+}
+
+.badge-expired {
+    background-color: #555555; 
+    color: #ffffff;
+    padding: 5px 12px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+/* Responsif untuk layar kecil (HP) */
+@media (max-width: 900px) {
+    .tickets-split-view {
+        grid-template-columns: 1fr;
+    }
+    
+    .ticket-main-info {
+        border-right: none;
+        border-bottom: 2px dashed #444;
+    }
 }
 

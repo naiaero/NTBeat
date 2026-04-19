@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tiket Saya - NTBeat</title>
+    <title>Tiket Saya & Riwayat - NTBeat</title>
     <link rel="stylesheet" href="assets/style/style.css">
 </head>
 <body>
@@ -13,7 +13,7 @@
             <label>NTBeat</label>
         </div>
         <div class="user-profile-nav">
-            <span>Halo, User!</span>
+            <span>Halo, Salsabila!</span>
             <div class="avatar-placeholder">S</div>
         </div>
     </nav>
@@ -23,36 +23,70 @@
         <aside class="sidebar">
             <ul class="sidebar-menu">
                 <li onclick="window.location.href='halaman-awal.html'">📅 Daftar Konser</li>
-                <li class="active">🎟️ Tiket Saya</li>
-                <li>🕒 Riwayat Pembelian</li>
+                <li class="active">🎟️ Tiket Saya & Riwayat</li>
                 <li>⚙️ Profil Akun</li>
+                <li style="margin-top: 20px; color: #ff4d4d; cursor: pointer;">🚪 Keluar</li>
             </ul>
         </aside>
 
         <main class="content-area">
-            <div class="section-header">
-                <h2>Tiket Aktif Saya</h2>
-                <p>Tunjukkan e-ticket ini pada petugas saat hari H acara.</p>
-            </div>
-
-            <div class="e-ticket-list">
-                <div class="e-ticket-card">
-                    <div class="ticket-main-info">
-                        <div class="ticket-header">
-                            <span class="badge-active">Tiket Aktif</span>
-                            <span class="order-id">Order ID: #NTB-2605-88XQ</span>
-                        </div>
-                        <h3>Symphony of Lombok</h3>
-                        <p class="ticket-detail">📅 Jumat, 15 Mei 2026</p>
-                        <p class="ticket-detail">📍 Taman Budaya NTB, Mataram</p>
-                        <p class="ticket-detail">👤 Nama: Kim Doyoung</p>
+            
+            <div class="tickets-split-view">
+                
+                <div class="ticket-column">
+                    <div class="section-header">
+                        <h2>Tiket Aktif Saya</h2>
+                        <p>Tunjukkan e-ticket pada petugas saat hari H.</p>
                     </div>
-                    
-                    <div class="ticket-qr-section">
-                        <div class="qr-placeholder">
-                            <span>[QR Code]</span>
+
+                    <div class="e-ticket-list">
+                        <div class="e-ticket-card">
+                            <div class="ticket-main-info">
+                                <div class="ticket-header">
+                                    <span class="badge-active">Tiket Aktif</span>
+                                    <span class="order-id">#NTB-2605-88XQ</span>
+                                </div>
+                                <h3>Symphony of Lombok</h3>
+                                <p class="ticket-detail">📅 Jumat, 15 Mei 2026</p>
+                                <p class="ticket-detail">📍 Taman Budaya NTB, Mataram</p>
+                                <p class="ticket-detail">👤 Nama: Salsabila Nailafahdi</p>
+                            </div>
+                            
+                            <div class="ticket-qr-section">
+                                <div class="qr-placeholder">
+                                    <span>[QR Code]</span>
+                                </div>
+                                <button class="btn-unduh">Unduh PDF</button>
+                            </div>
                         </div>
-                        <button class="btn-unduh">Unduh PDF</button>
+                    </div>
+                </div>
+
+                <div class="ticket-column">
+                    <div class="section-header">
+                        <h2>Riwayat Pembelian</h2>
+                        <p>Daftar acara yang sudah pernah dihadiri.</p>
+                    </div>
+
+                    <div class="e-ticket-list">
+                        <div class="e-ticket-card expired-ticket">
+                            <div class="ticket-main-info">
+                                <div class="ticket-header">
+                                    <span class="badge-expired">Selesai</span>
+                                    <span class="order-id">#NTB-2512-12AA</span>
+                                </div>
+                                <h3>NCT Dream Live on Screen</h3>
+                                <p class="ticket-detail">📅 Sabtu, 20 Desember 2025</p>
+                                <p class="ticket-detail">📍 Epicentrum Mall Atrium</p>
+                                <p class="ticket-detail">👤 Nama: Salsabila Nailafahdi</p>
+                            </div>
+                            
+                            <div class="ticket-qr-section">
+                                <div class="qr-placeholder" style="background-color: #e0e0e0; color: #888;">
+                                    <span>[Digunakan]</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
 

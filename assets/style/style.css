@@ -185,7 +185,6 @@ body {
 }
 
 .footer-bottom {
-<<<<<<< HEAD
   text-align: center;
   margin-top: 50px;
   padding-top: 20px;
@@ -217,13 +216,11 @@ body {
 
 .login-form {
   text-align: left;
-=======
     text-align: center; 
     margin-top: 50px;
     padding-top: 20px;
     border-top: 1px solid #333333;
     font-size: 0.85rem;
->>>>>>> 42e8c4ac7f606ffb4a975575dd1bb3eaf7d17a7a
 }
 
 /* --- HALAMAN LOGIN --- */
@@ -344,8 +341,6 @@ body {
   font-weight: bold;
 }
 /* --- CSS HALAMAN PROFIL USER --- */
-
-<<<<<<< HEAD
 .profile-body {
   background-color: #111111;
   color: #ffffff;
@@ -508,7 +503,6 @@ body {
 }
 
 /* --- HALAMAN Register --- */
-=======
 /* halaman awal user */
 
 /* Mengatur container utama nav bar dengan warna background maroon baru */
@@ -1176,5 +1170,3 @@ body {
         border-bottom: 2px dashed #444;
     }
 }
-
->>>>>>> 42e8c4ac7f606ffb4a975575dd1bb3eaf7d17a7a

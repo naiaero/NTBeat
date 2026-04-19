@@ -8,74 +8,57 @@
 </head>
 <body>
     <header class="header">
-        <!-- bagian kiri -->
         <div class="header-kiri">
             <h1>NTBeat</h1>
             <p>NTBeat adalah sebuah platform terpusat yang berfungsi untuk mengelola, menyebarkan, dan memfasilitasi akses informasi terkait konser. Dengan adanya sistem ini, alur informasi konser menjadi lebih cepat, akurat, transparan, dan mudah diakses oleh masyarakat luas.</p>
-            <button class="btn btn-masuk">Masuk</button>
-            <button class="btn btn-daftar">Daftar</button>
+            <button class="btn btn-masuk" onclick="window.location.href='login.html'">Masuk</button>
+            <button class="btn btn-daftar" onclick="window.location.href='register.html'">Daftar</button>
         </div>
-        <!-- bagian kanan -->
         <div class="header-kanan">
-            <img src="assets/img/logo.png" alt="">
+            <img src="assets/img/logo.png" alt="Logo NTBeat">
         </div>
     </header>
 
     <main class="main">
-        <table class="tabel-acara">
-            <thead>
-                <tr>
-                    <th class="t-head"><h2>Hiburan</h2></th>
-                    <th class="t-head"><h2>Acara</h2></th>
-                    <th class="t-head"><h2>Budaya</h2></th>
-                </tr>
-            </thead>
+        <div class="features-container">
+            <div class="feature-card">
+                <h2>Hiburan</h2>
+                <img src="assets/img/hiburan.png" alt="Hiburan" class="img-acara">
+                <p>Dengan kreativitas tanpa batas, kami menghadirkan hiburan berkualitas melalui kolaborasi dengan musisi dan seniman terbaik, menciptakan pengalaman tak terlupakan di setiap pertunjukan.</p>
+            </div>
 
-            <tbody>
-                <tr>
-                    <td class="t-data"><img src="assets/img/hiburan.png" alt="" class="img-acara"></td>
-                    <td class="t-data"><img src="assets/img/acara.png" alt="" class="img-acara"></td>
-                    <td class="t-data"><img src="assets/img/budaya.png" alt="" class="img-acara"></td>
-                </tr>
-                <tr>
-                    <td class="t-data">
-                        <p>
-                            Dengan kreativitas tanpa batas, kami menghadirkan hiburan berkualitas melalui kolaborasi dengan musisi dan seniman terbaik, menciptakan pengalaman tak terlupakan di setiap pertunjukan.
-                        </p>
-                    </td>
-                    <td class="t-data">
-                        <p>
-                            Dengan tim profesional dan berpengalaman, kami berkomitmen menghadirkan acara yang tak hanya berkesan, tetapi juga penuh makna. Kami merancang setiap detail dengan kreativitas dan ketelitian tinggi untuk memastikan setiap momen berjalan sempurna.
-                        </p>
-                    </td>
-                    <td class="t-data">
-                        <p>
-                            Kami merayakan keberagaman budaya dengan sentuhan kreatif dan modern. Kami menggabungkan elemen tradisi dan gaya masa kini dalam setiap karya dan event, menghadirkan pengalaman yang fresh, dinamis, dan penuh makna. Budaya bukan sekadar warisan—tapi cara baru untuk berekspresi dan terhubung dengan dunia.
-                        </p>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+            <div class="feature-card">
+                <h2>Acara</h2>
+                <img src="assets/img/acara.png" alt="Acara" class="img-acara">
+                <p>Dengan tim profesional dan berpengalaman, kami berkomitmen menghadirkan acara yang tak hanya berkesan, tetapi juga penuh makna. Kami merancang setiap detail dengan ketelitian tinggi untuk memastikan setiap momen berjalan sempurna.</p>
+            </div>
+
+            <div class="feature-card">
+                <h2>Budaya</h2>
+                <img src="assets/img/budaya.png" alt="Budaya" class="img-acara">
+                <p>Kami merayakan keberagaman budaya dengan sentuhan kreatif dan modern. Menggabungkan elemen tradisi dan gaya masa kini, budaya bukan sekadar warisan—tapi cara baru untuk berekspresi dan terhubung dengan dunia.</p>
+            </div>
+        </div>
     </main>
 
     <footer class="footer-website">
         <div class="footer-container">
             <div class="footer-kolom">
-                <img src="assets/img/logo.png" alt="">
+                <img src="assets/img/logo.png" alt="Logo NTBeat">
             </div>
             
             <div class="footer-kolom">
-                <h3>NTBeat</h3>
+                <h3>Tentang NTBeat</h3>
                 <p>Kami adalah platform penyedia informasi hiburan, acara, dan pelestarian budaya terbaik. Menghubungkan Anda dengan pengalaman tak terlupakan.</p>
             </div>
 
             <div class="footer-kolom">
                 <h3>Hubungi Kami</h3>
-                <p>Email: info@ntbeat.com</p>
-                <p>Telepon: +62 812-3456-7890</p>
+                <p>Email: info@ntbeat.com<br>
+                Telepon: +62 812-3456-7890</p>
                 <div class="footer-sosmed">
-                    <a href="#">Instagram</a> | 
-                    <a href="#">Facebook</a> | 
+                    <a href="#">Instagram</a>
+                    <a href="#">Facebook</a>
                     <a href="#">Twitter</a>
                 </div>
             </div>

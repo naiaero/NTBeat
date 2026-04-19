@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard Pengguna - NTBeat</title>
     <link rel="stylesheet" href="assets/style/style.css" />
+    <script src="assets/script/script.js"></script>
   </head>
   <body>
     <nav class="header-user">
@@ -33,7 +34,7 @@
             🎟️ Tiket Saya & Riwayat
           </li>
           <li onclick="window.location.href = 'profil.html'">⚙️ Profil Akun</li>
-          <li onclick="window.location.href = 'logout.html'">🚪 Keluar</li>
+          <li onclick="openLogoutModal()">🚪 Keluar</li>
         </ul>
       </aside>
 
@@ -121,6 +122,18 @@
           </div>
         </div>
       </main>
+    </div>
+
+    <div id="logoutModal" class="modal-overlay">
+        <div class="logout-card">
+            <h2>⚠️ Konfirmasi Keluar</h2>
+            <p>Apakah Anda yakin ingin keluar dari sistem NTBeat?</p>
+
+            <div class="logout-actions">
+                <button class="btn-batal" onclick="closeLogoutModal()">Batal</button>
+                <button class="btn-yakin" onclick="window.location.href = 'index.html'">Keluar</button>
+            </div>
+        </div>
     </div>
   </body>
 </html>

@@ -248,6 +248,49 @@ document.addEventListener('DOMContentLoaded', () => {
             location.reload(); 
         }
     });
+
+    // Event untuk Tombol Edit
+    btnEdit.addEventListener('click', () => {
+        // Cari checkbox yang sedang dicentang
+        const checkedBox = document.querySelector('.row-checkbox:checked');
+        
+        if (checkedBox) {
+            // Ambil ID konser dari attribute data (misal: data-id="123")
+            const konserId = checkedBox.getAttribute('data-id'); 
+            
+            // Arahkan ke halaman edit dengan ID tersebut
+            // Sesuaikan URL dengan struktur folder/route Anda
+            window.location.href = 'admin-form-konser.html?id=${konserId}';
+        }
+    });
+
+    // 2. LOGIKA TOMBOL ARSIP
+    btnArchive.addEventListener('click', () => {
+        const checkedBoxes = document.querySelectorAll('.row-checkbox:checked');
+        
+        if (confirm(`Pindahkan ${checkedBoxes.length} konser ke arsip?`)) {
+            let currentArchive = JSON.parse(localStorage.getItem('ntbeat_archive')) || [];
+
+            checkedBoxes.forEach(cb => {
+                const row = cb.closest('tr');
+                
+                const concertData = {
+                    id: cb.value,
+                    nama: row.cells[2].querySelector('strong').innerText,
+                    tanggal: row.cells[3].childNodes[0].textContent.trim(),
+                    penjualan: "N/A", 
+                    status: "Selesai"
+                };
+
+                currentArchive.push(concertData);
+                row.remove(); 
+            });
+
+            localStorage.setItem('ntbeat_archive', JSON.stringify(currentArchive));
+            alert('Konser berhasil diarsipkan!');
+            updateTableUI(); 
+        }
+    });
 });
 
 // detail konser

@@ -53,7 +53,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   rowCheckboxes.forEach((checkbox) => {
     checkbox.addEventListener("change", () => {
-      // Jika ada satu yang tidak dicentang, matikan centang "Select All"
       const allChecked = Array.from(rowCheckboxes).every((cb) => cb.checked);
       checkAll.checked = allChecked;
 
@@ -249,8 +248,6 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-  // 1. Logika Konfirmasi Pembelian
-  // Fungsi ini dipanggil dari atribut onclick="konfirmasiPembelian()" di HTML
   window.konfirmasiPembelian = function () {
     const namaKonser = document.querySelector(".detail-title").innerText;
     const harga = document.querySelector(".price-total").innerText;
@@ -260,7 +257,6 @@ document.addEventListener("DOMContentLoaded", () => {
     );
 
     if (yakin) {
-      // Simulasi proses loading
       const btnPesan = document.querySelector(".btn-pesan-sekarang");
       btnPesan.innerText = "Memproses...";
       btnPesan.disabled = true;
@@ -274,34 +270,28 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   };
 
-  // 2. Simulasi Sisa Tiket Dinamis (FOMO Effect)
-  // Menciptakan kesan bahwa tiket terus terjual
   const remainingStat = document.querySelector(".remaining .stat-value");
   if (remainingStat) {
     let currentTickets = 45; // Sesuai data awal di HTML
 
     const ticketCountdown = setInterval(() => {
-      // Random pengurangan 0 atau 1 tiket
       const sold = Math.floor(Math.random() * 2);
 
       if (sold > 0 && currentTickets > 5) {
         currentTickets -= sold;
         remainingStat.innerText = `Hanya ${currentTickets} Tiket!`;
 
-        // Tambahkan efek kilau/highlight saat berubah
         remainingStat.style.transition = "color 0.3s";
         remainingStat.style.color = "#ff4d4d";
         setTimeout(() => {
-          remainingStat.style.color = ""; // Kembalikan ke warna asli
+          remainingStat.style.color = "";
         }, 500);
       }
 
-      // Berhenti jika tiket sudah sangat sedikit
       if (currentTickets <= 5) clearInterval(ticketCountdown);
-    }, 8000); // Update setiap 8 detik
+    }, 8000);
   }
 
-  // 3. Smooth Scroll untuk Link Kembali (Opsional)
   const backLink = document.querySelector(".back-link");
   if (backLink) {
     backLink.addEventListener("mouseover", () => {
@@ -314,15 +304,12 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-//halaman awal
 document.addEventListener("DOMContentLoaded", () => {
-  // 1. SELEKSI ELEMEN
   const searchInput = document.querySelector(".search-bar");
   const concertCards = document.querySelectorAll(".concert-card");
   const logoutModal = document.getElementById("logoutModal");
   const btnBeli = document.querySelectorAll(".btn-beli");
 
-  // 2. FITUR PENCARIAN (FILTER KARTU KONSER)
   if (searchInput) {
     searchInput.addEventListener("input", (e) => {
       const keyword = e.target.value.toLowerCase();
@@ -332,9 +319,8 @@ document.addEventListener("DOMContentLoaded", () => {
           .querySelector(".concert-title")
           .innerText.toLowerCase();
 
-        // Jika judul cocok dengan kata kunci, tampilkan. Jika tidak, sembunyikan.
         if (title.includes(keyword)) {
-          card.style.display = "flex"; // Gunakan flex agar layout tetap rapi
+          card.style.display = "flex";
           card.style.animation = "fadeIn 0.3s ease";
         } else {
           card.style.display = "none";
@@ -343,7 +329,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // 4. LOGIKA TOMBOL PESAN (QUICK BUY)
   btnBeli.forEach((btn) => {
     btn.addEventListener("click", () => {
       const concertName = btn
@@ -354,16 +339,13 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
       if (confirmBuy) {
-        // Arahkan ke halaman detail atau langsung ke proses checkout
         window.location.href = "detail-konser.html";
       }
     });
   });
 });
 
-// index
 document.addEventListener("DOMContentLoaded", () => {
-  // 1. STICKY HEADER EFFECT
   const header = document.querySelector(".header");
 
   window.addEventListener("scroll", () => {
@@ -374,9 +356,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // 2. SCROLL REVEAL ANIMATION (Muncul saat di-scroll)
   const observerOptions = {
-    threshold: 0.1, // Elemen muncul jika 10% sudah masuk layar
+    threshold: 0.1,
   };
 
   const observer = new IntersectionObserver((entries) => {
@@ -387,14 +368,12 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }, observerOptions);
 
-  // Menargetkan kartu fitur untuk diberikan animasi
   const featureCards = document.querySelectorAll(".feature-card");
   featureCards.forEach((card) => {
-    card.classList.add("reveal-hidden"); // Tambahkan state awal (tersembunyi)
+    card.classList.add("reveal-hidden");
     observer.observe(card);
   });
 
-  // 3. INTERAKSI TOMBOL (Efek Klik Sederhana)
   const buttons = document.querySelectorAll(".btn");
   buttons.forEach((btn) => {
     btn.addEventListener("mousedown", () => {
@@ -406,38 +385,28 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-//lihat-profile
 document.addEventListener("DOMContentLoaded", () => {
-  // 1. LOGIKA TOMBOL BACK
   const btnBack = document.querySelector(".btn-back");
   if (btnBack) {
     btnBack.addEventListener("click", () => {
-      // Kembali ke halaman sebelumnya dalam history browser
       window.history.back();
     });
   }
 
-  // 2. LOGIKA TOGGLE PASSWORD
-  // Data dummy password (karena biasanya ini ditarik dari database/session)
   const realPassword = "PasswordSangatRahasia123";
   let isPasswordVisible = false;
 
-  // Kita buat fungsi ini tersedia secara global agar bisa diakses 'onclick' dari HTML
   window.togglePassword = function () {
-    // Cari elemen span yang ada setelah label 'Password'
-    // Kita asumsikan strukturnya: <span class="label">Password</span> <span>: ...</span>
     const passwordSpan = document.querySelector(
       ".info-row:nth-child(2) span:nth-child(2)",
     );
     const toggleBtn = document.querySelector(".toggle-btn");
 
     if (!isPasswordVisible) {
-      // Tampilkan password asli
       passwordSpan.innerText = `: ${realPassword}`;
       toggleBtn.innerText = "Sembunyikan";
       isPasswordVisible = true;
     } else {
-      // Tutup kembali dengan asterisk
       passwordSpan.innerText = ": **********";
       toggleBtn.innerText = "Lihat";
       isPasswordVisible = false;
@@ -445,9 +414,7 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 });
 
-//login
 document.addEventListener("DOMContentLoaded", () => {
-  // 1. Seleksi Elemen Form
   const loginForm = document.querySelector("form");
   const emailInput = document.getElementById("email");
   const passwordInput = document.getElementById("password");
@@ -455,37 +422,30 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (loginForm) {
     loginForm.addEventListener("submit", (e) => {
-      // Mencegah reload halaman secara default
       e.preventDefault();
 
       const email = emailInput.value;
       const password = passwordInput.value;
 
-      // Simulasi Efek Loading pada Tombol
       submitBtn.innerText = "Mengecek Akun...";
       submitBtn.disabled = true;
 
       setTimeout(() => {
-        // 2. LOGIKA OTENTIKASI (Simulasi)
         if (email === "admin@ntbeat.com" && password === "admin123") {
-          // Jika Login sebagai Admin
           alert("Selamat datang, Administrator!");
           window.location.href = "admin-dashboard.html";
         } else if (email !== "" && password.length >= 8) {
-          // Jika Login sebagai User Biasa (email apa saja, pass min 8 karakter)
           alert("Login Berhasil! Selamat datang di NTBeat.");
           window.location.href = "halaman-user.html";
         } else {
-          // Jika Login Gagal
           alert("Email atau Kata Sandi salah. Silakan coba lagi!");
           submitBtn.innerText = "Masuk";
           submitBtn.disabled = false;
         }
-      }, 1500); // Penundaan 1,5 detik untuk kesan realistik
+      }, 1500);
     });
   }
 
-  // 3. LOGIKA LUPA KATA SANDI
   const forgotPwLink = document.querySelector(".auth-forgot-pw");
   if (forgotPwLink) {
     forgotPwLink.addEventListener("click", (e) => {
@@ -495,13 +455,10 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-//profil
 document.addEventListener("DOMContentLoaded", () => {
-  // === 2. UPDATE FOTO PROFIL (AVATAR) ===
   const editIcon = document.querySelector(".ps-edit-icon");
   const avatarImg = document.querySelector(".ps-avatar-wrapper img");
 
-  // Buat elemen input file secara tersembunyi
   const fileInput = document.createElement("input");
   fileInput.type = "file";
   fileInput.accept = "image/*";
@@ -515,31 +472,28 @@ document.addEventListener("DOMContentLoaded", () => {
     if (file) {
       const reader = new FileReader();
       reader.onload = function (e) {
-        avatarImg.src = e.target.result; // Ganti gambar profil dengan preview
+        avatarImg.src = e.target.result;
       };
       reader.readAsDataURL(file);
     }
   });
 
-  // === 3. PENANGANAN FORM PROFIL (SAVE) ===
   const profileForm = document.querySelector(".ps-form");
 
   if (profileForm) {
     profileForm.addEventListener("submit", (e) => {
-      e.preventDefault(); // Mencegah reload halaman
+      e.preventDefault();
 
       const username = document.getElementById("username").value;
       const email = document.getElementById("email").value;
       const currentPass = document.getElementById("current_password").value;
       const newPass = document.getElementById("new_password").value;
 
-      // Validasi Sederhana
       if (username === "" || email === "") {
         alert("Username dan Email tidak boleh kosong!");
         return;
       }
 
-      // Jika mencoba ganti password
       if (newPass !== "" && currentPass === "") {
         alert(
           "Silakan masukkan password saat ini untuk mengonfirmasi perubahan password baru.",
@@ -547,7 +501,6 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // Simulasi proses simpan
       const saveBtn = document.querySelector(".btn-ps-save");
       saveBtn.innerText = "Saving...";
       saveBtn.disabled = true;
@@ -556,7 +509,6 @@ document.addEventListener("DOMContentLoaded", () => {
         alert("Profil berhasil diperbarui!");
         saveBtn.innerText = "Save";
         saveBtn.disabled = false;
-        // Kosongkan field password setelah simpan
         document.getElementById("current_password").value = "";
         document.getElementById("new_password").value = "";
       }, 1500);
@@ -564,9 +516,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-//register
 document.addEventListener("DOMContentLoaded", () => {
-  // 1. Seleksi Elemen
   const registerForm = document.querySelector("form");
   const nameInput = document.getElementById("nama");
   const emailInput = document.getElementById("email");
@@ -575,10 +525,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (registerForm) {
     registerForm.addEventListener("submit", (e) => {
-      // Mencegah form melakukan reload otomatis
       e.preventDefault();
 
-      // 2. Logika Validasi Sederhana
       const name = nameInput.value.trim();
       const email = emailInput.value.trim();
       const password = passwordInput.value;
@@ -588,22 +536,18 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // 3. Efek Visual Saat Proses Pendaftaran
       submitBtn.innerText = "Membuat Akun...";
       submitBtn.disabled = true;
       submitBtn.style.opacity = "0.7";
 
-      // 4. Simulasi Pengiriman Data (Delay 2 detik)
       setTimeout(() => {
         alert(`Selamat datang di NTBeat, ${name}! Akun Anda berhasil dibuat.`);
 
-        // Arahkan ke halaman login setelah berhasil
         window.location.href = "login.html";
       }, 2000);
     });
   }
 
-  // Tambahan: Logika untuk membersihkan spasi di input nama/email
   [nameInput, emailInput].forEach((input) => {
     if (input) {
       input.addEventListener("blur", () => {
@@ -613,13 +557,9 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-// tiket-saya
 document.addEventListener("DOMContentLoaded", () => {
-  // 1. Inisialisasi Elemen
   const logoutModal = document.getElementById("logoutModal");
   const btnUnduh = document.querySelector(".btn-unduh");
-
-  // --- FITUR UNDUH PDF (SIMULASI) ---
 
   if (btnUnduh) {
     btnUnduh.addEventListener("click", () => {

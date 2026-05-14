@@ -18,7 +18,7 @@ function konfirmasiPembelian() {
     "✅ Pembelian Berhasil!\n\nTiket 'Symphony of Lombok' telah ditambahkan ke akun Anda.",
   );
 
-  window.location.href = "tiket-saya.html";
+  window.location.href = "tiket-saya.php";
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -147,7 +147,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       setTimeout(() => {
         alert("Data Konser Berhasil Disimpan!");
-        window.location.href = "admin-kelola-konser.html";
+        window.location.href = "admin-kelola-konser.php";
       }, 1500);
     });
   }
@@ -214,7 +214,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (checkedBox) {
       const konserId = checkedBox.getAttribute("data-id");
-      window.location.href = "admin-form-konser.html?id=${konserId}";
+      window.location.href = "admin-form-konser.php?id=${konserId}";
     }
   });
 
@@ -265,7 +265,7 @@ document.addEventListener("DOMContentLoaded", () => {
         alert(
           "Sukses! Tiket Anda telah dipesan. Silakan cek email atau menu riwayat pesanan.",
         );
-        window.location.href = "halaman-user.html"; // Kembali ke dashboard user
+        window.location.href = "halaman-user.php"; // Kembali ke dashboard user
       }, 2000);
     }
   };
@@ -339,7 +339,7 @@ document.addEventListener("DOMContentLoaded", () => {
       );
 
       if (confirmBuy) {
-        window.location.href = "detail-konser.html";
+        window.location.href = "detail-konser.php";
       }
     });
   });
@@ -436,7 +436,7 @@ document.addEventListener("DOMContentLoaded", () => {
           window.location.href = "admin-dashboard.html";
         } else if (email !== "" && password.length >= 8) {
           alert("Login Berhasil! Selamat datang di NTBeat.");
-          window.location.href = "halaman-user.html";
+          window.location.href = "halaman-user.php";
         } else {
           alert("Email atau Kata Sandi salah. Silakan coba lagi!");
           submitBtn.innerText = "Masuk";
@@ -543,7 +543,7 @@ document.addEventListener("DOMContentLoaded", () => {
       setTimeout(() => {
         alert(`Selamat datang di NTBeat, ${name}! Akun Anda berhasil dibuat.`);
 
-        window.location.href = "login.html";
+        window.location.href = "login.php";
       }, 2000);
     });
   }

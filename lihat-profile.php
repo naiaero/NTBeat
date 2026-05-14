@@ -16,7 +16,7 @@
             <div class="profile-info">
                 <div class="info-row">
                     <span class="label">Email</span>
-                    <span>: Nama@gmail.com</span>
+                    <span>: nama@gmail.com</span>
                 </div>
                 <div class="info-row">
                     <span class="label">Password</span>

@@ -9,7 +9,7 @@
 </head>
 <body>
     <nav class="header-user">
-        <div class="logo-area" onclick="window.location.href='halaman-user.html'">
+        <div class="logo-area" onclick="window.location.href='halaman-user.php'">
             <img src="assets/img/logo.png" alt="NTBeat Logo">
             <label>NTBeat</label>
         </div>

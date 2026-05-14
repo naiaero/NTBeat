@@ -22,7 +22,7 @@
 
       <div class="user-profile-nav">
         <span>Halo, User!</span>
-        <div class="avatar-placeholder" onclick="window.location.href = 'profil.html'">S</div>
+        <div class="avatar-placeholder" onclick="window.location.href = 'profil.php'">S</div>
       </div>
     </nav>
 
@@ -30,10 +30,10 @@
       <aside class="sidebar">
         <ul class="sidebar-menu">
           <li class="active">📅 Daftar Konser</li>
-          <li onclick="window.location.href = 'tiket-saya.html'">
+          <li onclick="window.location.href = 'tiket-saya.php'">
             🎟️ Tiket Saya & Riwayat
           </li>
-          <li onclick="window.location.href = 'profil.html'">⚙️ Profil Akun</li>
+          <li onclick="window.location.href = 'profil.php'">⚙️ Profil Akun</li>
           <li onclick="openLogoutModal()">🚪 Keluar</li>
         </ul>
       </aside>
@@ -74,7 +74,7 @@
               <div class="card-actions">
                 <button
                   class="btn-detail"
-                  onclick="window.location.href = 'detail-konser.html'"
+                  onclick="window.location.href = 'detail-konser.php'"
                 >
                   Detail
                 </button>
@@ -112,7 +112,7 @@
               <div class="card-actions">
                 <button
                   class="btn-detail"
-                  onclick="window.location.href = 'detail-konser.html'"
+                  onclick="window.location.href = 'detail-konser.php'"
                 >
                   Detail
                 </button>
@@ -131,7 +131,7 @@
 
             <div class="logout-actions">
                 <button class="btn-batal" onclick="closeLogoutModal()">Batal</button>
-                <button class="btn-yakin" onclick="window.location.href = 'index.html'">Keluar</button>
+                <button class="btn-yakin" onclick="window.location.href = 'index.php'">Keluar</button>
             </div>
         </div>
     </div>

@@ -44,10 +44,10 @@
             />
           </div>
 
-          <button type="submit" class="auth-btn-submit" onclick="window.location.href='halaman-awal.html'">Masuk</button>
+          <button type="submit" class="auth-btn-submit" onclick="window.location.href='halaman-awal.php'">Masuk</button>
         </form>
 
-        <p class="auth-footer">Belum punya akun? <a href="register.html">Daftar</a></p>
+        <p class="auth-footer">Belum punya akun? <a href="register.php">Daftar</a></p>
       </div>
     </div>
   </body>

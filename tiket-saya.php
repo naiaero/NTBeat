@@ -9,10 +9,7 @@
   </head>
   <body>
     <nav class="header-user">
-      <div
-        class="logo-area"
-        onclick="window.location.href = 'halaman-user.html'"
-      >
+      <div class="logo-area" onclick="window.location.href = 'halaman-user.php'">
         <img src="assets/img/logo.png" alt="NTBeat Logo" />
         <label>NTBeat</label>
       </div>
@@ -25,12 +22,12 @@
     <div class="dashboard-layout">
       <aside class="sidebar">
         <ul class="sidebar-menu">
-          <li onclick="window.location.href = 'halaman-awal.html'">
+          <li onclick="window.location.href = 'halaman-awal.php'">
             📅 Daftar Konser
           </li>
           <li class="active">🎟️ Tiket Saya & Riwayat</li>
 
-          <li onclick="window.location.href = 'profil.html'">⚙️ Profil Akun</li>
+          <li onclick="window.location.href = 'profil.php'">⚙️ Profil Akun</li>
 
           <li onclick="openLogoutModal()">🚪 Keluar</li>
         </ul>
@@ -108,7 +105,7 @@
 
             <div class="logout-actions">
                 <button class="btn-batal" onclick="closeLogoutModal()">Batal</button>
-                <button class="btn-yakin" onclick="window.location.href = 'index.html'">Keluar</button>
+                <button class="btn-yakin" onclick="window.location.href = 'index.php'">Keluar</button>
             </div>
         </div>
     </div>

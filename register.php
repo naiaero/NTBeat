@@ -57,7 +57,7 @@
           <button type="submit" class="auth-btn-submit">Daftar</button>
         </form>
 
-        <p class="auth-footer">Sudah punya akun? <a href="login.html">Log in</a></p>
+        <p class="auth-footer">Sudah punya akun? <a href="login.php">Log in</a></p>
       </div>
     </div>
   </body>

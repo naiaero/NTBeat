@@ -12,8 +12,8 @@
         <div class="header-kiri">
             <h1>NTBeat</h1>
             <p>NTBeat adalah sebuah platform terpusat yang berfungsi untuk mengelola, menyebarkan, dan memfasilitasi akses informasi terkait konser. Dengan adanya sistem ini, alur informasi konser menjadi lebih cepat, akurat, transparan, dan mudah diakses oleh masyarakat luas.</p>
-            <button class="btn btn-masuk" onclick="window.location.href='login.html'">Masuk</button>
-            <button class="btn btn-daftar" onclick="window.location.href='register.html'">Daftar</button>
+            <button class="btn btn-masuk" onclick="window.location.href='login.php'">Masuk</button>
+            <button class="btn btn-daftar" onclick="window.location.href='register.php'">Daftar</button>
         </div>
         <div class="header-kanan">
             <img src="assets/img/logo.png" alt="Logo NTBeat">

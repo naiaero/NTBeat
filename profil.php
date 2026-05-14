@@ -11,7 +11,7 @@
     <nav class="header-user">
       <div
         class="logo-area"
-        onclick="window.location.href = 'halaman-awal.html'"
+        onclick="window.location.href = 'halaman-awal.php'"
       >
         <img src="assets/img/logo.png" alt="NTBeat Logo" />
         <label>NTBeat</label>
@@ -25,10 +25,10 @@
     <div class="dashboard-layout">
       <aside class="sidebar">
         <ul class="sidebar-menu">
-          <li onclick="window.location.href = 'halaman-awal.html'">
+          <li onclick="window.location.href = 'halaman-awal.php'">
             📅 Daftar Konser
           </li>
-          <li onclick="window.location.href = 'tiket-saya.html'">
+          <li onclick="window.location.href = 'tiket-saya.php'">
             🎟️ Tiket Saya & Riwayat
           </li>
           <li class="active">⚙️ Profil Akun</li>
@@ -100,7 +100,7 @@
                 <button
                   type="button"
                   class="btn-ps-cancel"
-                  onclick="window.location.href = 'halaman-awal.html'"
+                  onclick="window.location.href = 'halaman-awal.php'"
                 >
                   Cancel
                 </button>
@@ -119,7 +119,7 @@
 
             <div class="logout-actions">
                 <button class="btn-batal" onclick="closeLogoutModal()">Batal</button>
-                <button class="btn-yakin" onclick="window.location.href = 'index.html'">Keluar</button>
+                <button class="btn-yakin" onclick="window.location.href = 'index.php'">Keluar</button>
             </div>
         </div>
     </div>

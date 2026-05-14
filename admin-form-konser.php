@@ -24,10 +24,10 @@
     <div class="dashboard-layout">
         <aside class="sidebar">
             <ul class="sidebar-menu">
-                <li onclick="window.location.href = 'admin-dashboard.html'">Dashboard</li>
-                <li class="active" onclick="window.location.href = 'admin-form-konser.html'">Tambah Acara Baru</li>
-                <li onclick="window.location.href = 'admin-kelola-konser.html'">Kelola Data Konser</li>
-                <li onclick="window.location.href = 'admin-arsip.html'">Arsip Penyelenggaraan</li>
+                <li onclick="window.location.href = 'admin-dashboard.php'">Dashboard</li>
+                <li class="active" onclick="window.location.href = 'admin-form-konser.php'">Tambah Acara Baru</li>
+                <li onclick="window.location.href = 'admin-kelola-konser.php'">Kelola Data Konser</li>
+                <li onclick="window.location.href = 'admin-arsip.php'">Arsip Penyelenggaraan</li>
                 <li onclick="openLogoutModal()">Keluar</li>
             </ul>
         </aside>
@@ -106,7 +106,7 @@
 
             <div class="logout-actions">
                 <button class="btn-batal" onclick="closeLogoutModal()">Batal</button>
-                <button class="btn-yakin" onclick="window.location.href = 'index.html'">Keluar</button>
+                <button class="btn-yakin" onclick="window.location.href = 'index.php'">Keluar</button>
             </div>
         </div>
     </div>

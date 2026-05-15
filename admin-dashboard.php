@@ -6,7 +6,7 @@
     <title>Admin Dashboard - NTBeat</title>
     <link rel="stylesheet" href="assets/style/admin-style.css">
     <link rel="stylesheet" href="assets/style/style.css">
-    <script src="assets/script/script.js"></script>
+    
 </head>
 <body class="admin-body">
 
@@ -58,15 +58,11 @@
             <div class="analytics-grid">
                 <div class="chart-box">
                     <h3>Tren Penjualan Per Jam</h3>
-                    <div class="bar-chart">
-                        <div class="bar-item"><div class="bar" style="height: 40%"></div><span>10:00</span></div>
-                        <div class="bar-item"><div class="bar" style="height: 70%"></div><span>11:00</span></div>
-                        <div class="bar-item"><div class="bar" style="height: 55%"></div><span>12:00</span></div>
-                        <div class="bar-item"><div class="bar" style="height: 85%"></div><span>13:00</span></div>
-                        <div class="bar-item"><div class="bar live" id="live-bar" style="height: 30%"></div><span>LIVE</span></div>
+                    <div class="line-chart-wrapper">
+                        <canvas id="ntbeatLineChart"></canvas>
                     </div>
                 </div>
-
+                    
                 <div class="table-box">
                     <h3>Status Kuota Terkini</h3>
                     <table class="admin-table">
@@ -106,5 +102,8 @@
             </div>
         </div>
     </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="assets/script/script.js"></script>
 </body>
 </html>

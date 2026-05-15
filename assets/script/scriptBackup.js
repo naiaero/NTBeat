@@ -61,7 +61,6 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
-// document.addEventListener("DOMContentLoaded", () => {
 document.addEventListener("DOMContentLoaded", () => {
   const liveBar = document.getElementById("live-bar");
   const soldCountDisplay = document.getElementById("sold-count");

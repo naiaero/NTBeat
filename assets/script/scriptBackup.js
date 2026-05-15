@@ -61,6 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 });
 
+// document.addEventListener("DOMContentLoaded", () => {
 document.addEventListener("DOMContentLoaded", () => {
   const liveBar = document.getElementById("live-bar");
   const soldCountDisplay = document.getElementById("sold-count");
@@ -438,22 +439,20 @@ document.addEventListener("DOMContentLoaded", () => {
       e.preventDefault();
 
       const submitBtn = document.querySelector(".auth-btn-submit");
-      submitBtn.disabled = true;
+      if (submitBtn) submitBtn.disabled = true;
 
-      // 3. Pengecekan: Apakah kita di halaman Register (karena ada input nama)?
+      // 1. Cek apakah ini halaman REGISTER (ada input nama)
       if (nameInput) {
-        // --- INI LOGIKA REGISTER ---
         const name = nameInput.value.trim();
         const password = passwordInput.value;
 
         if (password.length < 8) {
-          alert("Keamanan itu penting! Kata sandi minimal harus 8 karakter.");
-          submitBtn.disabled = false;
+          alert("Kata sandi minimal harus 8 karakter.");
+          if (submitBtn) submitBtn.disabled = false;
           return;
         }
 
-        submitBtn.innerText = "Membuat Akun...";
-        submitBtn.style.opacity = "0.7";
+        if (submitBtn) submitBtn.innerText = "Membuat Akun...";
 
         setTimeout(() => {
           alert(
@@ -462,28 +461,112 @@ document.addEventListener("DOMContentLoaded", () => {
           window.location.href = "login.php";
         }, 2000);
       } else {
-        // --- INI LOGIKA LOGIN (karena tidak ada input nama) ---
+        // 2. INI HALAMAN LOGIN (Prioritas Admin)
         const email = emailInput.value.trim();
         const password = passwordInput.value;
 
-        submitBtn.innerText = "Mengecek Akun...";
+        if (submitBtn) submitBtn.innerText = "Mengecek Akun...";
 
         setTimeout(() => {
+          // WAJIB CEK ADMIN DULU DI SINI (URUTAN NOMOR 1)
           if (email === "admin@ntbeat.com" && password === "admin123") {
+            window.location.href = "admin-dashboard.php"; // Pastikan .php
             alert("Selamat datang, Administrator!");
-            window.location.href = "admin-dashboard.html";
-          } else if (email !== "" && password.length >= 8) {
+          }
+          // BARU CEK USER BIASA (URUTAN NOMOR 2)
+          else if (email !== "" && password.length >= 8) {
             alert("Login Berhasil! Selamat datang di NTBeat.");
             window.location.href = "halaman-user.php";
-          } else {
+          }
+          // JIKA SEMUA SALAH
+          else {
             alert("Email atau Kata Sandi salah. Silakan coba lagi!");
-            submitBtn.innerText = "Masuk";
-            submitBtn.disabled = false;
+            if (submitBtn) {
+              submitBtn.innerText = "Masuk";
+              submitBtn.disabled = false;
+            }
           }
         }, 1500);
       }
     });
   }
+  // if (authForm && emailInput && passwordInput) {
+  //   authForm.addEventListener("submit", (e) => {
+  //     e.preventDefault();
+
+  //     const submitBtn = document.querySelector(".auth-btn-submit");
+  //     submitBtn.disabled = true;
+
+  //     // 3. Pengecekan: Apakah kita di halaman Register (karena ada input nama)?
+  //     if (nameInput) {
+  //       // --- INI LOGIKA REGISTER ---
+  //       const name = nameInput.value.trim();
+  //       const password = passwordInput.value;
+
+  //       if (password.length < 8) {
+  //         alert("Keamanan itu penting! Kata sandi minimal harus 8 karakter.");
+  //         submitBtn.disabled = false;
+  //         return;
+  //       }
+
+  //       submitBtn.innerText = "Membuat Akun...";
+  //       submitBtn.style.opacity = "0.7";
+
+  //       setTimeout(() => {
+  //         alert(
+  //           `Selamat datang di NTBeat, ${name}! Akun Anda berhasil dibuat.`,
+  //         );
+  //         window.location.href = "login.php";
+  //       }, 2000);
+  //     } else {
+  //       // --- LOGIKA LOGIN FIXED ---
+  //       const email = emailInput.value.trim();
+  //       const password = passwordInput.value;
+
+  //       if (submitBtn) submitBtn.innerText = "Mengecek Akun...";
+
+  //       setTimeout(() => {
+  //         // CEK ADMIN DULU
+  //         if (email === "admin@ntbeat.com" && password === "admin123") {
+  //           alert("Selamat datang, Administrator!");
+  //           window.location.href = "admin-dashboard.php"; // Diarahkan ke PHP
+  //         }
+  //         // CEK USER BIASA
+  //         else if (email !== "" && password.length >= 8) {
+  //           alert("Login Berhasil! Selamat datang di NTBeat.");
+  //           window.location.href = "halaman-user.php";
+  //         }
+  //         // JIKA GAGAL
+  //         else {
+  //           alert("Email atau Kata Sandi salah. Silakan coba lagi!");
+  //           if (submitBtn) {
+  //             submitBtn.innerText = "Masuk";
+  //             submitBtn.disabled = false;
+  //           }
+  //         }
+  //       }, 1500);
+  //     }
+  // } else {
+  //   // --- INI LOGIKA LOGIN (karena tidak ada input nama) ---
+  //   const email = emailInput.value.trim();
+  //   const password = passwordInput.value;
+
+  //   submitBtn.innerText = "Mengecek Akun...";
+
+  //   setTimeout(() => {
+  //     if (email === "admin@ntbeat.com" && password === "admin123") {
+  //       alert("Selamat datang, Administrator!");
+  //       window.location.href = "admin-dashboard.html";
+  //     } else if (email !== "" && password.length >= 8) {
+  //       alert("Login Berhasil! Selamat datang di NTBeat.");
+  //       window.location.href = "halaman-user.php";
+  //     } else {
+  //       alert("Email atau Kata Sandi salah. Silakan coba lagi!");
+  //       submitBtn.innerText = "Masuk";
+  //       submitBtn.disabled = false;
+  //     }
+  //   }, 1500);
+  // }
 
   // Fitur Lupa Password (dibiarkan di luar agar tidak nyangkut saat submit form)
   const forgotPwLink = document.querySelector(".auth-forgot-pw");
@@ -591,3 +674,49 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
+// --- FITUR GRAFIK GARIS (ADMIN DASHBOARD) ---
+const lineChartEl = document.getElementById("ntbeatLineChart");
+
+if (lineChartEl) {
+  const ctx = lineChartEl.getContext("2d");
+
+  new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: ["10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "LIVE"],
+      datasets: [
+        {
+          label: "Tiket Terjual",
+          data: [15, 30, 25, 45, 40, 60, 85], // Data simulasi
+          borderColor: "#d4af37", // Emas NTBeat
+          backgroundColor: "rgba(212, 175, 55, 0.1)", // Efek bayangan emas
+          fill: true,
+          tension: 0.4, // Garis melengkung halus
+          borderWidth: 3,
+          pointRadius: 5,
+          pointBackgroundColor: "#d4af37",
+          pointBorderColor: "#fff",
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false }, // Sembunyikan legenda agar simpel
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          grid: { color: "rgba(255, 255, 255, 0.05)" },
+          ticks: { color: "#888" },
+        },
+        x: {
+          grid: { display: false },
+          ticks: { color: "#888" },
+        },
+      },
+    },
+  });
+}

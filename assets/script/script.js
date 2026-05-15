@@ -214,7 +214,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (checkedBox) {
       const konserId = checkedBox.getAttribute("data-id");
-      window.location.href = "admin-form-konser.php?id=${konserId}";
+      window.location.href = "admin-edit-konser.php?id=${konserId}";
     }
   });
 
@@ -431,12 +431,12 @@ document.addEventListener("DOMContentLoaded", () => {
       submitBtn.disabled = true;
 
       setTimeout(() => {
-        if (email === "admin@ntbeat.com" && password === "admin123") {
-          alert("Selamat datang, Administrator!");
-          window.location.href = "admin-dashboard.html";
-        } else if (email !== "" && password.length >= 8) {
+        if (email !== "" && password.length >= 8) {
           alert("Login Berhasil! Selamat datang di NTBeat.");
           window.location.href = "halaman-user.php";
+        } else if (email === "admin@ntbeat.com" && password === "admin123") {
+          alert("Selamat datang, Administrator!");
+          window.location.href = "admin-dashboard.php";
         } else {
           alert("Email atau Kata Sandi salah. Silakan coba lagi!");
           submitBtn.innerText = "Masuk";

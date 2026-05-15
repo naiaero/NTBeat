@@ -476,7 +476,7 @@ document.addEventListener("DOMContentLoaded", () => {
           // BARU CEK USER BIASA (URUTAN NOMOR 2)
           else if (email !== "" && password.length >= 8) {
             alert("Login Berhasil! Selamat datang di NTBeat.");
-            window.location.href = "halaman-user.php";
+            window.location.href = "halaman-awal.php";
           }
           // JIKA SEMUA SALAH
           else {

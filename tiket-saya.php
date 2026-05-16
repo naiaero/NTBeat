@@ -15,7 +15,7 @@
       </div>
       <div class="user-profile-nav">
         <span>Halo, Salsabila!</span>
-        <div class="avatar-placeholder">S</div>
+        <div class="avatar-placeholder" onclick="openProfileModal()">S</div>
       </div>
     </nav>
 
@@ -108,6 +108,27 @@
                 <button class="btn-yakin" onclick="window.location.href = 'index.php'">Keluar</button>
             </div>
         </div>
+    </div>
+
+    <div id="profileModal" class="modal-overlay">
+      <div class="profile-card" style="background-color: #1e1e1e; padding: 40px; border-radius: 20px; text-align: center; width: 400px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);">
+          <div class="profile-img" style="width: 100px; height: 100px; background-color: #555; border-radius: 50%; margin: 0 auto 20px; display: flex; justify-content: center; align-items: center; font-size: 40px; color: white;">S</div>
+          <h2 style="color: white;">Nama Pengguna</h2>
+
+          <div class="profile-info" style="text-align: left; margin-top: 20px; color: white;">
+              <div class="info-row" style="margin-bottom: 15px; display: flex;">
+                  <span class="label" style="width: 120px; font-weight: bold; color: #ccc;">Email</span>
+                  <span>: nama@gmail.com</span>
+              </div>
+              <div class="info-row" style="margin-bottom: 15px; display: flex; align-items: center;">
+                  <span class="label" style="width: 120px; font-weight: bold; color: #ccc;">Password</span>
+                  <span>: **********</span>
+                  <button type="button" class="toggle-btn" onclick="togglePassword()" style="background: none; border: 1px solid #555; color: #ccc; cursor: pointer; margin-left: 20px; font-size: 11px; padding: 2px 6px; border-radius: 4px;">Lihat</button>
+              </div>
+          </div>
+
+          <button class="btn-back" onclick="closeProfileModal()" style="background-color: #a32424; color: white; border: none; padding: 10px 30px; border-radius: 8px; margin-top: 20px; cursor: pointer; float: right;">Back</button>
+      </div>
     </div>
   </body>
 </html>

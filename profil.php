@@ -53,7 +53,7 @@
               </div>
             </div>
 
-            <form class="ps-form" action="#">
+            <form class="ps-form" action="#" id="profile-form">
               <div class="ps-form-group">
                 <label for="username">Username</label>
                 <input

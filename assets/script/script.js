@@ -116,48 +116,83 @@ document.addEventListener("DOMContentLoaded", () => {
   const posterInput = document.getElementById("poster-input");
   const imagePreview = document.getElementById("imagePreview");
 
-  if (posterInput) {
+  if (posterInput && imagePreview) {
     posterInput.addEventListener("change", function () {
       const file = this.files[0];
 
       if (file) {
         const reader = new FileReader();
 
-        imagePreview.innerHTML =
-          '<span style="color: #eee; font-size: 0.8rem;">Memuat...</span>';
+        // Tampilkan teks memuat sementara
+        imagePreview.innerHTML = '<span style="color: #eee; font-size: 0.8rem;">Memuat...</span>';
 
         reader.onload = function (e) {
+          // Bersihkan teks "Memuat..." terlebih dahulu agar tidak menutupi background
+          imagePreview.innerHTML = ""; 
+          
+          // Terapkan gambar pada background
           imagePreview.style.backgroundImage = `url(${e.target.result})`;
           imagePreview.style.backgroundSize = "cover";
           imagePreview.style.backgroundPosition = "center";
           imagePreview.style.border = "none";
-          imagePreview.innerHTML = "";
         };
 
         reader.readAsDataURL(file);
       } else {
+        // Kembalikan ke kondisi awal jika batal memilih gambar
         imagePreview.style.backgroundImage = "none";
         imagePreview.innerHTML = "<span>Preview Poster</span>";
       }
     });
   }
-
-  const concertForm = document.querySelector(".ps-form");
-  if (concertForm) {
-    concertForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-
-      const btnSave = document.querySelector(".btn-ps-save");
-      btnSave.textContent = "Menyimpan...";
-      btnSave.disabled = true;
-
-      setTimeout(() => {
-        alert("Data Konser Berhasil Disimpan!");
-        window.location.href = "admin-kelola-konser.php";
-      }, 1500);
-    });
-  }
 });
+
+// document.addEventListener("DOMContentLoaded", () => {
+//   const posterInput = document.getElementById("poster-input");
+//   const imagePreview = document.getElementById("imagePreview");
+
+//   if (posterInput) {
+//     posterInput.addEventListener("change", function () {
+//       const file = this.files[0];
+
+//       if (file) {
+//         const reader = new FileReader();
+
+//         imagePreview.innerHTML =
+//           '<span style="color: #eee; font-size: 0.8rem;">Memuat...</span>';
+
+//         reader.onload = function (e) {
+//           imagePreview.style.backgroundImage = `url(${e.target.result})`;
+//           imagePreview.style.backgroundSize = "cover";
+//           imagePreview.style.backgroundPosition = "center";
+//           imagePreview.style.border = "none";
+//           imagePreview.innerHTML = "";
+//         };
+
+//         reader.readAsDataURL(file);
+//       } else {
+//         imagePreview.style.backgroundImage = "none";
+//         imagePreview.innerHTML = "<span>Preview Poster</span>";
+//       }
+//     });
+//   }
+
+//   const concertForm = document.querySelector("concert-form");
+//   if (concertForm) {
+//     concertForm.addEventListener("submit", (e) => {
+//       e.preventDefault();
+
+//       const btnSave = document.querySelector(".btn-ps-save");
+//       btnSave.textContent = "Menyimpan...";
+//       btnSave.disabled = true;
+
+//       setTimeout(() => {
+//         alert("Data Konser Berhasil Disimpan!");
+//         window.location.href = "admin-kelola-konser.php";
+//       }, 1500);
+//     });
+//   }
+// });
 
 // document.addEventListener("DOMContentLoaded", () => {
 document.addEventListener("DOMContentLoaded", () => {
@@ -223,7 +258,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (checkedBox) {
         const konserId = checkedBox.getAttribute("data-id");
         // PERBAIKAN TYPO: Menggunakan backtick (`) agar variabel terbaca
-        window.location.href = `admin-form-konser.php?id=${konserId}`;
+        window.location.href = `admin-edit-konser.php?id=${konserId}`;
       }
     });
 
@@ -601,7 +636,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  const profileForm = document.querySelector(".ps-form");
+  const profileForm = document.getElementById("profile-form");
 
   if (profileForm) {
     profileForm.addEventListener("submit", (e) => {
@@ -625,7 +660,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       const saveBtn = document.querySelector(".btn-ps-save");
-      saveBtn.innerText = "Saving...";
+      saveBtn.innerText = "Menyimpan...";
       saveBtn.disabled = true;
 
       setTimeout(() => {
@@ -634,6 +669,35 @@ document.addEventListener("DOMContentLoaded", () => {
         saveBtn.disabled = false;
         document.getElementById("current_password").value = "";
         document.getElementById("new_password").value = "";
+      }, 1500);
+    });
+  }
+});
+
+// --- LOGIKA EDIT PROFIL KHUSUS ADMIN ---
+document.addEventListener("DOMContentLoaded", () => {
+  const adminProfileForm = document.getElementById("admin-profile-form");
+
+  if (adminProfileForm) {
+    adminProfileForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const saveBtn = adminProfileForm.querySelector(".btn-ps-save");
+      if (saveBtn) {
+        saveBtn.innerText = "Saving...";
+        saveBtn.disabled = true;
+      }
+
+      setTimeout(() => {
+        alert("Profil Administrator berhasil diperbarui!");
+        
+        if (saveBtn) {
+          saveBtn.innerText = "Simpan Perubahan";
+          saveBtn.disabled = false;
+        }
+        
+        // Setelah sukses, arahkan admin kembali ke Dashboard Utama Admin
+        window.location.href = "admin-dashboard.php";
       }, 1500);
     });
   }
@@ -720,3 +784,27 @@ if (lineChartEl) {
     },
   });
 }
+
+// lihat profile
+function openProfileModal() {
+  const modal = document.getElementById("profileModal");
+  if(modal) modal.style.display = "flex";
+}
+
+function closeProfileModal() {
+  const modal = document.getElementById("profileModal");
+  if(modal) modal.style.display = "none";
+}
+
+window.onclick = function(event) {
+  const logoutModal = document.getElementById("logoutModal");
+  const profileModal = document.getElementById("profileModal");
+
+  if(event.target == logoutModal) {
+    logoutModal.style.display = "none";
+  }
+
+  if(event.target == profileModal) {
+    profileModal.style.display = "none";
+  }
+};

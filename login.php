@@ -17,8 +17,37 @@
       <div class="auth-card">
         <h2>Login</h2>
         <p class="auth-subtitle">Lorem ipsum dolor sit amet hean</p>
+        <form action="login_proses.php" method="POST">
+          <div class="auth-form-group">
+            <label for="email">Email*</label>
+            <input
+              type="email"
+              id="email"
+              name="email" 
+              class="auth-input"
+              placeholder="Masukkan Email "
+              required
+            />
+          </div>
 
-        <form action="#">
+          <div class="auth-form-group">
+            <div class="auth-label-row">
+              <label for="password">Kata Sandi*</label>
+              <a href="#" class="auth-forgot-pw">Lupa kata sandi?</a>
+            </div>
+            <input
+              type="password"
+              id="password"
+              name="password" 
+              class="auth-input"
+              placeholder="Masukkan password"
+              required
+            />
+          </div>
+
+          <button type="submit" class="auth-btn-submit">Masuk</button>
+        </form>
+        <!-- <form action="#">
           <div class="auth-form-group">
             <label for="email">Email*</label>
             <input
@@ -45,7 +74,7 @@
           </div>
 
           <button type="submit" class="auth-btn-submit">Masuk</button>
-        </form>
+        </form> -->
 
         <p class="auth-footer">Belum punya akun? <a href="register.php">Daftar</a></p>
       </div>

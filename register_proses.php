@@ -16,11 +16,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 window.location.href='register.php';
               </script>";
     } else {
-        // Enkripsi password menggunakan MD5
-        $password_md5 = md5($password);
+        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
         // Masukkan data user baru ke database (Otomatis role-nya jadi 'user')
-        $query = "INSERT INTO users (nama, email, password, role) VALUES ('$nama', '$email', '$password_md5', 'user')";
+        $query = "INSERT INTO users (nama, email, password, role) VALUES ('$nama', '$email', '$hashed_password', 'user')";
 
         if (mysqli_query($conn, $query)) {
             echo "<script>

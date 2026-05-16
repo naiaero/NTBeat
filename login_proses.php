@@ -7,11 +7,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = mysqli_real_escape_string($conn, $_POST['email']);
     $password = $_POST['password'];
 
-    // Mengubah password jadi kode rahasia (MD5) biar cocok sama database
-    $password_md5 = md5($password); 
+    $hashed_password = password_hash($password, PASSWORD_DEFAULT); 
 
     // Mencari adakah user dengan email & password tersebut?
-    $query = "SELECT * FROM users WHERE email='$email' AND password='$password_md5'";
+    $query = "SELECT * FROM users WHERE email='$email' AND password='$hashed_password'";
     $result = mysqli_query($conn, $query);
 
     // Kalau datanya ketemu

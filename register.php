@@ -18,12 +18,13 @@
         <h2>Register</h2>
         <p class="auth-subtitle">Lorem ipsum dolor sit amet hean</p>
 
-        <form action="#">
-            <div class="auth-form-group">
-            <label for="email">Nama*</label>
+       <form action="register_proses.php" method="POST">
+          <div class="auth-form-group">
+            <label for="nama">Nama*</label>
             <input
               type="text"
               id="nama"
+              name="nama" 
               class="auth-input"
               placeholder="Masukkan Nama "
               required
@@ -35,6 +36,7 @@
             <input
               type="email"
               id="email"
+              name="email" 
               class="auth-input"
               placeholder="example@gmail.com "
               required
@@ -48,6 +50,7 @@
             <input
               type="password"
               id="password"
+              name="password" 
               class="auth-input"
               placeholder="Masukkan password"
               required

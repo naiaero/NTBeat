@@ -32,7 +32,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } else {
             echo "<script>
                     alert('Login Berhasil! Selamat datang di NTBeat.'); 
-                    window.location.href='halaman-user.php'; 
+                    window.location.href='halaman-awal.php';
                   </script>";
         }
     } else {

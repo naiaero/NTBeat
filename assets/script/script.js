@@ -471,7 +471,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // 2. Cek apakah form, email, dan password ada di halaman yang sedang dibuka
   if (authForm && emailInput && passwordInput) {
     authForm.addEventListener("submit", (e) => {
-      e.preventDefault();
+      // e.preventDefault();
 
       const submitBtn = document.querySelector(".auth-btn-submit");
       if (submitBtn) submitBtn.disabled = true;
@@ -525,84 +525,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
-  // if (authForm && emailInput && passwordInput) {
-  //   authForm.addEventListener("submit", (e) => {
-  //     e.preventDefault();
-
-  //     const submitBtn = document.querySelector(".auth-btn-submit");
-  //     submitBtn.disabled = true;
-
-  //     // 3. Pengecekan: Apakah kita di halaman Register (karena ada input nama)?
-  //     if (nameInput) {
-  //       // --- INI LOGIKA REGISTER ---
-  //       const name = nameInput.value.trim();
-  //       const password = passwordInput.value;
-
-  //       if (password.length < 8) {
-  //         alert("Keamanan itu penting! Kata sandi minimal harus 8 karakter.");
-  //         submitBtn.disabled = false;
-  //         return;
-  //       }
-
-  //       submitBtn.innerText = "Membuat Akun...";
-  //       submitBtn.style.opacity = "0.7";
-
-  //       setTimeout(() => {
-  //         alert(
-  //           `Selamat datang di NTBeat, ${name}! Akun Anda berhasil dibuat.`,
-  //         );
-  //         window.location.href = "login.php";
-  //       }, 2000);
-  //     } else {
-  //       // --- LOGIKA LOGIN FIXED ---
-  //       const email = emailInput.value.trim();
-  //       const password = passwordInput.value;
-
-  //       if (submitBtn) submitBtn.innerText = "Mengecek Akun...";
-
-  //       setTimeout(() => {
-  //         // CEK ADMIN DULU
-  //         if (email === "admin@ntbeat.com" && password === "admin123") {
-  //           alert("Selamat datang, Administrator!");
-  //           window.location.href = "admin-dashboard.php"; // Diarahkan ke PHP
-  //         }
-  //         // CEK USER BIASA
-  //         else if (email !== "" && password.length >= 8) {
-  //           alert("Login Berhasil! Selamat datang di NTBeat.");
-  //           window.location.href = "halaman-user.php";
-  //         }
-  //         // JIKA GAGAL
-  //         else {
-  //           alert("Email atau Kata Sandi salah. Silakan coba lagi!");
-  //           if (submitBtn) {
-  //             submitBtn.innerText = "Masuk";
-  //             submitBtn.disabled = false;
-  //           }
-  //         }
-  //       }, 1500);
-  //     }
-  // } else {
-  //   // --- INI LOGIKA LOGIN (karena tidak ada input nama) ---
-  //   const email = emailInput.value.trim();
-  //   const password = passwordInput.value;
-
-  //   submitBtn.innerText = "Mengecek Akun...";
-
-  //   setTimeout(() => {
-  //     if (email === "admin@ntbeat.com" && password === "admin123") {
-  //       alert("Selamat datang, Administrator!");
-  //       window.location.href = "admin-dashboard.html";
-  //     } else if (email !== "" && password.length >= 8) {
-  //       alert("Login Berhasil! Selamat datang di NTBeat.");
-  //       window.location.href = "halaman-user.php";
-  //     } else {
-  //       alert("Email atau Kata Sandi salah. Silakan coba lagi!");
-  //       submitBtn.innerText = "Masuk";
-  //       submitBtn.disabled = false;
-  //     }
-  //   }, 1500);
-  // }
-
+  
   // Fitur Lupa Password (dibiarkan di luar agar tidak nyangkut saat submit form)
   const forgotPwLink = document.querySelector(".auth-forgot-pw");
   if (forgotPwLink) {
@@ -684,7 +607,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const saveBtn = adminProfileForm.querySelector(".btn-ps-save");
       if (saveBtn) {
-        saveBtn.innerText = "Saving...";
+        saveBtn.innerText = "Menyimpan...";
         saveBtn.disabled = true;
       }
 
@@ -696,8 +619,7 @@ document.addEventListener("DOMContentLoaded", () => {
           saveBtn.disabled = false;
         }
         
-        // Setelah sukses, arahkan admin kembali ke Dashboard Utama Admin
-        window.location.href = "admin-dashboard.php";
+        window.location.href = "admin-profil.php";
       }, 1500);
     });
   }

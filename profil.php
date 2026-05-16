@@ -55,12 +55,12 @@
 
             <form class="ps-form" action="#" id="profile-form">
               <div class="ps-form-group">
-                <label for="username">Username</label>
+                <label for="username">Nama</label>
                 <input
                   type="text"
                   id="username"
                   class="ps-input"
-                  value="alfatih_unram"
+                  value=""
                 />
               </div>
 
@@ -70,7 +70,7 @@
                   type="email"
                   id="email"
                   class="ps-input"
-                  value="alfatih@student.unram.ac.id"
+                  value=""
                 />
               </div>
 

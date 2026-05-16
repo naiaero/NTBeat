@@ -17,7 +17,7 @@
         </div>
         <div class="user-profile-nav">
             <span style="color: white; font-size: 0.9rem;">Administrator</span>
-            <div class="avatar-placeholder" onclick="openProfileModal()>A</div>
+            <div class="avatar-placeholder" onclick="window.location.href = 'admin-profil.php'">A</div>
         </div>
     </header>
 

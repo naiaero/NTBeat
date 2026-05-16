@@ -116,48 +116,83 @@ document.addEventListener("DOMContentLoaded", () => {
   const posterInput = document.getElementById("poster-input");
   const imagePreview = document.getElementById("imagePreview");
 
-  if (posterInput) {
+  if (posterInput && imagePreview) {
     posterInput.addEventListener("change", function () {
       const file = this.files[0];
 
       if (file) {
         const reader = new FileReader();
 
-        imagePreview.innerHTML =
-          '<span style="color: #eee; font-size: 0.8rem;">Memuat...</span>';
+        // Tampilkan teks memuat sementara
+        imagePreview.innerHTML = '<span style="color: #eee; font-size: 0.8rem;">Memuat...</span>';
 
         reader.onload = function (e) {
+          // Bersihkan teks "Memuat..." terlebih dahulu agar tidak menutupi background
+          imagePreview.innerHTML = ""; 
+          
+          // Terapkan gambar pada background
           imagePreview.style.backgroundImage = `url(${e.target.result})`;
           imagePreview.style.backgroundSize = "cover";
           imagePreview.style.backgroundPosition = "center";
           imagePreview.style.border = "none";
-          imagePreview.innerHTML = "";
         };
 
         reader.readAsDataURL(file);
       } else {
+        // Kembalikan ke kondisi awal jika batal memilih gambar
         imagePreview.style.backgroundImage = "none";
         imagePreview.innerHTML = "<span>Preview Poster</span>";
       }
     });
   }
-
-  const concertForm = document.querySelector(".ps-form");
-  if (concertForm) {
-    concertForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-
-      const btnSave = document.querySelector(".btn-ps-save");
-      btnSave.textContent = "Menyimpan...";
-      btnSave.disabled = true;
-
-      setTimeout(() => {
-        alert("Data Konser Berhasil Disimpan!");
-        window.location.href = "admin-kelola-konser.php";
-      }, 1500);
-    });
-  }
 });
+
+// document.addEventListener("DOMContentLoaded", () => {
+//   const posterInput = document.getElementById("poster-input");
+//   const imagePreview = document.getElementById("imagePreview");
+
+//   if (posterInput) {
+//     posterInput.addEventListener("change", function () {
+//       const file = this.files[0];
+
+//       if (file) {
+//         const reader = new FileReader();
+
+//         imagePreview.innerHTML =
+//           '<span style="color: #eee; font-size: 0.8rem;">Memuat...</span>';
+
+//         reader.onload = function (e) {
+//           imagePreview.style.backgroundImage = `url(${e.target.result})`;
+//           imagePreview.style.backgroundSize = "cover";
+//           imagePreview.style.backgroundPosition = "center";
+//           imagePreview.style.border = "none";
+//           imagePreview.innerHTML = "";
+//         };
+
+//         reader.readAsDataURL(file);
+//       } else {
+//         imagePreview.style.backgroundImage = "none";
+//         imagePreview.innerHTML = "<span>Preview Poster</span>";
+//       }
+//     });
+//   }
+
+//   const concertForm = document.querySelector("concert-form");
+//   if (concertForm) {
+//     concertForm.addEventListener("submit", (e) => {
+//       e.preventDefault();
+
+//       const btnSave = document.querySelector(".btn-ps-save");
+//       btnSave.textContent = "Menyimpan...";
+//       btnSave.disabled = true;
+
+//       setTimeout(() => {
+//         alert("Data Konser Berhasil Disimpan!");
+//         window.location.href = "admin-kelola-konser.php";
+//       }, 1500);
+//     });
+//   }
+// });
 
 // document.addEventListener("DOMContentLoaded", () => {
 document.addEventListener("DOMContentLoaded", () => {
@@ -223,7 +258,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (checkedBox) {
         const konserId = checkedBox.getAttribute("data-id");
         // PERBAIKAN TYPO: Menggunakan backtick (`) agar variabel terbaca
-        window.location.href = `admin-form-konser.php?id=${konserId}`;
+        window.location.href = `admin-edit-konser.php?id=${konserId}`;
       }
     });
 
@@ -476,7 +511,7 @@ document.addEventListener("DOMContentLoaded", () => {
           // BARU CEK USER BIASA (URUTAN NOMOR 2)
           else if (email !== "" && password.length >= 8) {
             alert("Login Berhasil! Selamat datang di NTBeat.");
-            window.location.href = "halaman-user.php";
+            window.location.href = "halaman-awal.php";
           }
           // JIKA SEMUA SALAH
           else {
@@ -490,84 +525,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
-  // if (authForm && emailInput && passwordInput) {
-  //   authForm.addEventListener("submit", (e) => {
-  //     e.preventDefault();
-
-  //     const submitBtn = document.querySelector(".auth-btn-submit");
-  //     submitBtn.disabled = true;
-
-  //     // 3. Pengecekan: Apakah kita di halaman Register (karena ada input nama)?
-  //     if (nameInput) {
-  //       // --- INI LOGIKA REGISTER ---
-  //       const name = nameInput.value.trim();
-  //       const password = passwordInput.value;
-
-  //       if (password.length < 8) {
-  //         alert("Keamanan itu penting! Kata sandi minimal harus 8 karakter.");
-  //         submitBtn.disabled = false;
-  //         return;
-  //       }
-
-  //       submitBtn.innerText = "Membuat Akun...";
-  //       submitBtn.style.opacity = "0.7";
-
-  //       setTimeout(() => {
-  //         alert(
-  //           `Selamat datang di NTBeat, ${name}! Akun Anda berhasil dibuat.`,
-  //         );
-  //         window.location.href = "login.php";
-  //       }, 2000);
-  //     } else {
-  //       // --- LOGIKA LOGIN FIXED ---
-  //       const email = emailInput.value.trim();
-  //       const password = passwordInput.value;
-
-  //       if (submitBtn) submitBtn.innerText = "Mengecek Akun...";
-
-  //       setTimeout(() => {
-  //         // CEK ADMIN DULU
-  //         if (email === "admin@ntbeat.com" && password === "admin123") {
-  //           alert("Selamat datang, Administrator!");
-  //           window.location.href = "admin-dashboard.php"; // Diarahkan ke PHP
-  //         }
-  //         // CEK USER BIASA
-  //         else if (email !== "" && password.length >= 8) {
-  //           alert("Login Berhasil! Selamat datang di NTBeat.");
-  //           window.location.href = "halaman-user.php";
-  //         }
-  //         // JIKA GAGAL
-  //         else {
-  //           alert("Email atau Kata Sandi salah. Silakan coba lagi!");
-  //           if (submitBtn) {
-  //             submitBtn.innerText = "Masuk";
-  //             submitBtn.disabled = false;
-  //           }
-  //         }
-  //       }, 1500);
-  //     }
-  // } else {
-  //   // --- INI LOGIKA LOGIN (karena tidak ada input nama) ---
-  //   const email = emailInput.value.trim();
-  //   const password = passwordInput.value;
-
-  //   submitBtn.innerText = "Mengecek Akun...";
-
-  //   setTimeout(() => {
-  //     if (email === "admin@ntbeat.com" && password === "admin123") {
-  //       alert("Selamat datang, Administrator!");
-  //       window.location.href = "admin-dashboard.html";
-  //     } else if (email !== "" && password.length >= 8) {
-  //       alert("Login Berhasil! Selamat datang di NTBeat.");
-  //       window.location.href = "halaman-user.php";
-  //     } else {
-  //       alert("Email atau Kata Sandi salah. Silakan coba lagi!");
-  //       submitBtn.innerText = "Masuk";
-  //       submitBtn.disabled = false;
-  //     }
-  //   }, 1500);
-  // }
-
+  
   // Fitur Lupa Password (dibiarkan di luar agar tidak nyangkut saat submit form)
   const forgotPwLink = document.querySelector(".auth-forgot-pw");
   if (forgotPwLink) {
@@ -601,7 +559,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  const profileForm = document.querySelector(".ps-form");
+  const profileForm = document.getElementById("profile-form");
 
   if (profileForm) {
     profileForm.addEventListener("submit", (e) => {
@@ -625,7 +583,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       const saveBtn = document.querySelector(".btn-ps-save");
-      saveBtn.innerText = "Saving...";
+      saveBtn.innerText = "Menyimpan...";
       saveBtn.disabled = true;
 
       setTimeout(() => {
@@ -634,6 +592,34 @@ document.addEventListener("DOMContentLoaded", () => {
         saveBtn.disabled = false;
         document.getElementById("current_password").value = "";
         document.getElementById("new_password").value = "";
+      }, 1500);
+    });
+  }
+});
+
+// --- LOGIKA EDIT PROFIL KHUSUS ADMIN ---
+document.addEventListener("DOMContentLoaded", () => {
+  const adminProfileForm = document.getElementById("admin-profile-form");
+
+  if (adminProfileForm) {
+    adminProfileForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const saveBtn = adminProfileForm.querySelector(".btn-ps-save");
+      if (saveBtn) {
+        saveBtn.innerText = "Menyimpan...";
+        saveBtn.disabled = true;
+      }
+
+      setTimeout(() => {
+        alert("Profil Administrator berhasil diperbarui!");
+        
+        if (saveBtn) {
+          saveBtn.innerText = "Simpan Perubahan";
+          saveBtn.disabled = false;
+        }
+        
+        window.location.href = "admin-profil.php";
       }, 1500);
     });
   }
@@ -720,3 +706,27 @@ if (lineChartEl) {
     },
   });
 }
+
+// lihat profile
+function openProfileModal() {
+  const modal = document.getElementById("profileModal");
+  if(modal) modal.style.display = "flex";
+}
+
+function closeProfileModal() {
+  const modal = document.getElementById("profileModal");
+  if(modal) modal.style.display = "none";
+}
+
+window.onclick = function(event) {
+  const logoutModal = document.getElementById("logoutModal");
+  const profileModal = document.getElementById("profileModal");
+
+  if(event.target == logoutModal) {
+    logoutModal.style.display = "none";
+  }
+
+  if(event.target == profileModal) {
+    profileModal.style.display = "none";
+  }
+};

@@ -47,36 +47,7 @@
 
           <button type="submit" class="auth-btn-submit">Masuk</button>
         </form>
-        <!-- <form action="#">
-          <div class="auth-form-group">
-            <label for="email">Email*</label>
-            <input
-              type="email"
-              id="email"
-              class="auth-input"
-              placeholder="Masukkan Email "
-              required
-            />
-          </div>
-
-          <div class="auth-form-group">
-            <div class="auth-label-row">
-              <label for="password">Kata Sandi*</label>
-              <a href="#" class="auth-forgot-pw">Lupa kata sandi?</a>
-            </div>
-            <input
-              type="password"
-              id="password"
-              class="auth-input"
-              placeholder="Masukkan password"
-              required
-            />
-          </div>
-
-          <button type="submit" class="auth-btn-submit">Masuk</button>
-        </form> -->
-
-        <p class="auth-footer">Belum punya akun? <a href="register.php">Daftar</a></p>
+       <p class="auth-footer">Belum punya akun? <a href="register.php">Daftar</a></p>
       </div>
     </div>
   </body>

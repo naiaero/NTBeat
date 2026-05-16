@@ -17,7 +17,7 @@
         </div>
         <div class="user-profile-nav">
             <span style="color: white; font-size: 0.9rem;">Administrator</span>
-            <div class="avatar-placeholder">A</div>
+            <div class="avatar-placeholder" onclick="window.location.href = 'admin-profil.php'">A</div>
         </div>
     </header>
 
@@ -49,8 +49,8 @@
 
                     <form class="ps-form" id="admin-profile-form" action="#">
                         <div class="ps-form-group">
-                            <label for="username">Username Admin</label>
-                            <input type="text" id="username" class="ps-input" value="admin_ntbeat" required />
+                            <label for="nama">Nama</label>
+                            <input type="text" id="username" class="ps-input" value="Administrator" required />
                         </div>
 
                         <div class="ps-form-group">
@@ -62,12 +62,12 @@
 
                         <div class="ps-form-group">
                             <label for="current_password">Password Saat Ini</label>
-                            <input type="password" id="current_password" class="ps-input" placeholder="Masukkan password lama admin" />
+                            <input type="password" id="current_password" class="ps-input" placeholder="Masukkan password lama" />
                         </div>
 
                         <div class="ps-form-group">
                             <label for="new_password">Password Baru</label>
-                            <input type="password" id="new_password" class="ps-input" placeholder="Masukkan password baru admin" />
+                            <input type="password" id="new_password" class="ps-input" placeholder="Masukkan password baru" />
                         </div>
 
                         <div class="ps-action-bar">

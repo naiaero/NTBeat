@@ -57,11 +57,6 @@
                 <h3>Hubungi Kami</h3>
                 <p>Email: info@ntbeat.com<br>
                 Telepon: +62 812-3456-7890</p>
-                <div class="footer-sosmed">
-                    <a href="#">Instagram</a>
-                    <a href="#">Facebook</a>
-                    <a href="#">Twitter</a>
-                </div>
             </div>
         </div>
 

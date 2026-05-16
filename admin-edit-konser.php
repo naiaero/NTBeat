@@ -55,7 +55,7 @@ $poster_lama = "assets/img/poster-symphony.jpg"; // Path gambar lama jika ada
 
             <div class="ps-card">
                 <!-- Tambahkan ID tersembunyi agar backend tahu data mana yang di-update -->
-                <form action="#" class="ps-form" id="concert-form">
+                <form action="update-konser-proses.php" class="ps-form" id="concert-form">
                     <input type="hidden" name="id_konser" value="<?php echo $id_konser; ?>">
                     
                     <div class="ps-avatar-section">
@@ -112,7 +112,7 @@ $poster_lama = "assets/img/poster-symphony.jpg"; // Path gambar lama jika ada
 
                     <div class="ps-action-bar">
                         <button type="button" class="btn-ps-cancel" onclick="window.location.href='admin-kelola-konser.php'">Batal</button>
-                        <button type="submit" class="btn-ps-save" id="btn-update">Perbarui Data Konser</button>
+                        <button type="submit" class="btn-ps-save" id="btn-update" name="submit-update">Perbarui Data Konser</button>
                     </div>
                 </form>
             </div>

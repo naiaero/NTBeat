@@ -1,3 +1,8 @@
+<?php
+  session_start();
+  $nama_user = isset($_SESSION['nama']) ? $_SESSION['nama'] : 'User';
+  $inisial = strtoupper(substr($nama_user, 0, 1));
+?>
 <!doctype html>
 <html lang="id">
   <head>
@@ -21,8 +26,8 @@
       />
 
       <div class="user-profile-nav">
-        <span>Halo, User!</span>
-        <div class="avatar-placeholder" onclick="window.location.href = 'profil.php'">S</div>
+        <span>Halo, <?php echo htmlspecialchars($nama_user); ?>!</span>
+        <div class="avatar-placeholder" onclick="window.location.href = 'profil.php'"><?php echo $inisial; ?></div>
       </div>
     </nav>
 

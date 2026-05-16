@@ -1,3 +1,8 @@
+<?php
+session_start();
+$nama_user = isset($_SESSION['nama']) ? $_SESSION['nama'] : 'User';
+$inisial = strtoupper(substr($nama_user, 0, 1));
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -14,8 +19,8 @@
             <label>NTBeat</label>
         </div>
         <div class="user-profile-nav">
-            <span>Halo, Salsabila!</span>
-            <div class="avatar-placeholder" onclick="window.location.href = 'profil.php'">S</div>
+            <span>Halo, <?php echo htmlspecialchars($nama_user); ?>!</span>
+            <div class="avatar-placeholder" onclick="window.location.href = 'profil.php'"><?php echo $inisial; ?></div>
         </div>
     </nav>
 

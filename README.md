@@ -16,8 +16,11 @@ Database Management System
 1. Configuration
 2. Table Specification
 
-NTBeat Website Structure
+NTBeat Website Actor
+1. Administrator
+2. Customer
 
+NTBeat Website Structure
 Akses Publik
 └── Halaman Utama
 ├── Login

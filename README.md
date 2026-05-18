@@ -62,19 +62,19 @@ Proyek ini dikembangkan secara kolaboratif. Berikut rincian pembagian kerja dari
 | --- | --- | --- |
 | **Salsabila Nailafahdi** | F1D02410135 | **Team Leader & Customer-Side Developer**<br>
 
-<br>• Bertanggung jawab penuh atas pengerjaan seluruh bagian panel pengguna (*customer panel*).<br>
+<br>• Bertanggung jawab penuh atas pengerjaan seluruh bagian panel pengguna (*customer panel*).
 
-<br>• Menyusun struktur kode HTML, penataan visual CSS, dan logika interaktif JavaScript di sisi klien pengguna (`halaman-awal.php`, `detail-konser.php`, `tiket-saya.php`, `profil.php`).<br>
+<br>• Menyusun struktur kode HTML, penataan visual CSS, dan logika interaktif JavaScript di sisi klien pengguna (`halaman-awal.php`, `detail-konser.php`, `tiket-saya.php`, `profil.php`).
 
-<br>• Membangun gerbang arsitektur logika autentikasi serta alur pemrosesan data untuk sistem **Login** dan **Register** (`login.php`, `register.php`). |
+<br>• Membangun gerbang arsitektur logika autentikasi serta alur pemrosesan data untuk sistem **Login** dan **Register** (`login.php`, `register.php`).
 
 | Nama Lengkap | NIM | Peran Utama & Fokus Kontribusi |
 | --- | --- | --- |
 | **Tegu Ilham Pebrian Saputra** | F1D02410097 | **Admin-Side Developer (Interface & Logic)**<br>
 
-<br>• Bertanggung jawab bersama dalam menyusun modul ekosistem halaman pengelola (administrator).<br>
+<br>• Bertanggung jawab bersama dalam menyusun modul ekosistem halaman pengelola (administrator).
 
-<br>• Merancang kerangka kode struktur HTML dan penataan desain visual komponen *Admin Dashboard* menggunakan CSS.<br>
+<br>• Merancang kerangka kode struktur HTML dan penataan desain visual komponen *Admin Dashboard* menggunakan CSS.
 
 <br>• Menangani manipulasi perilaku elemen antarmuka via JavaScript serta menyusun pemrosesan logika bisnis dinamis berbasis PHP di sisi server (`admin-dashboard.php`, `admin-edit-konser.php`, `admin-form-konser.php`).
 
@@ -82,9 +82,9 @@ Proyek ini dikembangkan secara kolaboratif. Berikut rincian pembagian kerja dari
 | --- | --- | --- |
 | **M. Alfatih** | F1D02410013 | **Admin-Side & Database Systems Engineer**<br>
 
-<br>• Bertanggung jawab bersama dalam merancang dan memfungsikan seluruh modul kendali utama administrator.<br>
+<br>• Bertanggung jawab bersama dalam merancang dan memfungsikan seluruh modul kendali utama administrator.
 
-<br>• Menyusun struktur kerangka kode HTML, fungsionalitas visual CSS admin, mekanisme backend PHP server, serta penanganan aksi massal tabel data menggunakan JavaScript (*bulk operations* pada tabel data) (`admin-kelola-konser.php`, `admin-arsip.php`, `admin-profil.php`).<br>
+<br>• Menyusun struktur kerangka kode HTML, fungsionalitas visual CSS admin, mekanisme backend PHP server, serta penanganan aksi massal tabel data menggunakan JavaScript (*bulk operations* pada tabel data) (`admin-kelola-konser.php`, `admin-arsip.php`, `admin-profil.php`).
 
 <br>• Merancang arsitektur basis data relasional, pemetaan spesifikasi tabel sistem, serta manajemen kueri SQL (`ntbeat_db.sql`). |
 

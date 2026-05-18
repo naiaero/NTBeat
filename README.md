@@ -45,7 +45,7 @@ Sistem NTBeat membagi tingkat otorisasi hak akses ke dalam dua jenis pengguna ut
 
 ## 💻 Tech Stack
 
-Teknologi utama yang melandasi pengembangan sistem NTBeat meliputi:
+Teknologi utama yang melandasi pengembangan sistem purwarupa NTBeat meliputi:
 
 * **Frontend:** HTML5, CSS3, JavaScript Native (Vanilla JS)
 * **Library Eksternal:** Chart.js (Digunakan untuk visualisasi grafik analitik tren penjualan tiket pada dashboard pengelola)
@@ -56,31 +56,31 @@ Teknologi utama yang melandasi pengembangan sistem NTBeat meliputi:
 
 ## 👥 Tim & Pembagian Tugas (Team & Roles)
 
-Proyek ini dikembangkan secara kolaboratif oleh kelompok mahasiswa Teknik Informatika Universitas Mataram. Berikut adalah rincian andil dan tanggung jawab teknis masing-masing anggota tim pengembang:
+Proyek ini dikembangkan secara kolaboratif. Berikut rincian pembagian kerja dari masing-masing pengembang sistem:
 
 | Nama Lengkap | NIM | Peran Utama & Fokus Kontribusi |
 | --- | --- | --- |
-| **Salsabila Nailafahdi** | F1D02410135 | **Team Leader & Customer-Side Developer** <br>
+| **Salsabila Nailafahdi** | F1D02410135 | **Team Leader & Customer-Side Developer**<br>
 
-<br> • Bertanggung jawab penuh atas pengembangan seluruh bagian *customer panel* (antarmuka hingga interaksi).<br>
+<br>• Bertanggung jawab penuh atas pengerjaan seluruh bagian panel pengguna (*customer panel*).<br>
 
-<br>• Menyusun struktur HTML, penataan visual CSS, dan logika interaktif JavaScript sisi pengguna.<br>
+<br>• Menyusun struktur kode HTML, penataan visual CSS, dan logika interaktif JavaScript di sisi klien pengguna (`halaman-awal.php`, `detail-konser.php`, `tiket-saya.php`, `profil.php`).<br>
 
-<br>• Membangun gerbang logika autentikasi dan alur pemrosesan data untuk sistem **Login** dan **Register**. |
-| **Tegu Ilham Pebrian Saputra** | F1D02410097 | **Admin-Side Developer (Interface & Logic)** <br>
+<br>• Membangun gerbang arsitektur logika autentikasi serta alur pemrosesan data untuk sistem **Login** dan **Register** (`login.php`, `register.php`). |
+| **Tegu Ilham Pebrian Saputra** | F1D02410097 | **Admin-Side Developer (Interface & Logic)**<br>
 
-<br> • Bertanggung jawab bersama dalam menyusun modul ekosistem halaman administrator.<br>
+<br>• Bertanggung jawab bersama dalam menyusun modul ekosistem halaman pengelola (administrator).<br>
 
-<br>• Membuat struktur kode HTML, penataan visual komponen *Dashboard Admin* via CSS, serta penanganan perilaku elemen antarmuka menggunakan JavaScript.<br>
+<br>• Merancang kerangka kode struktur HTML dan penataan desain visual komponen *Admin Dashboard* menggunakan CSS.<br>
 
-<br>• Mengembangkan implementasi logika bisnis dan integrasi dinamis sisi server menggunakan PHP. |
-| **M. Alfatih** | F1D02410013 | **Admin-Side & Database Systems Engineer** <br>
+<br>• Menangani manipulasi perilaku elemen antarmuka via JavaScript serta menyusun pemrosesan logika bisnis dinamis berbasis PHP di sisi server (`admin-dashboard.php`, `admin-edit-konser.php`, `admin-form-konser.php`). |
+| **M. Alfatih** | F1D02410013 | **Admin-Side & Database Systems Engineer**<br>
 
-<br> • Bertanggung jawab penuh bersama dalam merancang ekosistem kendali administrator.<br>
+<br>• Bertanggung jawab bersama dalam merancang dan memfungsikan seluruh modul kendali utama administrator.<br>
 
-<br>• Menyusun struktur HTML, fungsionalitas CSS admin, penanganan aksi massal JavaScript (*bulk operations*), serta logika backend PHP.<br>
+<br>• Menyusun struktur kerangka kode HTML, fungsionalitas visual CSS admin, mekanisme backend PHP server, serta penanganan aksi massal tabel data menggunakan JavaScript (*bulk operations* pada tabel data) (`admin-kelola-konser.php`, `admin-arsip.php`, `admin-profil.php`).<br>
 
-<br>• Merancang arsitektur basis data, spesifikasi tabel relasional, serta pengelolaan kueri SQL sistem (`ntbeat_db.sql`). |
+<br>• Merancang arsitektur basis data relasional, pemetaan spesifikasi tabel sistem, serta manajemen kueri SQL (`ntbeat_db.sql`). |
 
 ---
 
@@ -154,7 +154,6 @@ git clone [https://github.com/naiaero/ntbeat.git](https://github.com/naiaero/ntb
 
 ```
 
-
 2. **Pindahkan Direktori Kerja:**
 * Salin atau pindahkan folder proyek `NTBeat` Anda ke dalam direktori root server htdocs Anda (biasanya terletak di `C:/xampp/htdocs/`).
 * Jalankan panel kontrol *XAMPP Control Panel* lalu nyalakan modul **Apache** beserta **MySQL**.
@@ -168,9 +167,5 @@ git clone [https://github.com/naiaero/ntbeat.git](https://github.com/naiaero/ntb
 
 4. **Akses Sistem Melalui Browser:**
 * Buka tab browser baru lalu akses URL: `http://localhost/NTBeat/index.php`.
-
-
-
-```
 
 ```

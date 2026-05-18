@@ -67,13 +67,19 @@ Proyek ini dikembangkan secara kolaboratif. Berikut rincian pembagian kerja dari
 <br>• Menyusun struktur kode HTML, penataan visual CSS, dan logika interaktif JavaScript di sisi klien pengguna (`halaman-awal.php`, `detail-konser.php`, `tiket-saya.php`, `profil.php`).<br>
 
 <br>• Membangun gerbang arsitektur logika autentikasi serta alur pemrosesan data untuk sistem **Login** dan **Register** (`login.php`, `register.php`). |
+
+| Nama Lengkap | NIM | Peran Utama & Fokus Kontribusi |
+| --- | --- | --- |
 | **Tegu Ilham Pebrian Saputra** | F1D02410097 | **Admin-Side Developer (Interface & Logic)**<br>
 
 <br>• Bertanggung jawab bersama dalam menyusun modul ekosistem halaman pengelola (administrator).<br>
 
 <br>• Merancang kerangka kode struktur HTML dan penataan desain visual komponen *Admin Dashboard* menggunakan CSS.<br>
 
-<br>• Menangani manipulasi perilaku elemen antarmuka via JavaScript serta menyusun pemrosesan logika bisnis dinamis berbasis PHP di sisi server (`admin-dashboard.php`, `admin-edit-konser.php`, `admin-form-konser.php`). |
+<br>• Menangani manipulasi perilaku elemen antarmuka via JavaScript serta menyusun pemrosesan logika bisnis dinamis berbasis PHP di sisi server (`admin-dashboard.php`, `admin-edit-konser.php`, `admin-form-konser.php`).
+
+| Nama Lengkap | NIM | Peran Utama & Fokus Kontribusi |
+| --- | --- | --- |
 | **M. Alfatih** | F1D02410013 | **Admin-Side & Database Systems Engineer**<br>
 
 <br>• Bertanggung jawab bersama dalam merancang dan memfungsikan seluruh modul kendali utama administrator.<br>

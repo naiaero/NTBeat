@@ -47,7 +47,7 @@ Sistem NTBeat membagi tingkat otorisasi hak akses ke dalam dua jenis pengguna ut
 
 Teknologi utama yang melandasi pengembangan sistem purwarupa NTBeat meliputi:
 
-* **Frontend:** HTML5, CSS3, JavaScript Native (Vanilla JS)
+* **Frontend:** HTML5, CSS3, JavaScript Native
 * **Library Eksternal:** Chart.js (Digunakan untuk visualisasi grafik analitik tren penjualan tiket pada dashboard pengelola)
 * **Backend:** PHP Native (Kompatibilitas Versi 8.2+)
 * **DBMS & Server:** MySQL & Apache Server (Dioperasikan lokal via XAMPP)
@@ -58,20 +58,13 @@ Teknologi utama yang melandasi pengembangan sistem purwarupa NTBeat meliputi:
 
 Proyek ini dikembangkan secara kolaboratif. Berikut rincian pembagian kerja dari masing-masing pengembang sistem:
 
-1. Salsabila Nailafahdi (F1D02410135) "Team Leader & Customer-Side Developer"
-• Bertanggung jawab penuh atas pengerjaan seluruh bagian customer panel (dari antarmuka hingga interaksi).
-• Menyusun kerangka kode struktur HTML, penataan visual CSS, dan logika interaktif JavaScript di sisi pengguna.
-• Membangun gerbang logika autentikasi serta pemrosesan data untuk sistem Login dan Register.
+| Nama | NIM | Role | Rincian Tugas |
+| --- | --- | --- | --- |
+| Salsabila Nailafahdi | F1D02410135 | Team Leader & Customer-Side Developer | • Bertanggung jawab penuh atas pengerjaan seluruh bagian customer panel (dari antarmuka hingga interaksi.<br>• Menyusun kerangka kode struktur HTML, penataan visual CSS, dan logika interaktif JavaScript di sisi pengguna.<br>• Membangun gerbang logika autentikasi serta pemrosesan data untuk sistem Login dan Register. |
 
-2. Tegu Ilham Pebrian Saputra (F1D02410097) "Admin-Side Developer"
-• Bertanggung jawab menyusun modul ekosistem halaman admin.
-• Membuat kerangka kode struktur HTML dan penataan desain visual komponen Admin Dashboard menggunakan CSS.
-• Menangani manipulasi perilaku elemen antarmuka via JavaScript serta menyusun pemrosesan logika server menggunakan PHP.
+| Tegu Ilham Pebrian Saputra | F1D02410097 | Admin-Side Developer | • Bertanggung jawab menyusun modul ekosistem halaman admin.<br>• Membuat kerangka kode struktur HTML dan penataan desain visual komponen Admin Dashboard menggunakan CSS.<br>• Menangani manipulasi perilaku elemen antarmuka via JavaScript serta menyusun pemrosesan logika server menggunakan PHP. |
 
-3. M. Alfatih (F1D02410013) "Admin-Side & Database Systems Engineer"
-• Bertanggung jawab menyusun modul kendali utama administrator.
-• Menyusun struktur kode HTML, fungsionalitas visual CSS admin, dan logika aksi massal tabel menggunakan JavaScript.
-• Mengembangkan pemrosesan sistem backend menggunakan PHP serta merancang arsitektur basis data relasional dan pengelolaan kueri SQL (ntbeat_db.sql)."
+| M. Alfatih | F1D02410013 | Admin-Side & Database Systems Engineer | • Bertanggung jawab menyusun modul kendali utama administrator.<br>• Menyusun struktur kode HTML, fungsionalitas visual CSS admin, dan logika aksi massal tabel menggunakan JavaScript.<br>• Mengembangkan pemrosesan sistem backend menggunakan PHP serta merancang arsitektur basis data relasional dan pengelolaan kueri SQL (ntbeat_db.sql). |
 
 ---
 

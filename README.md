@@ -62,9 +62,11 @@ Proyek ini dikembangkan secara kolaboratif. Berikut rincian pembagian kerja dari
 | --- | --- | --- | --- |
 | Salsabila Nailafahdi | F1D02410135 | Team Leader & Customer-Side Developer | • Bertanggung jawab penuh atas pengerjaan seluruh bagian customer panel (dari antarmuka hingga interaksi.<br>• Menyusun kerangka kode struktur HTML, penataan visual CSS, dan logika interaktif JavaScript di sisi pengguna.<br>• Membangun gerbang logika autentikasi serta pemrosesan data untuk sistem Login dan Register. |
 
+| Nama | NIM | Role | Rincian Tugas |
 | --- | --- | --- | --- |
 | Tegu Ilham Pebrian Saputra | F1D02410097 | Admin-Side Developer | • Bertanggung jawab menyusun modul ekosistem halaman admin.<br>• Membuat kerangka kode struktur HTML dan penataan desain visual komponen Admin Dashboard menggunakan CSS.<br>• Menangani manipulasi perilaku elemen antarmuka via JavaScript serta menyusun pemrosesan logika server menggunakan PHP. |
 
+| Nama | NIM | Role | Rincian Tugas |
 | --- | --- | --- | --- |
 | M. Alfatih | F1D02410013 | Admin-Side & Database Systems Engineer | • Bertanggung jawab menyusun modul kendali utama administrator.<br>• Menyusun struktur kode HTML, fungsionalitas visual CSS admin, dan logika aksi massal tabel menggunakan JavaScript.<br>• Mengembangkan pemrosesan sistem backend menggunakan PHP serta merancang arsitektur basis data relasional dan pengelolaan kueri SQL (ntbeat_db.sql). |
 

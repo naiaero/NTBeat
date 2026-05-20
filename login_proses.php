@@ -18,7 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $user = mysqli_fetch_assoc($result);
         
         // Simpan data di "ingatan" browser (session)
-        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['email'] = $user['email'];
         $_SESSION['nama']    = $user['nama'];
         $_SESSION['role']    = $user['role'];
 

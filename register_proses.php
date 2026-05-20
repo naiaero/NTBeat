@@ -19,7 +19,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
         // Masukkan data user baru ke database (Otomatis role-nya jadi 'user')
-        $query = "INSERT INTO users (nama, email, password, role) VALUES ('$nama', '$email', '$hashed_password', 'user')";
+        $query = "INSERT INTO users (nama, email, password, role) VALUES ('$nama', '$email', '$hashed_password', 'customer')";
 
         if (mysqli_query($conn, $query)) {
             echo "<script>

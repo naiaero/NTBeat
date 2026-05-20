@@ -5,41 +5,44 @@ include 'koneksi.php'; // Memanggil jembatan database
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Menangkap email dan password yang diketik user
     $email = mysqli_real_escape_string($conn, $_POST['email']);
-    $password = $_POST['password'];
+    $hashed_password = $_POST['password'];
 
-    $hashed_password = password_hash($password, PASSWORD_DEFAULT); 
-
-    // Mencari adakah user dengan email & password tersebut?
-    $query = "SELECT * FROM users WHERE email='$email' AND password='$hashed_password'";
+    // Mencari adakah user dengan email
+    $query = "SELECT * FROM users WHERE email='$email'";
     $result = mysqli_query($conn, $query);
 
-    // Kalau datanya ketemu
+
     if (mysqli_num_rows($result) > 0) {
         $user = mysqli_fetch_assoc($result);
         
-        // Simpan data di "ingatan" browser (session)
-        $_SESSION['email'] = $user['email'];
-        $_SESSION['nama']    = $user['nama'];
-        $_SESSION['role']    = $user['role'];
+        if(password_verify($hashed_password, $user['password'])) {
+            $_SESSION['email'] = $user['email'];
+            $_SESSION['nama']    = $user['nama'];
+            $_SESSION['role']    = $user['role'];
 
-        // Cek dia Admin atau User biasa?
-        if ($user['role'] == 'admin') {
-            echo "<script>
-                    alert('Selamat datang, Administrator!'); 
-                    window.location.href='admin-dashboard.php';
-                  </script>";
+            if ($user['role'] == 'admin') {
+                echo "<script>
+                        alert('Selamat datang, Administrator!'); 
+                        window.location.href='admin-dashboard.php';
+                    </script>";
+            } else if ($user['role'] == 'customer') {
+                echo "<script>
+                        alert('Login Berhasil! Selamat datang di NTBeat.'); 
+                        window.location.href='halaman-awal.php';
+                    </script>";
+            }
         } else {
             echo "<script>
-                    alert('Login Berhasil! Selamat datang di NTBeat.'); 
-                    window.location.href='halaman-awal.php';
+                    alert('Email atau Kata Sandi salah. Silakan coba lagi!'); 
+                    window.location.href='login.php';
                   </script>";
         }
     } else {
         // Kalau datanya nggak ketemu (email/password salah)
-        echo "<script>
-                alert('Email atau Kata Sandi salah. Silakan coba lagi!'); 
-                window.location.href='login.php';
-              </script>";
+            echo "<script>
+                    alert('Email atau Kata Sandi salah. Silakan coba lagi!'); 
+                    window.location.href='login.php';
+                </script>";
     }
 }
 ?>

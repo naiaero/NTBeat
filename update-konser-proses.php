@@ -9,14 +9,14 @@ if (isset($_POST['submit_update'])) {
 
     // 2. Jalankan query update ke database
     $query = "UPDATE konser SET nama_konser = '$nama_konser' WHERE id = '$id'";
-    $hasil = mysqli_query($koneksi, $query);
+    $hasil = mysqli_query($conn, $query);
 
     // 3. DI SINI KUNCINYA: Jika berhasil, baru arahkan kembali ke halaman kelola konser
     if ($hasil) {
         header("Location: admin-kelola-konser.php");
         exit(); // Selalu gunakan exit setelah header redirect
     } else {
-        echo "Gagal memperbarui data: " . mysqli_error($koneksi);
+        echo "Gagal memperbarui data: " . mysqli_error($conn);
     }
 }
 ?>

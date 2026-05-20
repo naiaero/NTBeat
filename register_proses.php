@@ -7,6 +7,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = mysqli_real_escape_string($conn, $_POST['email']);
     $password = $_POST['password'];
 
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        echo "<script>
+                alert('Format email tidak valid!');
+                window.location.href='register.php';
+              </script>";
+        exit(); // Hentikan script agar tidak lanjut mengecek ke database
+    }
+
     // Cek apakah email sudah pernah dipakai daftar sebelumnya
     $cek_email = mysqli_query($conn, "SELECT email FROM users WHERE email='$email'");
     

@@ -1,10 +1,10 @@
 <?php
 session_start();
-include 'koneksi.php';
+include '../config/koneksi.php';
 
 // Membatasi akses hanya untuk customer
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'customer') {
-    header("Location: login.php");
+    header("Location: ../auth/login.php");
     exit();
 }
 
@@ -15,7 +15,7 @@ $nama_user = $user_data['nama'];
 $foto_user = isset($user_data['foto']) ? $user_data['foto'] : '';
 $inisial = strtoupper(substr($nama_user, 0, 1));
 
-$foto_path = "assets/img/" . $foto_user;
+$foto_path = "../assets/img/" . $foto_user;
 $avatar_style = "";
 if (!empty($foto_user) && file_exists($foto_path) && $foto_user !== 'default-avatar.png' && $foto_user !== 'tds4.jpg' && $foto_user !== 'logo.png') {
     $avatar_style = "background-image: url('$foto_path'); background-size: cover; background-position: center; color: transparent; border: 1px solid #d4af37;";
@@ -78,14 +78,14 @@ $query_past = mysqli_query($conn, "
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tiket Saya & Riwayat - NTBeat</title>
-    <link rel="stylesheet" href="assets/style/style.css" />
+    <link rel="stylesheet" href="../assets/style/style.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <script src="assets/script/script.js"></script>
+    <script src="../assets/script/script.js"></script>
   </head>
   <body>
     <nav class="header-user">
-      <div class="logo-area" onclick="window.location.href = 'halaman-awal.php'">
-        <img src="assets/img/logo.png" alt="NTBeat Logo" />
+      <div class="logo-area" onclick="window.location.href = 'beranda.php'">
+        <img src="../assets/img/logo.png" alt="NTBeat Logo" />
         <label>NTBeat</label>
       </div>
      <div class="user-profile-nav">
@@ -97,7 +97,7 @@ $query_past = mysqli_query($conn, "
     <div class="dashboard-layout">
       <aside class="sidebar">
         <ul class="sidebar-menu">
-          <li onclick="window.location.href = 'halaman-awal.php'">Daftar Konser</li>
+          <li onclick="window.location.href = 'beranda.php'">Daftar Konser</li>
           <li class="active">Tiket Saya & Riwayat</li>
           <li onclick="window.location.href = 'profil.php'">Profil Akun</li>
           <li onclick="openLogoutModal()">Keluar</li>
@@ -192,7 +192,7 @@ $query_past = mysqli_query($conn, "
 
             <div class="logout-actions">
                 <button class="btn-batal" onclick="closeLogoutModal()">Batal</button>
-                <button class="btn-yakin" onclick="window.location.href = 'logout.php'">Keluar</button>
+                <button class="btn-yakin" onclick="window.location.href = '../auth/logout.php'">Keluar</button>
             </div>
         </div>
     </div>

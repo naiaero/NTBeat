@@ -1,10 +1,10 @@
 <?php
 session_start();
-include 'koneksi.php';
+include '../config/koneksi.php';
 
 // Verifikasi role admin
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
-    header("Location: login.php");
+    header("Location: ../auth/login.php");
     exit();
 }
 
@@ -21,7 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ids']) && is_array($_P
         while ($row = mysqli_fetch_assoc($query_get_posters)) {
             $poster = $row['poster'];
             if ($poster !== 'default-poster.png' && !empty($poster)) {
-                $file_path = "assets/img/" . $poster;
+                $file_path = "../assets/img/" . $poster;
                 if (file_exists($file_path)) {
                     unlink($file_path);
                 }
@@ -32,12 +32,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ids']) && is_array($_P
         if (mysqli_query($conn, $query)) {
             echo "<script>
                     alert('Data konser berhasil dihapus!');
-                    window.location.href = 'admin-kelola-konser.php';
+                    window.location.href = '../admin/kelola-konser.php';
                   </script>";
         } else {
             echo "<script>
                     alert('Gagal menghapus konser: " . mysqli_error($conn) . "');
-                    window.location.href = 'admin-kelola-konser.php';
+                    window.location.href = '../admin/kelola-konser.php';
                   </script>";
         }
     } elseif ($action_type === 'archive') {
@@ -45,22 +45,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ids']) && is_array($_P
         if (mysqli_query($conn, $query)) {
             echo "<script>
                     alert('Konser berhasil diarsipkan!');
-                    window.location.href = 'admin-kelola-konser.php';
+                    window.location.href = '../admin/kelola-konser.php';
                   </script>";
         } else {
             echo "<script>
                     alert('Gagal mengarsipkan konser: " . mysqli_error($conn) . "');
-                    window.location.href = 'admin-kelola-konser.php';
+                    window.location.href = '../admin/kelola-konser.php';
                   </script>";
         }
     } else {
-        header("Location: admin-kelola-konser.php");
+        header("Location: ../admin/kelola-konser.php");
         exit();
     }
 } else {
     echo "<script>
             alert('Tidak ada konser yang dipilih.');
-            window.location.href = 'admin-kelola-konser.php';
+            window.location.href = '../admin/kelola-konser.php';
           </script>";
 }
 ?>

@@ -1,10 +1,10 @@
 <?php
 session_start();
-include 'koneksi.php';
+include '../config/koneksi.php';
 
 // Membatasi akses hanya untuk customer
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'customer') {
-    header("Location: login.php");
+    header("Location: ../auth/login.php");
     exit();
 }
 
@@ -22,7 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['konser_id'])) {
     if (mysqli_num_rows($query_konser) == 0) {
         echo "<script>
                 alert('Konser tidak ditemukan atau sudah tidak tersedia.');
-                window.location.href = 'halaman-awal.php';
+                window.location.href = '../user/beranda.php';
               </script>";
         exit();
     }
@@ -37,7 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['konser_id'])) {
     if ($sisa_tiket < $jumlah_tiket) {
         echo "<script>
                 alert('Gagal memesan! Sisa tiket tidak mencukupi kuota pemesanan Anda.');
-                window.location.href = 'detail-konser.php?id=$konser_id';
+                window.location.href = '../user/detail-konser.php?id=$konser_id';
               </script>";
         exit();
     }
@@ -87,7 +87,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['konser_id'])) {
 
         echo "<script>
                 alert('Pemesanan Sukses! Tiket Anda berhasil dipesan.');
-                window.location.href = 'tiket-saya.php';
+                window.location.href = '../user/tiket-saya.php';
               </script>";
         exit();
 
@@ -96,13 +96,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['konser_id'])) {
         mysqli_rollback($conn);
         echo "<script>
                 alert('Terjadi kesalahan sistem: " . $e->getMessage() . "');
-                window.location.href = 'detail-konser.php?id=$konser_id';
+                window.location.href = '../user/detail-konser.php?id=$konser_id';
               </script>";
         exit();
     }
 
 } else {
-    header("Location: halaman-awal.php");
+    header("Location: ../user/beranda.php");
     exit();
 }
 ?>

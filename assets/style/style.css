@@ -903,6 +903,7 @@ body {
 
 .detail-poster {
   flex: 1;
+  min-width: 350px;
 }
 
 .poster-placeholder {
@@ -922,6 +923,7 @@ body {
   flex: 1.5;
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 .back-link {
@@ -969,6 +971,8 @@ body {
 .detail-desc p {
   color: #bbbbbb;
   line-height: 1.6;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 /* Modifikasi kotak statistik untuk halaman detail */

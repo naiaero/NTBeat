@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'koneksi.php'; // Memanggil jembatan database
+include '../config/koneksi.php'; // Memanggil jembatan database
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Menangkap email dan password yang diketik user
@@ -23,25 +23,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if ($user['role'] == 'admin') {
                 echo "<script>
                         alert('Selamat datang, Administrator!'); 
-                        window.location.href='admin-dashboard.php';
+                        window.location.href='../admin/dashboard.php';
                     </script>";
             } else if ($user['role'] == 'customer') {
                 echo "<script>
                         alert('Login Berhasil! Selamat datang di NTBeat.'); 
-                        window.location.href='halaman-awal.php';
+                        window.location.href='../user/beranda.php';
                     </script>";
             }
         } else {
             echo "<script>
                     alert('Email atau Kata Sandi salah. Silakan coba lagi!'); 
-                    window.location.href='login.php';
+                    window.location.href='../auth/login.php';
                   </script>";
         }
     } else {
         // Kalau datanya nggak ketemu (email/password salah)
             echo "<script>
                     alert('Email atau Kata Sandi salah. Silakan coba lagi!'); 
-                    window.location.href='login.php';
+                    window.location.href='../auth/login.php';
                 </script>";
     }
 }

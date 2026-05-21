@@ -6,20 +6,20 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login - NTBeat</title>
-    <link rel="stylesheet" href="assets/style/style.css" />
-    <script src="assets/script/script.js"></script>
+    <link rel="stylesheet" href="../assets/style/style.css" />
+    <script src="../assets/script/script.js"></script>
   </head>
   <body>
     <div class="auth-container">
       <div class="auth-header">
-        <img src="assets/img/logo.png" alt="Logo NTBeat" class="header-logo" />
+        <img src="../assets/img/logo.png" alt="Logo NTBeat" class="header-logo" />
         <h1>NTBeat</h1>
       </div>
 
       <div class="auth-card">
         <h2>Login</h2>
         <p class="auth-subtitle">Lorem ipsum dolor sit amet hean</p>
-        <form action="login_proses.php" method="POST">
+        <form action="../actions/login_proses.php" method="POST">
           <div class="auth-form-group">
             <label for="email">Email*</label>
             <input

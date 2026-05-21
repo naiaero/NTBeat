@@ -1,6 +1,6 @@
 <?php
 session_start();
-include 'koneksi.php'; // Sambungkan ke database
+include '../config/koneksi.php'; // Sambungkan ke database
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nama = mysqli_real_escape_string($conn, $_POST['nama']);
@@ -10,7 +10,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
         echo "<script>
                 alert('Format email tidak valid!');
-                window.location.href='register.php';
+                window.location.href='../auth/register.php';
               </script>";
         exit(); // Hentikan script agar tidak lanjut mengecek ke database
     }
@@ -21,7 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (mysqli_num_rows($cek_email) > 0) {
         echo "<script>
                 alert('Email ini sudah terdaftar! Silakan gunakan email lain atau langsung Login.');
-                window.location.href='register.php';
+                window.location.href='../auth/register.php';
               </script>";
     } else {
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
@@ -32,7 +32,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (mysqli_query($conn, $query)) {
             echo "<script>
                     alert('Pendaftaran berhasil! Silakan Login menggunakan akun barumu.');
-                    window.location.href='login.php';
+                    window.location.href='../auth/login.php';
                   </script>";
         } else {
             echo "Gagal menyimpan data: " . mysqli_error($conn);

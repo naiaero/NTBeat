@@ -1,10 +1,10 @@
 <?php
 session_start();
-include 'koneksi.php';
+include '../config/koneksi.php';
 
 // Membatasi akses hanya untuk customer
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'customer') {
-    header("Location: login.php");
+    header("Location: ../auth/login.php");
     exit();
 }
 
@@ -15,7 +15,7 @@ $nama_user = $user_data['nama'];
 $foto_user = isset($user_data['foto']) ? $user_data['foto'] : '';
 $inisial = strtoupper(substr($nama_user, 0, 1));
 
-$foto_path = "assets/img/" . $foto_user;
+$foto_path = "../assets/img/" . $foto_user;
 $avatar_style = "";
 if (!empty($foto_user) && file_exists($foto_path) && $foto_user !== 'default-avatar.png' && $foto_user !== 'tds4.jpg' && $foto_user !== 'logo.png') {
     $avatar_style = "background-image: url('$foto_path'); background-size: cover; background-position: center; color: transparent; border: 1px solid #d4af37;";
@@ -27,13 +27,13 @@ if (!empty($foto_user) && file_exists($foto_path) && $foto_user !== 'default-ava
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard Pengguna - NTBeat</title>
-    <link rel="stylesheet" href="assets/style/style.css" />
-    <script src="assets/script/script.js"></script>
+    <link rel="stylesheet" href="../assets/style/style.css" />
+    <script src="../assets/script/script.js"></script>
   </head>
   <body>
     <nav class="header-user">
-      <div class="logo-area" onclick="window.location.href='halaman-awal.php'">
-        <img src="assets/img/logo.png" alt="NTBeat Logo" />
+      <div class="logo-area" onclick="window.location.href='beranda.php'">
+        <img src="../assets/img/logo.png" alt="NTBeat Logo" />
         <label>NTBeat</label>
       </div>
 
@@ -52,7 +52,7 @@ if (!empty($foto_user) && file_exists($foto_path) && $foto_user !== 'default-ava
     <div class="dashboard-layout">
       <aside class="sidebar">
         <ul class="sidebar-menu">
-          <li class="active" onclick="window.location.href = 'halaman-awal.php'">Daftar Konser</li>
+          <li class="active" onclick="window.location.href = 'beranda.php'">Daftar Konser</li>
           <li onclick="window.location.href = 'tiket-saya.php'">Tiket Saya & Riwayat</li>
           <li onclick="window.location.href = 'profil.php'">Profil Akun</li>
           <li onclick="openLogoutModal()">Keluar</li>
@@ -90,14 +90,14 @@ if (!empty($foto_user) && file_exists($foto_path) && $foto_user !== 'default-ava
                   $waktu_format = date('H:i', strtotime($row['waktu']));
                   $harga_format = "Rp " . number_format($row['harga'], 0, ',', '.');
                   
-                  $poster_path = "assets/img/" . htmlspecialchars($row['poster']);
+                  $poster_path = "../assets/img/" . htmlspecialchars($row['poster']);
                   if (empty($row['poster']) || !file_exists($poster_path)) {
-                      $poster_path = "assets/img/default-poster.png";
+                      $poster_path = "../assets/img/default-poster.png";
                   }
                   ?>
                   <div class="concert-card">
                     <div class="card-img-placeholder" style="background-image: url('<?php echo $poster_path; ?>'); background-size: cover; background-position: center; height: 180px; border-bottom: 1px solid #333;">
-                      <?php if ($poster_path === 'assets/img/default-poster.png') { ?>
+                      <?php if ($poster_path === '../assets/img/default-poster.png') { ?>
                         <span style="background: rgba(0,0,0,0.6); padding: 5px 10px; border-radius: 5px; color: #fff;">[Poster Konser]</span>
                       <?php } ?>
                     </div>
@@ -157,7 +157,7 @@ if (!empty($foto_user) && file_exists($foto_path) && $foto_user !== 'default-ava
 
             <div class="logout-actions">
                 <button class="btn-batal" onclick="closeLogoutModal()">Batal</button>
-                <button class="btn-yakin" onclick="window.location.href = 'logout.php'">Keluar</button>
+                <button class="btn-yakin" onclick="window.location.href = '../auth/logout.php'">Keluar</button>
             </div>
         </div>
     </div>

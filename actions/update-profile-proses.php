@@ -1,9 +1,9 @@
 <?php
 session_start();
-include 'koneksi.php';
+include '../config/koneksi.php';
 
 if (!isset($_SESSION['email'])) {
-    header("Location: login.php");
+    header("Location: ../auth/login.php");
     exit();
 }
 
@@ -41,7 +41,7 @@ if (isset($_FILES['foto']) && $_FILES['foto']['error'] !== UPLOAD_ERR_NO_FILE) {
         if (in_array($fileExtension, $allowedExtensions)) {
             // Hapus foto lama dari disk jika bukan foto default
             if (!empty($user['foto']) && $user['foto'] !== 'default-avatar.png' && $user['foto'] !== 'tds4.jpg' && $user['foto'] !== 'logo.png') {
-                $old_file = 'assets/img/' . $user['foto'];
+                $old_file = '../assets/img/' . $user['foto'];
                 if (file_exists($old_file)) {
                     unlink($old_file);
                 }
@@ -49,7 +49,7 @@ if (isset($_FILES['foto']) && $_FILES['foto']['error'] !== UPLOAD_ERR_NO_FILE) {
             
             // Generate nama file baru yang unik
             $newFileName = md5(time() . $originalName) . '.' . $fileExtension;
-            $dest_path = 'assets/img/' . $newFileName;
+            $dest_path = '../assets/img/' . $newFileName;
             
             if (move_uploaded_file($fileTmpPath, $dest_path)) {
                 $foto_name = $newFileName;
@@ -133,7 +133,7 @@ if (mysqli_query($conn, $sql)) {
     $_SESSION['foto'] = $foto_name;
     
     // Tentukan arah kembali berdasarkan role pengguna
-    $redirect_url = ($role === 'admin') ? 'admin-profil.php' : 'profil.php';
+    $redirect_url = ($role === 'admin') ? '../admin/profil.php' : '../user/profil.php';
     
     echo "<script>
             alert('Profil berhasil diperbarui!');

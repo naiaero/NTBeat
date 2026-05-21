@@ -1,9 +1,9 @@
 <?php
 session_start();
-include 'koneksi.php';
+include '../config/koneksi.php';
 
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
-    header("Location: login.php");
+    header("Location: ../auth/login.php");
     exit();
 }
 
@@ -14,7 +14,7 @@ $nama_user = $user_data['nama'];
 $foto_user = isset($user_data['foto']) ? $user_data['foto'] : '';
 $inisial = strtoupper(substr($nama_user, 0, 1));
 
-$foto_path = "assets/img/" . $foto_user;
+$foto_path = "../assets/img/" . $foto_user;
 $avatar_style = "";
 if (!empty($foto_user) && file_exists($foto_path) && $foto_user !== 'default-avatar.png' && $foto_user !== 'tds4.jpg' && $foto_user !== 'logo.png') {
     $avatar_style = "background-image: url('$foto_path'); background-size: cover; background-position: center; color: transparent; border: 1px solid #d4af37;";
@@ -31,18 +31,19 @@ if (mysqli_num_rows($query) > 0) {
     $tanggal = $row['tanggal'];
     $waktu = $row['waktu'];
     $venue = $row['lokasi'];
+    $deskripsi = $row['deskripsi'];
     $harga = $row['harga'];
     $kapasitas = $row['kapasitas'];
     
     $poster_lama = $row['poster'];
-    $poster_display_path = "assets/img/" . $row['poster'];
+    $poster_display_path = "../assets/img/" . $row['poster'];
     if (empty($row['poster']) || !file_exists($poster_display_path)) {
-        $poster_display_path = "assets/img/default-poster.png";
+        $poster_display_path = "../assets/img/default-poster.png";
     }
 } else {
     echo "<script>
             alert('Konser tidak ditemukan.');
-            window.location.href = 'admin-kelola-konser.php';
+            window.location.href = 'kelola-konser.php';
           </script>";
     exit();
 }
@@ -54,18 +55,18 @@ if (mysqli_num_rows($query) > 0) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Konser #<?php echo $id_konser; ?> - Admin NTBeat</title>
-    <link rel="stylesheet" href="assets/style/admin-style.css">
-    <link rel="stylesheet" href="assets/style/style.css">
-    <script src="assets/script/script.js"></script>
+    <link rel="stylesheet" href="../assets/style/admin-style.css">
+    <link rel="stylesheet" href="../assets/style/style.css">
+    <script src="../assets/script/script.js"></script>
 </head>
 <body class="admin-body">
 
     <header class="header-user">
-        <div class="logo-area" onclick="window.location.href='admin-dashboard.php'" style="cursor: pointer;">
-            <img src="assets/img/logo.png" alt="Logo"> 
+        <div class="logo-area" onclick="window.location.href='dashboard.php'" style="cursor: pointer;">
+            <img src="../assets/img/logo.png" alt="Logo"> 
             <label>NTBeat</label>
         </div>
-        <div class="user-profile-nav" onclick="window.location.href = 'admin-profil.php'" style="cursor: pointer;">
+        <div class="user-profile-nav" onclick="window.location.href = 'profil.php'" style="cursor: pointer;">
             <span style="color: white; font-size: 0.9rem; margin-right: 10px;"><?php echo htmlspecialchars($nama_user); ?></span>
             <div class="avatar-placeholder" style="<?php echo $avatar_style; ?>"><?php echo $inisial; ?></div>
         </div>
@@ -74,11 +75,11 @@ if (mysqli_num_rows($query) > 0) {
     <div class="dashboard-layout">
         <aside class="sidebar">
             <ul class="sidebar-menu">
-                <li onclick="window.location.href = 'admin-dashboard.php'">Dashboard</li>
-                <li onclick="window.location.href = 'admin-form-konser.php'">Tambah Acara Baru</li>
-                <li class="active" onclick="window.location.href = 'admin-kelola-konser.php'">Kelola Data Konser</li>
-                <li onclick="window.location.href = 'admin-arsip.php'">Arsip Penyelenggaraan</li>
-                <li onclick="window.location.href = 'admin-profil.php'">Pengaturan Profil</li>
+                <li onclick="window.location.href = 'dashboard.php'">Dashboard</li>
+                <li onclick="window.location.href = 'form-konser.php'">Tambah Acara Baru</li>
+                <li class="active" onclick="window.location.href = 'kelola-konser.php'">Kelola Data Konser</li>
+                <li onclick="window.location.href = 'arsip.php'">Arsip Penyelenggaraan</li>
+                <li onclick="window.location.href = 'profil.php'">Pengaturan Profil</li>
                 <li onclick="openLogoutModal()">Keluar</li>
             </ul>
         </aside>
@@ -91,7 +92,7 @@ if (mysqli_num_rows($query) > 0) {
 
             <div class="ps-card">
                 <!-- Tambahkan ID tersembunyi agar backend tahu data mana yang di-update -->
-                <form action="update-konser-proses.php" method="POST" enctype="multipart/form-data" class="ps-form" id="concert-form">
+                <form action="../actions/update-konser-proses.php" method="POST" enctype="multipart/form-data" class="ps-form" id="concert-form">
                     <input type="hidden" name="id" value="<?php echo $id_konser; ?>">
                     
                     <div class="ps-avatar-section">
@@ -138,6 +139,11 @@ if (mysqli_num_rows($query) > 0) {
                         <input type="text" name="lokasi" class="ps-input" value="<?php echo htmlspecialchars($venue); ?>" required>
                     </div>
 
+                    <div class="ps-form-group" style="align-items: flex-start;">
+                        <label>Deskripsi Acara</label>
+                        <textarea name="deskripsi" class="ps-input" rows="4"><?php echo htmlspecialchars($deskripsi); ?></textarea>
+                    </div>
+
                     <h3 class="ps-subheading">Kapasitas & Penjualan</h3>
 
                     <div class="form-row-double">
@@ -152,7 +158,7 @@ if (mysqli_num_rows($query) > 0) {
                     </div>
 
                     <div class="ps-action-bar">
-                        <button type="button" class="btn-ps-cancel" onclick="window.location.href='admin-kelola-konser.php'">Batal</button>
+                        <button type="button" class="btn-ps-cancel" onclick="window.location.href='kelola-konser.php'">Batal</button>
                         <button type="submit" class="btn-ps-save" id="btn-update" name="submit_update">Perbarui Data Konser</button>
                     </div>
                 </form>
@@ -166,7 +172,7 @@ if (mysqli_num_rows($query) > 0) {
             <p>Apakah Anda yakin ingin keluar dari sistem NTBeat?</p>
             <div class="logout-actions">
                 <button class="btn-batal" onclick="closeLogoutModal()">Batal</button>
-                <button class="btn-yakin" onclick="window.location.href = 'logout.php'">Keluar</button>
+                <button class="btn-yakin" onclick="window.location.href = '../auth/logout.php'">Keluar</button>
             </div>
         </div>
     </div>

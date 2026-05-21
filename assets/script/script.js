@@ -494,7 +494,15 @@ document.addEventListener("DOMContentLoaded", () => {
         const reader = new FileReader();
         reader.onload = function (e) {
           if (avatarPreview) {
-            avatarPreview.src = e.target.result;
+            if (avatarPreview.tagName.toLowerCase() === 'img') {
+              avatarPreview.src = e.target.result;
+            } else {
+              avatarPreview.style.backgroundImage = `url(${e.target.result})`;
+              avatarPreview.style.backgroundSize = "cover";
+              avatarPreview.style.backgroundPosition = "center";
+              avatarPreview.innerHTML = ""; // Hapus inisial saat preview foto baru
+              avatarPreview.style.border = "1px solid #d4af37";
+            }
           }
         };
         reader.readAsDataURL(file);

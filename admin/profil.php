@@ -72,7 +72,7 @@ if (empty($foto_user) || !file_exists($foto_path) || $foto_user === 'default-ava
                     <form class="ps-form" id="admin-profile-form" action="../actions/update-profile-proses.php" method="POST" enctype="multipart/form-data">
                         <div class="ps-avatar-section">
                             <div class="ps-avatar-wrapper" style="position: relative; width: 100px; height: 100px; margin: 0 auto;">
-                                <img id="avatar-preview" src="<?php echo htmlspecialchars($foto_path); ?>" alt="Foto Profil" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 1px solid #333;" />
+                                <div id="avatar-preview" style="width: 100px; height: 100px; border-radius: 50%; border: 1px solid #333; display: flex; align-items: center; justify-content: center; background-color: #333; color: #d4af37; font-size: 40px; font-weight: bold; <?php echo $avatar_style; ?>"><?php echo $inisial; ?></div>
                                 <label for="avatar-input" class="ps-edit-icon" style="position: absolute; bottom: 0; right: 0; background: #d4af37; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.8rem; border: 1px solid #333; z-index: 10;">✏️</label>
                                 <input type="file" id="avatar-input" name="foto" style="display: none;" accept="image/*" />
                             </div>

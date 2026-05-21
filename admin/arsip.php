@@ -66,12 +66,18 @@ if (!empty($foto_user) && file_exists($foto_path) && $foto_user !== 'default-ava
                 <div class="selected-count">
                     <span id="count-display">0</span> Data Terpilih
                 </div>
+                <div class="action-buttons">
+                    <button class="btn-universal delete" id="btn-delete-bulk" disabled>Hapus Data</button>
+                </div>
             </div>
 
             <div class="table-box archive-container">
-                <table class="admin-table archive-table">
-                    <thead>
-                        <tr>
+                <form id="bulk-action-form" method="POST" action="../actions/admin-bulk-proses.php">
+                    <input type="hidden" name="action_type" id="action-type" value="">
+                    <input type="hidden" name="source_page" value="arsip.php">
+                    <table class="admin-table archive-table">
+                        <thead>
+                            <tr>
                             <th width="40"><input type="checkbox" id="check-all"></th>
                             <th>Poster</th>
                             <th>Nama Konser</th>
@@ -94,7 +100,7 @@ if (!empty($foto_user) && file_exists($foto_path) && $foto_user !== 'default-ava
                                 $badge_class = $row['status'] == 'Arsip' ? 'badge-archived' : 'badge-safe';
                                 ?>
                                 <tr class="past-event">
-                                    <td><input type="checkbox" class="row-checkbox" value="<?php echo $row['id']; ?>"></td>
+                                    <td><input type="checkbox" name="ids[]" class="row-checkbox" value="<?php echo $row['id']; ?>"></td>
                                     <td>
                                         <div class="mini-poster archived" style="background-image: url('<?php echo $poster_path; ?>'); background-size: cover; background-position: center; border: 1px solid #444;"></div>
                                     </td>
@@ -114,6 +120,7 @@ if (!empty($foto_user) && file_exists($foto_path) && $foto_user !== 'default-ava
                         ?>
                     </tbody>
                 </table>
+                </form>
             </div>
 
             <div class="archive-footer">

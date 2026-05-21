@@ -10,6 +10,8 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ids']) && is_array($_POST['ids'])) {
     $action_type = $_POST['action_type'];
+    $source_page = isset($_POST['source_page']) ? $_POST['source_page'] : 'kelola-konser.php';
+    $redirect_url = "../admin/" . $source_page;
     
     // Konversi array ID menjadi integer aman
     $ids = array_map('intval', $_POST['ids']);
@@ -32,12 +34,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ids']) && is_array($_P
         if (mysqli_query($conn, $query)) {
             echo "<script>
                     alert('Data konser berhasil dihapus!');
-                    window.location.href = '../admin/kelola-konser.php';
+                    window.location.href = '$redirect_url';
                   </script>";
         } else {
             echo "<script>
                     alert('Gagal menghapus konser: " . mysqli_error($conn) . "');
-                    window.location.href = '../admin/kelola-konser.php';
+                    window.location.href = '$redirect_url';
                   </script>";
         }
     } elseif ($action_type === 'archive') {
@@ -45,22 +47,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ids']) && is_array($_P
         if (mysqli_query($conn, $query)) {
             echo "<script>
                     alert('Konser berhasil diarsipkan!');
-                    window.location.href = '../admin/kelola-konser.php';
+                    window.location.href = '$redirect_url';
                   </script>";
         } else {
             echo "<script>
                     alert('Gagal mengarsipkan konser: " . mysqli_error($conn) . "');
-                    window.location.href = '../admin/kelola-konser.php';
+                    window.location.href = '$redirect_url';
                   </script>";
         }
     } else {
-        header("Location: ../admin/kelola-konser.php");
+        header("Location: $redirect_url");
         exit();
     }
 } else {
+    $source_page = isset($_POST['source_page']) ? $_POST['source_page'] : 'kelola-konser.php';
+    $redirect_url = "../admin/" . $source_page;
     echo "<script>
             alert('Tidak ada konser yang dipilih.');
-            window.location.href = '../admin/kelola-konser.php';
+            window.location.href = '$redirect_url';
           </script>";
 }
 ?>

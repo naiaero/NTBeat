@@ -201,16 +201,14 @@ document.addEventListener("DOMContentLoaded", () => {
         countDisplay.textContent = selectedCount;
       }
 
-      if (btnArchive && btnDelete && btnEdit) {
-        if (selectedCount > 0) {
-          btnArchive.disabled = false;
-          btnDelete.disabled = false;
-          btnEdit.disabled = selectedCount !== 1;
-        } else {
-          btnEdit.disabled = true;
-          btnArchive.disabled = true;
-          btnDelete.disabled = true;
-        }
+      if (btnArchive) {
+        btnArchive.disabled = selectedCount === 0;
+      }
+      if (btnDelete) {
+        btnDelete.disabled = selectedCount === 0;
+      }
+      if (btnEdit) {
+        btnEdit.disabled = selectedCount !== 1;
       }
 
       if (checkAll) {

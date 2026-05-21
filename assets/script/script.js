@@ -247,8 +247,8 @@ document.addEventListener("DOMContentLoaded", () => {
           `Apakah Anda yakin ingin menghapus ${count} data konser yang terpilih?`,
         )
       ) {
-        alert("Data berhasil dihapus (Simulasi)");
-        location.reload();
+        document.getElementById("action-type").value = "delete";
+        document.getElementById("bulk-action-form").submit();
       }
     });
 
@@ -256,37 +256,17 @@ document.addEventListener("DOMContentLoaded", () => {
       const checkedBox = document.querySelector(".row-checkbox:checked");
 
       if (checkedBox) {
-        const konserId = checkedBox.getAttribute("data-id");
-        // PERBAIKAN TYPO: Menggunakan backtick (`) agar variabel terbaca
+        const konserId = checkedBox.value;
         window.location.href = `admin-edit-konser.php?id=${konserId}`;
       }
     });
 
     btnArchive.addEventListener("click", () => {
-      const checkedBoxes = document.querySelectorAll(".row-checkbox:checked");
+      const count = document.querySelectorAll(".row-checkbox:checked").length;
 
-      if (confirm(`Pindahkan ${checkedBoxes.length} konser ke arsip?`)) {
-        let currentArchive =
-          JSON.parse(localStorage.getItem("ntbeat_archive")) || [];
-
-        checkedBoxes.forEach((cb) => {
-          const row = cb.closest("tr");
-
-          const concertData = {
-            id: cb.value,
-            nama: row.cells[2].querySelector("strong").innerText,
-            tanggal: row.cells[3].childNodes[0].textContent.trim(),
-            penjualan: "N/A",
-            status: "Selesai",
-          };
-
-          currentArchive.push(concertData);
-          row.remove();
-        });
-
-        localStorage.setItem("ntbeat_archive", JSON.stringify(currentArchive));
-        alert("Konser berhasil diarsipkan!");
-        updateTableUI();
+      if (confirm(`Pindahkan ${count} konser ke arsip?`)) {
+        document.getElementById("action-type").value = "archive";
+        document.getElementById("bulk-action-form").submit();
       }
     });
   }
@@ -379,12 +359,13 @@ document.addEventListener("DOMContentLoaded", () => {
       const concertName = btn
         .closest(".concert-card")
         .querySelector(".concert-title").innerText;
+      const concertId = btn.getAttribute("data-id");
       const confirmBuy = confirm(
         `Apakah Anda ingin langsung memesan tiket ${concertName}?`,
       );
 
       if (confirmBuy) {
-        window.location.href = "detail-konser.php";
+        window.location.href = "detail-konser.php?id=" + concertId;
       }
     });
   });
@@ -471,57 +452,29 @@ document.addEventListener("DOMContentLoaded", () => {
   // 2. Cek apakah form, email, dan password ada di halaman yang sedang dibuka
   if (authForm && emailInput && passwordInput) {
     authForm.addEventListener("submit", (e) => {
-      // e.preventDefault();
-
       const submitBtn = document.querySelector(".auth-btn-submit");
-      if (submitBtn) submitBtn.disabled = true;
 
       // 1. Cek apakah ini halaman REGISTER (ada input nama)
       if (nameInput) {
-        const name = nameInput.value.trim();
         const password = passwordInput.value;
 
         if (password.length < 8) {
+          e.preventDefault(); // Batalkan submit jika password terlalu pendek
           alert("Kata sandi minimal harus 8 karakter.");
           if (submitBtn) submitBtn.disabled = false;
           return;
         }
 
-        if (submitBtn) submitBtn.innerText = "Membuat Akun...";
-
-        setTimeout(() => {
-          alert(
-            `Selamat datang di NTBeat, ${name}! Akun Anda berhasil dibuat.`,
-          );
-          window.location.href = "login.php";
-        }, 2000);
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.innerText = "Membuat Akun...";
+        }
       } else {
-        // 2. INI HALAMAN LOGIN (Prioritas Admin)
-        const email = emailInput.value.trim();
-        const password = passwordInput.value;
-
-        if (submitBtn) submitBtn.innerText = "Mengecek Akun...";
-
-        setTimeout(() => {
-          // WAJIB CEK ADMIN DULU DI SINI (URUTAN NOMOR 1)
-          if (email === "admin@ntbeat.com" && password === "admin123") {
-            window.location.href = "admin-dashboard.php"; // Pastikan .php
-            alert("Selamat datang, Administrator!");
-          }
-          // BARU CEK USER BIASA (URUTAN NOMOR 2)
-          else if (email !== "" && password.length >= 8) {
-            alert("Login Berhasil! Selamat datang di NTBeat.");
-            window.location.href = "halaman-awal.php";
-          }
-          // JIKA SEMUA SALAH
-          else {
-            alert("Email atau Kata Sandi salah. Silakan coba lagi!");
-            if (submitBtn) {
-              submitBtn.innerText = "Masuk";
-              submitBtn.disabled = false;
-            }
-          }
-        }, 1500);
+        // Halaman LOGIN
+        if (submitBtn) {
+          submitBtn.disabled = true;
+          submitBtn.innerText = "Mengecek Akun...";
+        }
       }
     });
   }

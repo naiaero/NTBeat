@@ -40,7 +40,7 @@
             </div>
 
             <div class="ps-card">
-                <form action="#" class="ps-form" id="concert-form">
+                <form action="admin-tambah-proses.php" method="POST" enctype="multipart/form-data" class="ps-form" id="concert-form">
                     <div class="ps-avatar-section">
                         <div class="poster-upload-wrapper">
                             <!-- Kotak tempat gambar akan dirender oleh JavaScript -->
@@ -54,43 +54,37 @@
                             </label>
                             
                             <!-- Input file ditaruh di luar secara mandiri -->
-                            <input type="file" id="poster-input" hidden accept="image/*">
+                            <input type="file" id="poster-input" name="poster" hidden accept="image/*">
                         </div>
                     </div>
-                    <!-- <div class="ps-avatar-section">
-                        <div class="poster-upload-wrapper">
-                            <div class="poster-preview" id="imagePreview">
-                                <span>Preview Poster</span>
-                            </div>
-                            <label for="poster-input" class="ps-edit-icon">
-                                📸
-                                <input type="file" id="poster-input" hidden accept="image/*">
-                            </label>
-                        </div>
-                    </div> -->
                     <p style="text-align: center; color: #888; font-size: 0.8rem; margin-bottom: 30px;">
                         Rekomendasi ukuran: 3:4 (Portrait)
                     </p>
 
                     <div class="ps-form-group">
                         <label>Nama Event</label>
-                        <input type="text" class="ps-input" placeholder="Contoh: Mataram Sound Wave 2026" required>
+                        <input type="text" name="nama_konser" class="ps-input" placeholder="Contoh: Mataram Sound Wave 2026" required>
                     </div>
 
                     <div class="ps-form-group" style="align-items: flex-start;">
                         <label>Line-up Artis</label>
-                        <textarea class="ps-input" rows="3" placeholder="Sebutkan nama-nama artis (pisahkan dengan koma)"></textarea>
+                        <textarea name="lineup" class="ps-input" rows="3" placeholder="Sebutkan nama-nama artis (pisahkan dengan koma)"></textarea>
                     </div>
 
                     <div class="form-row-double">
                         <div class="ps-form-group">
                             <label>Tanggal Pelaksanaan</label>
-                            <input type="date" class="ps-input" required>
+                            <input type="date" name="tanggal" class="ps-input" required>
                         </div>
                         <div class="ps-form-group">
-                            <label>Lokasi / Venue</label>
-                            <input type="text" class="ps-input" placeholder="Contoh: Eks Bandara Selaparang" required>
+                            <label>Waktu Pelaksanaan</label>
+                            <input type="time" name="waktu" class="ps-input" required>
                         </div>
+                    </div>
+
+                    <div class="ps-form-group">
+                        <label>Lokasi / Venue</label>
+                        <input type="text" name="lokasi" class="ps-input" placeholder="Contoh: Eks Bandara Selaparang" required>
                     </div>
 
                     <h3 class="ps-subheading">Kapasitas & Penjualan</h3>
@@ -98,17 +92,17 @@
                     <div class="form-row-double">
                         <div class="ps-form-group">
                             <label>Harga Tiket (Rp)</label>
-                            <input type="number" class="ps-input" placeholder="Contoh: 150000" required>
+                            <input type="number" name="harga" class="ps-input" placeholder="Contoh: 150000" required>
                         </div>
                         <div class="ps-form-group">
                             <label>Total Kapasitas</label>
-                            <input type="number" class="ps-input" placeholder="Contoh: 1000" required>
+                            <input type="number" name="kapasitas" class="ps-input" placeholder="Contoh: 1000" required>
                         </div>
                     </div>
 
                     <div class="ps-action-bar">
                         <button type="button" class="btn-ps-cancel" onclick="history.back()">Batal</button>
-                        <button type="submit" class="btn-ps-save">Simpan Data Konser</button>
+                        <button type="submit" class="btn-ps-save" name="submit">Simpan Data Konser</button>
                     </div>
                 </form>
             </div>
@@ -122,7 +116,7 @@
 
             <div class="logout-actions">
                 <button class="btn-batal" onclick="closeLogoutModal()">Batal</button>
-                <button class="btn-yakin" onclick="window.location.href = 'index.php'">Keluar</button>
+                <button class="btn-yakin" onclick="window.location.href = 'logout.php'">Keluar</button>
             </div>
         </div>
     </div>

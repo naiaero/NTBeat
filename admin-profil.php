@@ -1,3 +1,17 @@
+<?php
+session_start();
+include 'koneksi.php';
+
+// Membatasi akses hanya untuk admin
+if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+    header("Location: login.php");
+    exit();
+}
+
+$nama_user = isset($_SESSION['nama']) ? $_SESSION['nama'] : 'Administrator';
+$email_user = isset($_SESSION['email']) ? $_SESSION['email'] : 'admin@ntbeat.com';
+$inisial = strtoupper(substr($nama_user, 0, 1));
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -17,7 +31,7 @@
         </div>
         <div class="user-profile-nav">
             <span style="color: white; font-size: 0.9rem;">Administrator</span>
-            <div class="avatar-placeholder" onclick="window.location.href = 'admin-profil.php'">A</div>
+            <div class="avatar-placeholder" onclick="window.location.href = 'admin-profil.php'"><?php echo $inisial; ?></div>
         </div>
     </header>
 
@@ -43,19 +57,19 @@
                 <div class="ps-card">
                     <div class="ps-avatar-section">
                         <div class="ps-avatar-wrapper">
-                            <div class="avatar-placeholder" style="width: 100px; height: 100px; font-size: 2.5rem; border-radius: 50%; margin: 0 auto;">A</div>
+                            <div class="avatar-placeholder" style="width: 100px; height: 100px; font-size: 2.5rem; border-radius: 50%; margin: 0 auto;"><?php echo $inisial; ?></div>
                         </div>
                     </div>
 
                     <form class="ps-form" id="admin-profile-form" action="#">
                         <div class="ps-form-group">
                             <label for="nama">Nama</label>
-                            <input type="text" id="username" class="ps-input" value="Administrator" required />
+                            <input type="text" id="username" class="ps-input" value="<?php echo htmlspecialchars($nama_user); ?>" required />
                         </div>
 
                         <div class="ps-form-group">
                             <label for="email">Alamat Email</label>
-                            <input type="email" id="email" class="ps-input" value="admin@ntbeat.com" required />
+                            <input type="email" id="email" class="ps-input" value="<?php echo htmlspecialchars($email_user); ?>" readonly style="background-color: #222; color: #888; cursor: not-allowed;" required />
                         </div>
 
                         <h3 class="ps-subheading">Ubah Kata Sandi</h3>
@@ -88,7 +102,7 @@
             <p>Apakah Anda yakin ingin keluar dari sistem NTBeat?</p>
             <div class="logout-actions">
                 <button class="btn-batal" onclick="closeLogoutModal()">Batal</button>
-                <button class="btn-yakin" onclick="window.location.href = 'index.php'">Keluar</button>
+                <button class="btn-yakin" onclick="window.location.href = 'logout.php'">Keluar</button>
             </div>
         </div>
     </div>

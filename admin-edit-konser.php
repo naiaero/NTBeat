@@ -1,15 +1,37 @@
 <?php
-// --- SIMULASI PENGAMBILAN DATA DARI DATABASE ---
-$id_konser = isset($_GET['id']) ? $_GET['id'] : '';
+session_start();
+include 'koneksi.php';
 
-// Data bayangan (Mock Data) yang otomatis muncul jika ID sesuai
-$nama_event = "Symphony of Lombok";
-$lineup = "Pamungkas, Hindia, Isyana Sarasvati";
-$tanggal = "2026-08-25";
-$venue = "Eks Bandara Selaparang";
-$harga = 150000;
-$kapasitas = 2000;
-$poster_lama = "assets/img/poster-symphony.jpg"; // Path gambar lama jika ada
+if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+    header("Location: login.php");
+    exit();
+}
+
+$id_konser = isset($_GET['id']) ? intval($_GET['id']) : 0;
+
+$query = mysqli_query($conn, "SELECT * FROM konser WHERE id = $id_konser");
+if (mysqli_num_rows($query) > 0) {
+    $row = mysqli_fetch_assoc($query);
+    $nama_event = $row['nama_konser'];
+    $lineup = $row['lineup'];
+    $tanggal = $row['tanggal'];
+    $waktu = $row['waktu'];
+    $venue = $row['lokasi'];
+    $harga = $row['harga'];
+    $kapasitas = $row['kapasitas'];
+    
+    $poster_lama = $row['poster'];
+    $poster_display_path = "assets/img/" . $row['poster'];
+    if (empty($row['poster']) || !file_exists($poster_display_path)) {
+        $poster_display_path = "assets/img/default-poster.jpg";
+    }
+} else {
+    echo "<script>
+            alert('Konser tidak ditemukan.');
+            window.location.href = 'admin-kelola-konser.php';
+          </script>";
+    exit();
+}
 ?>
 
 <!DOCTYPE html>
@@ -55,18 +77,18 @@ $poster_lama = "assets/img/poster-symphony.jpg"; // Path gambar lama jika ada
 
             <div class="ps-card">
                 <!-- Tambahkan ID tersembunyi agar backend tahu data mana yang di-update -->
-                <form action="update-konser-proses.php" class="ps-form" id="concert-form">
-                    <input type="hidden" name="id_konser" value="<?php echo $id_konser; ?>">
+                <form action="update-konser-proses.php" method="POST" enctype="multipart/form-data" class="ps-form" id="concert-form">
+                    <input type="hidden" name="id" value="<?php echo $id_konser; ?>">
                     
                     <div class="ps-avatar-section">
                         <div class="poster-upload-wrapper">
                             <!-- PERBAIKAN 1: Menampilkan gambar lama sebagai background default preview -->
-                            <div class="poster-preview" id="imagePreview" style="background-image: url('<?php echo $poster_lama; ?>'); background-size: cover; background-position: center; border: none;">
+                            <div class="poster-preview" id="imagePreview" style="background-image: url('<?php echo $poster_display_path; ?>'); background-size: cover; background-position: center; border: none;">
                                 <!-- Teks dihilangkan jika sudah ada poster lama -->
                             </div>
                             <label for="poster-input" class="ps-edit-icon">
                                 📸
-                                <input type="file" id="poster-input" hidden accept="image/*">
+                                <input type="file" id="poster-input" name="poster" hidden accept="image/*">
                             </label>
                         </div>
                     </div>
@@ -77,24 +99,29 @@ $poster_lama = "assets/img/poster-symphony.jpg"; // Path gambar lama jika ada
                     <!-- PERBAIKAN 2: Menggunakan atribut value="<?php ?>" untuk memunculkan data lama -->
                     <div class="ps-form-group">
                         <label>Nama Event</label>
-                        <input type="text" class="ps-input" value="<?php echo $nama_event; ?>" required>
+                        <input type="text" name="nama_konser" class="ps-input" value="<?php echo htmlspecialchars($nama_event); ?>" required>
                     </div>
 
                     <!-- PERBAIKAN 3: Textarea TIDAK menggunakan atribut value, nilainya ditaruh di tengah tag -->
                     <div class="ps-form-group" style="align-items: flex-start;">
                         <label>Line-up Artis</label>
-                        <textarea class="ps-input" rows="3"><?php echo $lineup; ?></textarea>
+                        <textarea name="lineup" class="ps-input" rows="3"><?php echo htmlspecialchars($lineup); ?></textarea>
                     </div>
 
                     <div class="form-row-double">
                         <div class="ps-form-group">
                             <label>Tanggal Pelaksanaan</label>
-                            <input type="date" class="ps-input" value="<?php echo $tanggal; ?>" required>
+                            <input type="date" name="tanggal" class="ps-input" value="<?php echo $tanggal; ?>" required>
                         </div>
                         <div class="ps-form-group">
-                            <label>Lokasi / Venue</label>
-                            <input type="text" class="ps-input" value="<?php echo $venue; ?>" required>
+                            <label>Waktu Pelaksanaan</label>
+                            <input type="time" name="waktu" class="ps-input" value="<?php echo $waktu; ?>" required>
                         </div>
+                    </div>
+
+                    <div class="ps-form-group">
+                        <label>Lokasi / Venue</label>
+                        <input type="text" name="lokasi" class="ps-input" value="<?php echo htmlspecialchars($venue); ?>" required>
                     </div>
 
                     <h3 class="ps-subheading">Kapasitas & Penjualan</h3>
@@ -102,17 +129,17 @@ $poster_lama = "assets/img/poster-symphony.jpg"; // Path gambar lama jika ada
                     <div class="form-row-double">
                         <div class="ps-form-group">
                             <label>Harga Tiket (Rp)</label>
-                            <input type="number" class="ps-input" value="<?php echo $harga; ?>" required>
+                            <input type="number" name="harga" class="ps-input" value="<?php echo intval($harga); ?>" required>
                         </div>
                         <div class="ps-form-group">
                             <label>Total Kapasitas</label>
-                            <input type="number" class="ps-input" value="<?php echo $kapasitas; ?>" required>
+                            <input type="number" name="kapasitas" class="ps-input" value="<?php echo $kapasitas; ?>" required>
                         </div>
                     </div>
 
                     <div class="ps-action-bar">
                         <button type="button" class="btn-ps-cancel" onclick="window.location.href='admin-kelola-konser.php'">Batal</button>
-                        <button type="submit" class="btn-ps-save" id="btn-update" name="submit-update">Perbarui Data Konser</button>
+                        <button type="submit" class="btn-ps-save" id="btn-update" name="submit_update">Perbarui Data Konser</button>
                     </div>
                 </form>
             </div>
@@ -125,7 +152,7 @@ $poster_lama = "assets/img/poster-symphony.jpg"; // Path gambar lama jika ada
             <p>Apakah Anda yakin ingin keluar dari sistem NTBeat?</p>
             <div class="logout-actions">
                 <button class="btn-batal" onclick="closeLogoutModal()">Batal</button>
-                <button class="btn-yakin" onclick="window.location.href = 'index.php'">Keluar</button>
+                <button class="btn-yakin" onclick="window.location.href = 'logout.php'">Keluar</button>
             </div>
         </div>
     </div>

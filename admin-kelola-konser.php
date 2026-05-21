@@ -1,3 +1,12 @@
+<?php
+session_start();
+include 'koneksi.php';
+
+if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+    header("Location: login.php");
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -35,7 +44,7 @@
 
         <main class="content-area">
             <div class="section-header">
-                <h2>Pusat Kendali Konser</h2>
+                <h2>Pusat Kendali Concert</h2>
                 <p>Pilih satu atau beberapa konser untuk melakukan aksi massal.</p>
             </div>
 
@@ -51,40 +60,63 @@
             </div>
 
             <div class="table-box">
-                <table class="admin-table manage-table">
-                    <thead>
-                        <tr>
-                            <th width="40"><input type="checkbox" id="check-all"></th>
-                            <th>Poster</th>
-                            <th>Nama Konser</th>
-                            <th>Tanggal & Lokasi</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody id="concert-list">
-                        <tr>
-                            <td><input type="checkbox" class="row-checkbox" value="MSW-001"></td>
-                            <td><div class="mini-poster"></div></td>
-                            <td><strong>Mataram Sound Wave</strong><br><small>ID: MSW-001</small></td>
-                            <td>15 Mei 2026<br><small>Selaparang</small></td>
-                            <td><span class="badge-safe">Terbit</span></td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" class="row-checkbox" value="SJN-002"></td>
-                            <td><div class="mini-poster" style="background-color: #444;"></div></td>
-                            <td><strong>Senggigi Jazz Night</strong><br><small>ID: SJN-002</small></td>
-                            <td>20 Juni 2026<br><small>Pantai Senggigi</small></td>
-                            <td><span class="badge-safe">Terbit</span></td>
-                        </tr>
-                        <tr>
-                            <td><input type="checkbox" class="row-checkbox" value="FBS-003"></td>
-                            <td><div class="mini-poster" style="background-color: #555;"></div></td>
-                            <td><strong>Festival Budaya Sasak</strong><br><small>ID: FBS-003</small></td>
-                            <td>12 Juli 2026<br><small>Lapangan Mataram</small></td>
-                            <td><span class="badge-urgent" style="color: #f1c40f;">Draft</span></td>
-                        </tr>
-                    </tbody>
-                </table>
+                <form id="bulk-action-form" method="POST" action="admin-bulk-proses.php">
+                    <input type="hidden" name="action_type" id="action-type" value="">
+                    <table class="admin-table manage-table">
+                        <thead>
+                            <tr>
+                                <th width="40"><input type="checkbox" id="check-all"></th>
+                                <th>Poster</th>
+                                <th>Nama Konser</th>
+                                <th>Tanggal & Lokasi</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="concert-list">
+                            <?php
+                            $query = mysqli_query($conn, "SELECT * FROM konser WHERE status != 'Arsip' ORDER BY id DESC");
+                            if (mysqli_num_rows($query) > 0) {
+                                while ($row = mysqli_fetch_assoc($query)) {
+                                    $badge_class = 'badge-safe';
+                                    if ($row['status'] == 'Hampir Habis') {
+                                        $badge_class = 'badge-urgent';
+                                    } elseif ($row['status'] == 'Habis') {
+                                        $badge_class = 'badge-danger';
+                                    }
+
+                                    // Format tanggal
+                                    $tanggal_format = date('d M Y', strtotime($row['tanggal']));
+                                    
+                                    // Ganti style mini-poster agar menggunakan poster dari DB jika ada
+                                    $poster_path = "assets/img/" . htmlspecialchars($row['poster']);
+                                    if (empty($row['poster']) || !file_exists($poster_path)) {
+                                        $poster_path = "assets/img/default-poster.jpg";
+                                    }
+                                    ?>
+                                    <tr>
+                                        <td><input type="checkbox" name="ids[]" class="row-checkbox" value="<?php echo $row['id']; ?>"></td>
+                                        <td>
+                                            <div class="mini-poster" style="background-image: url('<?php echo $poster_path; ?>'); background-size: cover; background-position: center; border: 1px solid #444;"></div>
+                                        </td>
+                                        <td>
+                                            <strong><?php echo htmlspecialchars($row['nama_konser']); ?></strong><br>
+                                            <small>ID: <?php echo $row['id']; ?></small>
+                                        </td>
+                                        <td>
+                                            <?php echo $tanggal_format; ?><br>
+                                            <small><?php echo htmlspecialchars($row['lokasi']); ?></small>
+                                        </td>
+                                        <td><span class="<?php echo $badge_class; ?>"><?php echo $row['status']; ?></span></td>
+                                    </tr>
+                                    <?php
+                                }
+                            } else {
+                                echo "<tr><td colspan='5' style='text-align:center; padding: 20px; color:#888;'>Belum ada data konser. Silakan tambahkan konser baru.</td></tr>";
+                            }
+                            ?>
+                        </tbody>
+                    </table>
+                </form>
             </div>
         </main>
     </div>
@@ -96,7 +128,7 @@
 
             <div class="logout-actions">
                 <button class="btn-batal" onclick="closeLogoutModal()">Batal</button>
-                <button class="btn-yakin" onclick="window.location.href = 'index.php'">Keluar</button>
+                <button class="btn-yakin" onclick="window.location.href = 'logout.php'">Keluar</button>
             </div>
         </div>
     </div>

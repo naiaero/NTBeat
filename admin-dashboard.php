@@ -8,25 +8,25 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 }
 
 // 1. Hitung Total Tiket Terjual
-// $query_tiket = mysqli_query($conn, "SELECT SUM(tiket_terjual) as total_tiket FROM konser");
-// $data_tiket = mysqli_fetch_assoc($query_tiket);
-// $total_tiket_terjual = $data_tiket['total_tiket'] ? $data_tiket['total_tiket'] : 0;
+$query_tiket = mysqli_query($conn, "SELECT SUM(tiket_terjual) as total_tiket FROM konser");
+$data_tiket = mysqli_fetch_assoc($query_tiket);
+$total_tiket_terjual = $data_tiket['total_tiket'] ? $data_tiket['total_tiket'] : 0;
 
-// // 2. Hitung Total Kapasitas Semua Konser
-// $query_kapasitas = mysqli_query($conn, "SELECT SUM(kapasitas) as total_kapasitas FROM konser");
-// $data_kapasitas = mysqli_fetch_assoc($query_kapasitas);
-// $total_kapasitas = $data_kapasitas['total_kapasitas'] ? $data_kapasitas['total_kapasitas'] : 0;
+// 2. Hitung Total Kapasitas Semua Konser
+$query_kapasitas = mysqli_query($conn, "SELECT SUM(kapasitas) as total_kapasitas FROM konser");
+$data_kapasitas = mysqli_fetch_assoc($query_kapasitas);
+$total_kapasitas = $data_kapasitas['total_kapasitas'] ? $data_kapasitas['total_kapasitas'] : 0;
 
-// // 3. Hitung Sisa Kuota
-// $sisa_kuota = $total_kapasitas - $total_tiket_terjual;
+// 3. Hitung Sisa Kuota
+$sisa_kuota = $total_kapasitas - $total_tiket_terjual;
 
-// // 4. Hitung Simulasi Pendapatan (Tiket Terjual x Harga per Tiket)
-// $query_pendapatan = mysqli_query($conn, "SELECT SUM(tiket_terjual * harga) as total_pendapatan FROM konser");
-// $data_pendapatan = mysqli_fetch_assoc($query_pendapatan);
-// $total_pendapatan = $data_pendapatan['total_pendapatan'] ? $data_pendapatan['total_pendapatan'] : 0;
+// 4. Hitung Simulasi Pendapatan (Tiket Terjual x Harga per Tiket)
+$query_pendapatan = mysqli_query($conn, "SELECT SUM(tiket_terjual * harga) as total_pendapatan FROM konser");
+$data_pendapatan = mysqli_fetch_assoc($query_pendapatan);
+$total_pendapatan = $data_pendapatan['total_pendapatan'] ? $data_pendapatan['total_pendapatan'] : 0;
 
-// // Ubah format angka jadi jutaan (Contoh: 213000000 jadi 213,0)
-// $pendapatan_jt = number_format($total_pendapatan / 1000000, 1, ',', '.');
+// Ubah format angka jadi jutaan (Contoh: 213000000 jadi 213,0)
+$pendapatan_jt = number_format($total_pendapatan / 1000000, 1, ',', '.');
 ?>
 
 <!DOCTYPE html>
@@ -165,7 +165,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 
             <div class="logout-actions">
                 <button class="btn-batal" onclick="closeLogoutModal()">Batal</button>
-                <button class="btn-yakin" onclick="window.location.href = 'index.php'">Keluar</button>
+                <button class="btn-yakin" onclick="window.location.href = 'logout.php'">Keluar</button>
             </div>
         </div>
     </div>

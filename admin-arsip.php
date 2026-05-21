@@ -1,3 +1,12 @@
+<?php
+session_start();
+include 'koneksi.php';
+
+if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+    header("Location: login.php");
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -61,28 +70,37 @@
                         </tr>
                     </thead>
                     <tbody id="archive-list">
-                        <tr class="past-event">
-                            <td><input type="checkbox" class="row-checkbox" value="LSF-2025"></td>
-                            <td><div class="mini-poster archived"></div></td>
-                            <td>
-                                <strong>Lombok Summer Fest 2025</strong><br>
-                                <small>ID: LSF-2025</small>
-                            </td>
-                            <td>12 Agustus 2025</td>
-                            <td>985 / 1000 Tiket</td>
-                            <td><span class="badge-archived">Selesai</span></td>
-                        </tr>
-                        <tr class="past-event">
-                            <td><input type="checkbox" class="row-checkbox" value="SNH-2025"></td>
-                            <td><div class="mini-poster archived" style="background-color: #333;"></div></td>
-                            <td>
-                                <strong>Sumbawa Night Harmony</strong><br>
-                                <small>ID: SNH-2025</small>
-                            </td>
-                            <td>05 Januari 2025</td>
-                            <td>500 / 500 Tiket</td>
-                            <td><span class="badge-archived">Sold Out</span></td>
-                        </tr>
+                        <?php
+                        $query = mysqli_query($conn, "SELECT * FROM konser WHERE status IN ('Arsip', 'Selesai') ORDER BY id DESC");
+                        if (mysqli_num_rows($query) > 0) {
+                            while ($row = mysqli_fetch_assoc($query)) {
+                                $tanggal_format = date('d M Y', strtotime($row['tanggal']));
+                                $poster_path = "assets/img/" . htmlspecialchars($row['poster']);
+                                if (empty($row['poster']) || !file_exists($poster_path)) {
+                                    $poster_path = "assets/img/default-poster.jpg";
+                                }
+                                $badge_text = $row['status'];
+                                $badge_class = $row['status'] == 'Arsip' ? 'badge-archived' : 'badge-safe';
+                                ?>
+                                <tr class="past-event">
+                                    <td><input type="checkbox" class="row-checkbox" value="<?php echo $row['id']; ?>"></td>
+                                    <td>
+                                        <div class="mini-poster archived" style="background-image: url('<?php echo $poster_path; ?>'); background-size: cover; background-position: center; border: 1px solid #444;"></div>
+                                    </td>
+                                    <td>
+                                        <strong><?php echo htmlspecialchars($row['nama_konser']); ?></strong><br>
+                                        <small>ID: <?php echo $row['id']; ?></small>
+                                    </td>
+                                    <td><?php echo $tanggal_format; ?></td>
+                                    <td><?php echo $row['tiket_terjual']; ?> / <?php echo $row['kapasitas']; ?> Tiket</td>
+                                    <td><span class="<?php echo $badge_class; ?>"><?php echo $badge_text; ?></span></td>
+                                </tr>
+                                <?php
+                            }
+                        } else {
+                            echo "<tr><td colspan='6' style='text-align:center; padding: 20px; color:#888;'>Belum ada data konser yang diarsip atau selesai.</td></tr>";
+                        }
+                        ?>
                     </tbody>
                 </table>
             </div>
@@ -100,7 +118,7 @@
 
             <div class="logout-actions">
                 <button class="btn-batal" onclick="closeLogoutModal()">Batal</button>
-                <button class="btn-yakin" onclick="window.location.href = 'index.php'">Keluar</button>
+                <button class="btn-yakin" onclick="window.location.href = 'logout.php'">Keluar</button>
             </div>
         </div>
     </div>

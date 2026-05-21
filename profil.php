@@ -1,9 +1,17 @@
 <?php
-  session_start();
-  $nama_user = isset($_SESSION['nama']) ? $_SESSION['nama'] : 'User';
-  $inisial = strtoupper(substr($nama_user, 0, 1));
+session_start();
+include 'koneksi.php';
+
+// Membatasi akses hanya untuk customer
+if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'customer') {
+    header("Location: login.php");
+    exit();
+}
+
+$nama_user = isset($_SESSION['nama']) ? $_SESSION['nama'] : 'User';
+$inisial = strtoupper(substr($nama_user, 0, 1));
 ?>
-<!doctype html>
+<!DOCTYPE html>
 <html lang="id">
   <head>
     <meta charset="UTF-8" />
@@ -65,7 +73,7 @@
                   type="text"
                   id="username"
                   class="ps-input"
-                  value=""
+                  value="<?php echo htmlspecialchars($nama_user); ?>"
                 />
               </div>
 
@@ -75,7 +83,9 @@
                   type="email"
                   id="email"
                   class="ps-input"
-                  value=""
+                  value="<?php echo htmlspecialchars($_SESSION['email']); ?>"
+                  readonly
+                  style="background-color: #222; color: #888; cursor: not-allowed;"
                 />
               </div>
 
@@ -107,9 +117,9 @@
                   class="btn-ps-cancel"
                   onclick="window.location.href = 'halaman-awal.php'"
                 >
-                  Cancel
+                  Batal
                 </button>
-                <button type="submit" class="btn-ps-save">Save</button>
+                <button type="submit" class="btn-ps-save">Simpan</button>
               </div>
             </form>
           </div>
@@ -124,7 +134,7 @@
 
             <div class="logout-actions">
                 <button class="btn-batal" onclick="closeLogoutModal()">Batal</button>
-                <button class="btn-yakin" onclick="window.location.href = 'index.php'">Keluar</button>
+                <button class="btn-yakin" onclick="window.location.href = 'logout.php'">Keluar</button>
             </div>
         </div>
     </div>

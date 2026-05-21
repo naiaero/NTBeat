@@ -3,7 +3,29 @@ include 'koneksi.php';
 
 echo "<h2>NTBeat Database Initializer</h2>";
 
-// 1. Buat Tabel konser
+// 1. Buat Tabel users
+$query_users = "CREATE TABLE IF NOT EXISTS `users` (
+  `nama` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `role` enum('customer','admin') NOT NULL,
+  `foto` varchar(255) DEFAULT 'default-avatar.png',
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;";
+
+if (mysqli_query($conn, $query_users)) {
+    echo "✔ Tabel 'users' berhasil dibuat atau sudah ada.<br>";
+    // Pastikan kolom 'foto' ada jika tabel sudah dibuat sebelumnya tanpa kolom tersebut
+    $check_column = mysqli_query($conn, "SHOW COLUMNS FROM `users` LIKE 'foto'");
+    if (mysqli_num_rows($check_column) == 0) {
+        mysqli_query($conn, "ALTER TABLE `users` ADD COLUMN `foto` varchar(255) DEFAULT 'default-avatar.png'");
+        echo "✔ Kolom 'foto' berhasil ditambahkan ke tabel 'users'.<br>";
+    }
+} else {
+    echo "❌ Gagal membuat tabel 'users': " . mysqli_error($conn) . "<br>";
+}
+
+// 2. Buat Tabel konser
 $query_konser = "CREATE TABLE IF NOT EXISTS `konser` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `nama_konser` varchar(150) NOT NULL,
@@ -14,7 +36,7 @@ $query_konser = "CREATE TABLE IF NOT EXISTS `konser` (
   `harga` decimal(10,2) NOT NULL,
   `kapasitas` int(11) NOT NULL,
   `tiket_terjual` int(11) DEFAULT 0,
-  `poster` varchar(255) DEFAULT 'default-poster.jpg',
+  `poster` varchar(255) DEFAULT 'default-poster.png',
   `status` enum('Tersedia','Hampir Habis','Habis','Selesai','Arsip') DEFAULT 'Tersedia',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`)
@@ -26,7 +48,7 @@ if (mysqli_query($conn, $query_konser)) {
     echo "❌ Gagal membuat tabel 'konser': " . mysqli_error($conn) . "<br>";
 }
 
-// 2. Buat Tabel pesanan
+// 3. Buat Tabel pesanan
 $query_pesanan = "CREATE TABLE IF NOT EXISTS `pesanan` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `order_id` varchar(50) NOT NULL,
@@ -48,26 +70,26 @@ if (mysqli_query($conn, $query_pesanan)) {
     echo "❌ Gagal membuat tabel 'pesanan': " . mysqli_error($conn) . "<br>";
 }
 
-// 3. Masukkan Data Sampel Konser jika tabel masih kosong
+// 4. Masukkan Data Sampel Konser jika tabel masih kosong
 $check_empty = mysqli_query($conn, "SELECT COUNT(*) as total FROM konser");
 $row = mysqli_fetch_assoc($check_empty);
 
 if ($row['total'] == 0) {
     $insert_queries = [
         "INSERT INTO `konser` (`nama_konser`, `lineup`, `tanggal`, `waktu`, `lokasi`, `harga`, `kapasitas`, `tiket_terjual`, `status`, `poster`) VALUES
-        ('Mataram Sound Wave', 'Pamungkas, Hindia, Isyana Sarasvati', '2026-08-25', '19:00:00', 'Eks Bandara Selaparang', 150000.00, 1000, 880, 'Hampir Habis', 'default-poster.jpg')",
+        ('Mataram Sound Wave', 'Pamungkas, Hindia, Isyana Sarasvati', '2026-08-25', '19:00:00', 'Eks Bandara Selaparang', 150000.00, 1000, 880, 'Hampir Habis', 'default-poster.png')",
         
         "INSERT INTO `konser` (`nama_konser`, `lineup`, `tanggal`, `waktu`, `lokasi`, `harga`, `kapasitas`, `tiket_terjual`, `status`, `poster`) VALUES
-        ('Senggigi Jazz Night', 'Tompi, Raisa, Maliq & D\'Essentials', '2026-06-20', '20:00:00', 'Pantai Senggigi', 150000.00, 1000, 540, 'Tersedia', 'default-poster.jpg')",
+        ('Senggigi Jazz Night', 'Tompi, Raisa, Maliq & D\'Essentials', '2026-06-20', '20:00:00', 'Pantai Senggigi', 150000.00, 1000, 540, 'Tersedia', 'default-poster.png')",
         
         "INSERT INTO `konser` (`nama_konser`, `lineup`, `tanggal`, `waktu`, `lokasi`, `harga`, `kapasitas`, `tiket_terjual`, `status`, `poster`) VALUES
-        ('Festival Budaya Sasak', 'Gendang Beleq community, Local Musicians', '2026-07-12', '16:00:00', 'Lapangan Mataram', 100000.00, 1500, 120, 'Tersedia', 'default-poster.jpg')",
+        ('Festival Budaya Sasak', 'Gendang Beleq community, Local Musicians', '2026-07-12', '16:00:00', 'Lapangan Mataram', 100000.00, 1500, 120, 'Tersedia', 'default-poster.png')",
 
         "INSERT INTO `konser` (`nama_konser`, `lineup`, `tanggal`, `waktu`, `lokasi`, `harga`, `kapasitas`, `tiket_terjual`, `status`, `poster`) VALUES
-        ('Symphony of Lombok', 'Lombok Philharmonic Orchestra', '2026-05-15', '19:00:00', 'Taman Budaya NTB, Mataram', 250000.00, 5000, 4955, 'Hampir Habis', 'default-poster.jpg')",
+        ('Symphony of Lombok', 'Lombok Philharmonic Orchestra', '2026-05-15', '19:00:00', 'Taman Budaya NTB, Mataram', 250000.00, 5000, 4955, 'Hampir Habis', 'default-poster.png')",
         
         "INSERT INTO `konser` (`nama_konser`, `lineup`, `tanggal`, `waktu`, `lokasi`, `harga`, `kapasitas`, `tiket_terjual`, `status`, `poster`) VALUES
-        ('NCT Dream Live on Screen', 'NCT Dream', '2026-06-20', '18:30:00', 'Epicentrum Mall Atrium', 150000.00, 2000, 1420, 'Tersedia', 'default-poster.jpg')"
+        ('NCT Dream Live on Screen', 'NCT Dream', '2026-06-20', '18:30:00', 'Epicentrum Mall Atrium', 150000.00, 2000, 1420, 'Tersedia', 'default-poster.png')"
     ];
 
     $success = true;
@@ -84,7 +106,7 @@ if ($row['total'] == 0) {
     echo "ℹ Tabel 'konser' sudah berisi data, melewati pengisian data sampel.<br>";
 }
 
-// 4. Pastikan ada user admin@ntbeat.com dengan password admin123 terdaftar
+// 5. Pastikan ada user admin@ntbeat.com dengan password admin123 terdaftar
 $check_admin = mysqli_query($conn, "SELECT email FROM users WHERE email='admin@ntbeat.com'");
 if (mysqli_num_rows($check_admin) == 0) {
     $hashed_admin_pass = password_hash('admin123', PASSWORD_DEFAULT);

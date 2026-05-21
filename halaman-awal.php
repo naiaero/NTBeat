@@ -8,8 +8,18 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'customer') {
     exit();
 }
 
-$nama_user = isset($_SESSION['nama']) ? $_SESSION['nama'] : 'User';
+$email_user = $_SESSION['email'];
+$query_user = mysqli_query($conn, "SELECT * FROM users WHERE email = '$email_user'");
+$user_data = mysqli_fetch_assoc($query_user);
+$nama_user = $user_data['nama'];
+$foto_user = isset($user_data['foto']) ? $user_data['foto'] : '';
 $inisial = strtoupper(substr($nama_user, 0, 1));
+
+$foto_path = "assets/img/" . $foto_user;
+$avatar_style = "";
+if (!empty($foto_user) && file_exists($foto_path) && $foto_user !== 'default-avatar.png' && $foto_user !== 'tds4.jpg' && $foto_user !== 'logo.png') {
+    $avatar_style = "background-image: url('$foto_path'); background-size: cover; background-position: center; color: transparent; border: 1px solid #d4af37;";
+}
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -35,19 +45,17 @@ $inisial = strtoupper(substr($nama_user, 0, 1));
 
       <div class="user-profile-nav">
         <span>Halo, <?php echo htmlspecialchars($nama_user); ?>!</span>
-        <div class="avatar-placeholder" onclick="window.location.href = 'profil.php'"><?php echo $inisial; ?></div>
+        <div class="avatar-placeholder" onclick="window.location.href = 'profil.php'" style="<?php echo $avatar_style; ?>"><?php echo $inisial; ?></div>
       </div>
     </nav>
 
     <div class="dashboard-layout">
       <aside class="sidebar">
         <ul class="sidebar-menu">
-          <li class="active" onclick="window.location.href = 'halaman-awal.php'">📅 Daftar Konser</li>
-          <li onclick="window.location.href = 'tiket-saya.php'">
-            🎟️ Tiket Saya & Riwayat
-          </li>
-          <li onclick="window.location.href = 'profil.php'">⚙️ Profil Akun</li>
-          <li onclick="openLogoutModal()">🚪 Keluar</li>
+          <li class="active" onclick="window.location.href = 'halaman-awal.php'">Daftar Konser</li>
+          <li onclick="window.location.href = 'tiket-saya.php'">Tiket Saya & Riwayat</li>
+          <li onclick="window.location.href = 'profil.php'">Profil Akun</li>
+          <li onclick="openLogoutModal()">Keluar</li>
         </ul>
       </aside>
 
@@ -67,14 +75,14 @@ $inisial = strtoupper(substr($nama_user, 0, 1));
                   
                   // Tentukan class/status sisa tiket
                   $badge_class = 'safe';
-                  $sisa_text = 'Tersedia';
+                  $sisa_text = number_format($sisa_tiket, 0, ',', '.') . " org";
                   
                   if ($sisa_tiket <= 0 || $row['status'] === 'Habis') {
                       $badge_class = 'urgent';
                       $sisa_text = 'Habis';
                   } elseif ($sisa_tiket <= 150 || $row['status'] === 'Hampir Habis') {
                       $badge_class = 'urgent';
-                      $sisa_text = "Tersisa " . number_format($sisa_tiket, 0, ',', '.') . "!";
+                      $sisa_text = "Tersisa " . number_format($sisa_tiket, 0, ',', '.') . " org!";
                   }
 
                   // Format tanggal, waktu, harga
@@ -84,12 +92,12 @@ $inisial = strtoupper(substr($nama_user, 0, 1));
                   
                   $poster_path = "assets/img/" . htmlspecialchars($row['poster']);
                   if (empty($row['poster']) || !file_exists($poster_path)) {
-                      $poster_path = "assets/img/default-poster.jpg";
+                      $poster_path = "assets/img/default-poster.png";
                   }
                   ?>
                   <div class="concert-card">
                     <div class="card-img-placeholder" style="background-image: url('<?php echo $poster_path; ?>'); background-size: cover; background-position: center; height: 180px; border-bottom: 1px solid #333;">
-                      <?php if ($poster_path === 'assets/img/default-poster.jpg') { ?>
+                      <?php if ($poster_path === 'assets/img/default-poster.png') { ?>
                         <span style="background: rgba(0,0,0,0.6); padding: 5px 10px; border-radius: 5px; color: #fff;">[Poster Konser]</span>
                       <?php } ?>
                     </div>

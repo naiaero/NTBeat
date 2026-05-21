@@ -7,6 +7,20 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     exit();
 }
 
+$email_user = $_SESSION['email'];
+$query_user = mysqli_query($conn, "SELECT * FROM users WHERE email = '$email_user'");
+$user_data = mysqli_fetch_assoc($query_user);
+$nama_user = $user_data['nama'];
+$foto_user = isset($user_data['foto']) ? $user_data['foto'] : '';
+$inisial = strtoupper(substr($nama_user, 0, 1));
+
+$foto_path = "assets/img/" . $foto_user;
+$avatar_style = "";
+if (!empty($foto_user) && file_exists($foto_path) && $foto_user !== 'default-avatar.png' && $foto_user !== 'tds4.jpg' && $foto_user !== 'logo.png') {
+    $avatar_style = "background-image: url('$foto_path'); background-size: cover; background-position: center; color: transparent; border: 1px solid #d4af37;";
+}
+
+
 $id_konser = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
 $query = mysqli_query($conn, "SELECT * FROM konser WHERE id = $id_konser");
@@ -23,7 +37,7 @@ if (mysqli_num_rows($query) > 0) {
     $poster_lama = $row['poster'];
     $poster_display_path = "assets/img/" . $row['poster'];
     if (empty($row['poster']) || !file_exists($poster_display_path)) {
-        $poster_display_path = "assets/img/default-poster.jpg";
+        $poster_display_path = "assets/img/default-poster.png";
     }
 } else {
     echo "<script>
@@ -47,13 +61,13 @@ if (mysqli_num_rows($query) > 0) {
 <body class="admin-body">
 
     <header class="header-user">
-        <div class="logo-area">
+        <div class="logo-area" onclick="window.location.href='admin-dashboard.php'" style="cursor: pointer;">
             <img src="assets/img/logo.png" alt="Logo"> 
             <label>NTBeat</label>
         </div>
-        <div class="user-profile-nav">
-            <span style="color: white; font-size: 0.9rem;">Administrator</span>
-            <div class="avatar-placeholder" onclick="window.location.href = 'admin-profil.php'">A</div>
+        <div class="user-profile-nav" onclick="window.location.href = 'admin-profil.php'" style="cursor: pointer;">
+            <span style="color: white; font-size: 0.9rem; margin-right: 10px;"><?php echo htmlspecialchars($nama_user); ?></span>
+            <div class="avatar-placeholder" style="<?php echo $avatar_style; ?>"><?php echo $inisial; ?></div>
         </div>
     </header>
 
@@ -88,8 +102,8 @@ if (mysqli_num_rows($query) > 0) {
                             </div>
                             <label for="poster-input" class="ps-edit-icon">
                                 📸
-                                <input type="file" id="poster-input" name="poster" hidden accept="image/*">
                             </label>
+                            <input type="file" id="poster-input" name="poster" style="display: none;" accept="image/*">
                         </div>
                     </div>
                     <p style="text-align: center; color: #888; font-size: 0.8rem; margin-bottom: 30px;">

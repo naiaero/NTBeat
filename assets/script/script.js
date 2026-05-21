@@ -21,45 +21,7 @@ function konfirmasiPembelian() {
   window.location.href = "tiket-saya.php";
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  const checkAll = document.getElementById("check-all");
-  const rowCheckboxes = document.querySelectorAll(".row-checkbox");
-  const countDisplay = document.getElementById("count-display");
-  const btnReportBulk = document.getElementById("btn-report-bulk");
-  const logoutModal = document.getElementById("logoutModal");
-
-  function updateSelectionUI() {
-    const checkedCount = document.querySelectorAll(
-      ".row-checkbox:checked",
-    ).length;
-
-    countDisplay.textContent = checkedCount;
-
-    if (checkedCount > 0) {
-      btnReportBulk.disabled = false;
-    } else {
-      btnReportBulk.disabled = true;
-    }
-  }
-
-  if (checkAll) {
-    checkAll.addEventListener("change", function () {
-      rowCheckboxes.forEach((checkbox) => {
-        checkbox.checked = this.checked;
-      });
-      updateSelectionUI();
-    });
-  }
-
-  rowCheckboxes.forEach((checkbox) => {
-    checkbox.addEventListener("change", () => {
-      const allChecked = Array.from(rowCheckboxes).every((cb) => cb.checked);
-      checkAll.checked = allChecked;
-
-      updateSelectionUI();
-    });
-  });
-});
+// Unified check-all and action buttons listener handled below in the code.
 
 // document.addEventListener("DOMContentLoaded", () => {
 document.addEventListener("DOMContentLoaded", () => {
@@ -68,24 +30,36 @@ document.addEventListener("DOMContentLoaded", () => {
   const remainingCountDisplay = document.getElementById("remaining-count");
   const revenueCountDisplay = document.getElementById("revenue-count");
 
-  let totalSold = 1420;
-  const totalCapacity = 2000;
-  const ticketPrice = 150000;
+  let totalSold = window.dbStats ? window.dbStats.totalSold : 1420;
+  const totalCapacity = window.dbStats ? window.dbStats.totalCapacity : 2000;
+  let totalRevenue = window.dbStats ? window.dbStats.totalRevenue : 213000000;
 
   // Cek dulu apakah halaman ini punya statistik jualan tiket?
   if (soldCountDisplay && remainingCountDisplay && revenueCountDisplay) {
     function updateStats() {
-      const newSales = Math.floor(Math.random() * 3);
-      totalSold += newSales;
-
       const remaining = totalCapacity - totalSold;
-      const revenue = totalSold * ticketPrice;
 
       soldCountDisplay.textContent = totalSold.toLocaleString("id-ID");
       remainingCountDisplay.textContent = remaining.toLocaleString("id-ID");
 
-      const revenueInMillion = (revenue / 1000000).toFixed(1);
-      revenueCountDisplay.textContent = `Rp ${revenueInMillion}jt`;
+      function formatRupiahRingkas(num) {
+        if (num >= 1000000000) {
+          let val = (num / 1000000000).toFixed(1);
+          if (val.endsWith('.0')) val = val.substring(0, val.length - 2);
+          return `Rp ${val.replace('.', ',')} M`;
+        } else if (num >= 1000000) {
+          let val = (num / 1000000).toFixed(1);
+          if (val.endsWith('.0')) val = val.substring(0, val.length - 2);
+          return `Rp ${val.replace('.', ',')} jt`;
+        } else if (num >= 1000) {
+          let val = (num / 1000).toFixed(1);
+          if (val.endsWith('.0')) val = val.substring(0, val.length - 2);
+          return `Rp ${val.replace('.', ',')} rb`;
+        } else {
+          return `Rp ${num.toLocaleString('id-ID')}`;
+        }
+      }
+      revenueCountDisplay.textContent = formatRupiahRingkas(totalRevenue);
 
       const randomHeight = Math.floor(Math.random() * 60) + 20;
       if (liveBar) {
@@ -93,8 +67,16 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    // Jalankan timer animasi HANYA jika kita di halaman statistik
-    setInterval(updateStats, 3000);
+    // Tampilkan data awal yang benar sesuai DB
+    updateStats();
+
+    // Jalankan timer animasi HANYA untuk tinggi bar (estetika live)
+    setInterval(() => {
+      const randomHeight = Math.floor(Math.random() * 60) + 20;
+      if (liveBar) {
+        liveBar.style.height = randomHeight + "%";
+      }
+    }, 3000);
   }
 
   // Fitur highlight menu sidebar aktif
@@ -113,35 +95,41 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
+  const posterWrapper = document.querySelector(".poster-upload-wrapper");
   const posterInput = document.getElementById("poster-input");
   const imagePreview = document.getElementById("imagePreview");
 
-  if (posterInput && imagePreview) {
+  if (posterWrapper && posterInput) {
+    posterWrapper.style.cursor = "pointer";
+    posterWrapper.addEventListener("click", (e) => {
+      // Avoid double trigger if clicking label/input directly
+      if (e.target.tagName === 'LABEL' || e.target.closest('label') || e.target.tagName === 'INPUT') {
+        return;
+      }
+      posterInput.click();
+    });
+
     posterInput.addEventListener("change", function () {
       const file = this.files[0];
 
       if (file) {
         const reader = new FileReader();
 
-        // Tampilkan teks memuat sementara
-        imagePreview.innerHTML = '<span style="color: #eee; font-size: 0.8rem;">Memuat...</span>';
+        if (imagePreview) {
+          imagePreview.innerHTML = '<span style="color: #eee; font-size: 0.8rem;">Memuat...</span>';
+        }
 
         reader.onload = function (e) {
-          // Bersihkan teks "Memuat..." terlebih dahulu agar tidak menutupi background
-          imagePreview.innerHTML = ""; 
-          
-          // Terapkan gambar pada background
-          imagePreview.style.backgroundImage = `url(${e.target.result})`;
-          imagePreview.style.backgroundSize = "cover";
-          imagePreview.style.backgroundPosition = "center";
-          imagePreview.style.border = "none";
+          if (imagePreview) {
+            imagePreview.innerHTML = ""; 
+            imagePreview.style.backgroundImage = `url(${e.target.result})`;
+            imagePreview.style.backgroundSize = "cover";
+            imagePreview.style.backgroundPosition = "center";
+            imagePreview.style.border = "none";
+          }
         };
 
         reader.readAsDataURL(file);
-      } else {
-        // Kembalikan ke kondisi awal jika batal memilih gambar
-        imagePreview.style.backgroundImage = "none";
-        imagePreview.innerHTML = "<span>Preview Poster</span>";
       }
     });
   }
@@ -204,27 +192,32 @@ document.addEventListener("DOMContentLoaded", () => {
   const btnArchive = document.getElementById("btn-archive-bulk");
   const btnDelete = document.getElementById("btn-delete-bulk");
 
-  // CEK DULU: Apakah tombol-tombol admin ini ada di halaman?
-  if (btnDelete && btnEdit && btnArchive) {
+  if (checkAll || rowCheckboxes.length > 0) {
     function updateTableUI() {
       const checkedBoxes = document.querySelectorAll(".row-checkbox:checked");
       const selectedCount = checkedBoxes.length;
 
-      countDisplay.textContent = selectedCount;
-
-      if (selectedCount > 0) {
-        btnArchive.disabled = false;
-        btnDelete.disabled = false;
-        btnEdit.disabled = selectedCount !== 1;
-      } else {
-        btnEdit.disabled = true;
-        btnArchive.disabled = true;
-        btnDelete.disabled = true;
+      if (countDisplay) {
+        countDisplay.textContent = selectedCount;
       }
 
-      checkAll.checked = selectedCount === rowCheckboxes.length;
-      checkAll.indeterminate =
-        selectedCount > 0 && selectedCount < rowCheckboxes.length;
+      if (btnArchive && btnDelete && btnEdit) {
+        if (selectedCount > 0) {
+          btnArchive.disabled = false;
+          btnDelete.disabled = false;
+          btnEdit.disabled = selectedCount !== 1;
+        } else {
+          btnEdit.disabled = true;
+          btnArchive.disabled = true;
+          btnDelete.disabled = true;
+        }
+      }
+
+      if (checkAll) {
+        checkAll.checked = selectedCount === rowCheckboxes.length && rowCheckboxes.length > 0;
+        checkAll.indeterminate =
+          selectedCount > 0 && selectedCount < rowCheckboxes.length;
+      }
     }
 
     if (checkAll) {
@@ -239,7 +232,9 @@ document.addEventListener("DOMContentLoaded", () => {
     rowCheckboxes.forEach((cb) => {
       cb.addEventListener("change", updateTableUI);
     });
+  }
 
+  if (btnDelete) {
     btnDelete.addEventListener("click", () => {
       const count = document.querySelectorAll(".row-checkbox:checked").length;
       if (
@@ -251,7 +246,9 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("bulk-action-form").submit();
       }
     });
+  }
 
+  if (btnEdit) {
     btnEdit.addEventListener("click", () => {
       const checkedBox = document.querySelector(".row-checkbox:checked");
 
@@ -260,7 +257,9 @@ document.addEventListener("DOMContentLoaded", () => {
         window.location.href = `admin-edit-konser.php?id=${konserId}`;
       }
     });
+  }
 
+  if (btnArchive) {
     btnArchive.addEventListener("click", () => {
       const count = document.querySelectorAll(".row-checkbox:checked").length;
 
@@ -297,24 +296,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const remainingStat = document.querySelector(".remaining .stat-value");
   if (remainingStat) {
-    let currentTickets = 45; // Sesuai data awal di HTML
-
-    const ticketCountdown = setInterval(() => {
-      const sold = Math.floor(Math.random() * 2);
-
-      if (sold > 0 && currentTickets > 5) {
-        currentTickets -= sold;
-        remainingStat.innerText = `Hanya ${currentTickets} Tiket!`;
-
-        remainingStat.style.transition = "color 0.3s";
-        remainingStat.style.color = "#ff4d4d";
-        setTimeout(() => {
-          remainingStat.style.color = "";
-        }, 500);
-      }
-
-      if (currentTickets <= 5) clearInterval(ticketCountdown);
-    }, 8000);
+    // Keep it static according to the database value (countdown disabled to ensure synchronization)
   }
 
   const backLink = document.querySelector(".back-link");
@@ -466,14 +448,18 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         if (submitBtn) {
-          submitBtn.disabled = true;
           submitBtn.innerText = "Membuat Akun...";
+          setTimeout(() => {
+            submitBtn.disabled = true;
+          }, 0);
         }
       } else {
         // Halaman LOGIN
         if (submitBtn) {
-          submitBtn.disabled = true;
           submitBtn.innerText = "Mengecek Akun...";
+          setTimeout(() => {
+            submitBtn.disabled = true;
+          }, 0);
         }
       }
     });
@@ -490,117 +476,110 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
-  const editIcon = document.querySelector(".ps-edit-icon");
-  const avatarImg = document.querySelector(".ps-avatar-wrapper img");
+  const avatarWrapper = document.querySelector(".ps-avatar-wrapper");
+  const avatarInput = document.getElementById("avatar-input");
+  const avatarPreview = document.getElementById("avatar-preview");
 
-  const fileInput = document.createElement("input");
-  fileInput.type = "file";
-  fileInput.accept = "image/*";
+  if (avatarWrapper && avatarInput) {
+    avatarWrapper.style.cursor = "pointer";
+    avatarWrapper.addEventListener("click", (e) => {
+      // Avoid double trigger if clicking label/input directly
+      if (e.target.tagName === 'LABEL' || e.target.closest('label') || e.target.tagName === 'INPUT') {
+        return;
+      }
+      avatarInput.click();
+    });
 
-  if (editIcon) {
-    editIcon.addEventListener("click", () => fileInput.click());
+    avatarInput.addEventListener("change", function () {
+      const file = this.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          if (avatarPreview) {
+            avatarPreview.src = e.target.result;
+          }
+        };
+        reader.readAsDataURL(file);
+      }
+    });
   }
-
-  fileInput.addEventListener("change", function () {
-    const file = this.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = function (e) {
-        avatarImg.src = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
-  });
 
   const profileForm = document.getElementById("profile-form");
 
   if (profileForm) {
     profileForm.addEventListener("submit", (e) => {
-      e.preventDefault();
-
-      const username = document.getElementById("username").value;
-      const email = document.getElementById("email").value;
+      const username = document.getElementById("username").value.trim();
       const currentPass = document.getElementById("current_password").value;
       const newPass = document.getElementById("new_password").value;
 
-      if (username === "" || email === "") {
-        alert("Username dan Email tidak boleh kosong!");
+      if (username === "") {
+        e.preventDefault();
+        alert("Nama tidak boleh kosong!");
         return;
       }
 
       if (newPass !== "" && currentPass === "") {
-        alert(
-          "Silakan masukkan password saat ini untuk mengonfirmasi perubahan password baru.",
-        );
+        e.preventDefault();
+        alert("Silakan masukkan password saat ini untuk mengonfirmasi perubahan password baru.");
         return;
       }
 
-      const saveBtn = document.querySelector(".btn-ps-save");
-      saveBtn.innerText = "Menyimpan...";
-      saveBtn.disabled = true;
-
-      setTimeout(() => {
-        alert("Profil berhasil diperbarui!");
-        saveBtn.innerText = "Save";
-        saveBtn.disabled = false;
-        document.getElementById("current_password").value = "";
-        document.getElementById("new_password").value = "";
-      }, 1500);
+      const saveBtn = profileForm.querySelector(".btn-ps-save");
+      if (saveBtn) {
+        saveBtn.innerText = "Menyimpan...";
+        setTimeout(() => {
+          saveBtn.disabled = true;
+        }, 0);
+      }
     });
   }
-});
 
-// --- LOGIKA EDIT PROFIL KHUSUS ADMIN ---
-document.addEventListener("DOMContentLoaded", () => {
   const adminProfileForm = document.getElementById("admin-profile-form");
 
   if (adminProfileForm) {
     adminProfileForm.addEventListener("submit", (e) => {
-      e.preventDefault();
+      const username = adminProfileForm.querySelector("#username").value.trim();
+      const currentPass = adminProfileForm.querySelector("#current_password").value;
+      const newPass = adminProfileForm.querySelector("#new_password").value;
+
+      if (username === "") {
+        e.preventDefault();
+        alert("Nama tidak boleh kosong!");
+        return;
+      }
+
+      if (newPass !== "" && currentPass === "") {
+        e.preventDefault();
+        alert("Silakan masukkan password saat ini untuk mengonfirmasi perubahan password baru.");
+        return;
+      }
 
       const saveBtn = adminProfileForm.querySelector(".btn-ps-save");
       if (saveBtn) {
         saveBtn.innerText = "Menyimpan...";
-        saveBtn.disabled = true;
+        setTimeout(() => {
+          saveBtn.disabled = true;
+        }, 0);
       }
+    });
+  }
 
-      setTimeout(() => {
-        alert("Profil Administrator berhasil diperbarui!");
-        
-        if (saveBtn) {
-          saveBtn.innerText = "Simpan Perubahan";
-          saveBtn.disabled = false;
-        }
-        
-        window.location.href = "admin-profil.php";
-      }, 1500);
+  const concertForm = document.getElementById("concert-form");
+  if (concertForm) {
+    concertForm.addEventListener("submit", (e) => {
+      const saveBtn = concertForm.querySelector(".btn-ps-save");
+      if (saveBtn) {
+        saveBtn.innerText = "Menyimpan...";
+        setTimeout(() => {
+          saveBtn.disabled = true;
+        }, 0);
+      }
     });
   }
 });
 
 document.addEventListener("DOMContentLoaded", () => {
   const logoutModal = document.getElementById("logoutModal");
-  const btnUnduh = document.querySelector(".btn-unduh");
-
-  if (btnUnduh) {
-    btnUnduh.addEventListener("click", () => {
-      const orderId = document.querySelector(".order-id").innerText;
-      const concertTitle = document.querySelector(
-        ".ticket-main-info h3",
-      ).innerText;
-
-      btnUnduh.innerText = "Mengunduh...";
-      btnUnduh.disabled = true;
-
-      setTimeout(() => {
-        alert(
-          `E-Ticket ${concertTitle} (${orderId}) berhasil diunduh dalam format PDF.`,
-        );
-        btnUnduh.innerText = "Unduh PDF";
-        btnUnduh.disabled = false;
-      }, 1500);
-    });
-  }
 
   const qrPlaceholder = document.querySelector(".qr-placeholder");
   if (qrPlaceholder) {
@@ -615,50 +594,53 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // --- FITUR GRAFIK GARIS (ADMIN DASHBOARD) ---
-const lineChartEl = document.getElementById("ntbeatLineChart");
+document.addEventListener("DOMContentLoaded", () => {
+  const lineChartEl = document.getElementById("ntbeatLineChart");
 
-if (lineChartEl) {
-  const ctx = lineChartEl.getContext("2d");
+  if (lineChartEl) {
+    const ctx = lineChartEl.getContext("2d");
 
-  new Chart(ctx, {
-    type: "line",
-    data: {
-      labels: ["10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "LIVE"],
-      datasets: [
-        {
-          label: "Tiket Terjual",
-          data: [15, 30, 25, 45, 40, 60, 85], // Data simulasi
-          borderColor: "#d4af37", // Emas NTBeat
-          backgroundColor: "rgba(212, 175, 55, 0.1)", // Efek bayangan emas
-          fill: true,
-          tension: 0.4, // Garis melengkung halus
-          borderWidth: 3,
-          pointRadius: 5,
-          pointBackgroundColor: "#d4af37",
-          pointBorderColor: "#fff",
-        },
-      ],
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false }, // Sembunyikan legenda agar simpel
+    new Chart(ctx, {
+      type: "line",
+      data: {
+        labels: window.chartData ? window.chartData.labels : ["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"],
+        datasets: [
+          {
+            label: "Tiket Terjual",
+            data: window.chartData ? window.chartData.data : [15, 30, 25, 45, 40, 60, 85], // Data simulasi
+            borderColor: "#d4af37", // Emas NTBeat
+            backgroundColor: "rgba(212, 175, 55, 0.1)", // Efek bayangan emas
+            fill: true,
+            tension: 0.4, // Garis melengkung halus
+            borderWidth: 3,
+            pointRadius: 5,
+            pointBackgroundColor: "#d4af37",
+            pointBorderColor: "#fff",
+          },
+        ],
       },
-      scales: {
-        y: {
-          beginAtZero: true,
-          grid: { color: "rgba(255, 255, 255, 0.05)" },
-          ticks: { color: "#888" },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false }, // Sembunyikan legenda agar simpel
         },
-        x: {
-          grid: { display: false },
-          ticks: { color: "#888" },
+        scales: {
+          y: {
+            beginAtZero: true,
+            grid: { color: "rgba(255, 255, 255, 0.05)" },
+            ticks: { color: "#888" },
+          },
+          x: {
+            grid: { display: false },
+            ticks: { color: "#888" },
+          },
         },
       },
-    },
-  });
-}
+    });
+  }
+});
+
 
 // lihat profile
 function openProfileModal() {

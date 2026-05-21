@@ -8,9 +8,19 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'customer') {
     exit();
 }
 
-$nama_user = isset($_SESSION['nama']) ? $_SESSION['nama'] : 'User';
-$inisial = strtoupper(substr($nama_user, 0, 1));
 $user_email = $_SESSION['email'];
+$query_user = mysqli_query($conn, "SELECT * FROM users WHERE email = '$user_email'");
+$user_data = mysqli_fetch_assoc($query_user);
+$nama_user = $user_data['nama'];
+$foto_user = isset($user_data['foto']) ? $user_data['foto'] : '';
+$inisial = strtoupper(substr($nama_user, 0, 1));
+
+$foto_path = "assets/img/" . $foto_user;
+$avatar_style = "";
+if (!empty($foto_user) && file_exists($foto_path) && $foto_user !== 'default-avatar.png' && $foto_user !== 'tds4.jpg' && $foto_user !== 'logo.png') {
+    $avatar_style = "background-image: url('$foto_path'); background-size: cover; background-position: center; color: transparent; border: 1px solid #d4af37;";
+}
+
 
 function format_indonesian_date($date_str) {
     $days = [
@@ -69,6 +79,7 @@ $query_past = mysqli_query($conn, "
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tiket Saya & Riwayat - NTBeat</title>
     <link rel="stylesheet" href="assets/style/style.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="assets/script/script.js"></script>
   </head>
   <body>
@@ -79,19 +90,17 @@ $query_past = mysqli_query($conn, "
       </div>
      <div class="user-profile-nav">
         <span>Halo, <?php echo htmlspecialchars($nama_user); ?>!</span>
-        <div class="avatar-placeholder" onclick="window.location.href = 'profil.php'"><?php echo $inisial; ?></div>
+        <div class="avatar-placeholder" onclick="window.location.href = 'profil.php'" style="<?php echo $avatar_style; ?>"><?php echo $inisial; ?></div>
       </div>
     </nav>
 
     <div class="dashboard-layout">
       <aside class="sidebar">
         <ul class="sidebar-menu">
-          <li onclick="window.location.href = 'halaman-awal.php'">
-            📅 Daftar Konser
-          </li>
-          <li class="active">🎟️ Tiket Saya & Riwayat</li>
-          <li onclick="window.location.href = 'profil.php'">⚙️ Profil Akun</li>
-          <li onclick="openLogoutModal()">🚪 Keluar</li>
+          <li onclick="window.location.href = 'halaman-awal.php'">Daftar Konser</li>
+          <li class="active">Tiket Saya & Riwayat</li>
+          <li onclick="window.location.href = 'profil.php'">Profil Akun</li>
+          <li onclick="openLogoutModal()">Keluar</li>
         </ul>
       </aside>
 
@@ -121,10 +130,9 @@ $query_past = mysqli_query($conn, "
                         </div>
 
                         <div class="ticket-qr-section">
-                          <div class="qr-placeholder">
+                          <div class="qr-placeholder" data-code="<?php echo htmlspecialchars($row['order_id']); ?>">
                             <span>[QR Code]</span>
                           </div>
-                          <button class="btn-unduh" onclick="unduhTiket(this, '<?php echo $row['order_id']; ?>', '<?php echo addslashes($row['nama_konser']); ?>')">Unduh PDF</button>
                         </div>
                       </div>
                       <?php
@@ -160,7 +168,7 @@ $query_past = mysqli_query($conn, "
                         </div>
 
                         <div class="ticket-qr-section">
-                          <div class="qr-placeholder" style="background-color: #e0e0e0; color: #888">
+                          <div class="qr-placeholder expired" data-code="<?php echo htmlspecialchars($row['order_id']); ?>">
                             <span>[Digunakan]</span>
                           </div>
                         </div>
@@ -190,16 +198,22 @@ $query_past = mysqli_query($conn, "
     </div>
 
     <script>
-    function unduhTiket(btn, orderId, title) {
-        btn.innerText = "Mengunduh...";
-        btn.disabled = true;
-
-        setTimeout(() => {
-            alert(`E-Ticket ${title} (#${orderId}) berhasil diunduh dalam format PDF.`);
-            btn.innerText = "Unduh PDF";
-            btn.disabled = false;
-        }, 1500);
-    }
+    document.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll('.qr-placeholder').forEach(el => {
+            const code = el.getAttribute('data-code');
+            if (code) {
+                el.innerHTML = "";
+                new QRCode(el, {
+                    text: code,
+                    width: 90,
+                    height: 90,
+                    colorDark : "#000000",
+                    colorLight : "#ffffff",
+                    correctLevel : QRCode.CorrectLevel.M
+                });
+            }
+        });
+    });
     </script>
   </body>
 </html>

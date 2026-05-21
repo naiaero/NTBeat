@@ -7,26 +7,101 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     exit();
 }
 
-// 1. Hitung Total Tiket Terjual
-$query_tiket = mysqli_query($conn, "SELECT SUM(tiket_terjual) as total_tiket FROM konser");
+$email_user = $_SESSION['email'];
+$query_user = mysqli_query($conn, "SELECT * FROM users WHERE email = '$email_user'");
+$user_data = mysqli_fetch_assoc($query_user);
+$nama_user = $user_data['nama'];
+$foto_user = isset($user_data['foto']) ? $user_data['foto'] : '';
+$inisial = strtoupper(substr($nama_user, 0, 1));
+
+$foto_path = "assets/img/" . $foto_user;
+$avatar_style = "";
+if (!empty($foto_user) && file_exists($foto_path) && $foto_user !== 'default-avatar.png' && $foto_user !== 'tds4.jpg' && $foto_user !== 'logo.png') {
+    $avatar_style = "background-image: url('$foto_path'); background-size: cover; background-position: center; color: transparent; border: 1px solid #d4af37;";
+}
+
+
+// 1. Hitung Total Tiket Terjual (Kecualikan yang diarsip)
+$query_tiket = mysqli_query($conn, "SELECT SUM(tiket_terjual) as total_tiket FROM konser WHERE status != 'Arsip'");
 $data_tiket = mysqli_fetch_assoc($query_tiket);
 $total_tiket_terjual = $data_tiket['total_tiket'] ? $data_tiket['total_tiket'] : 0;
 
-// 2. Hitung Total Kapasitas Semua Konser
-$query_kapasitas = mysqli_query($conn, "SELECT SUM(kapasitas) as total_kapasitas FROM konser");
+// 2. Hitung Total Kapasitas Semua Konser (Kecualikan yang diarsip)
+$query_kapasitas = mysqli_query($conn, "SELECT SUM(kapasitas) as total_kapasitas FROM konser WHERE status != 'Arsip'");
 $data_kapasitas = mysqli_fetch_assoc($query_kapasitas);
 $total_kapasitas = $data_kapasitas['total_kapasitas'] ? $data_kapasitas['total_kapasitas'] : 0;
 
 // 3. Hitung Sisa Kuota
 $sisa_kuota = $total_kapasitas - $total_tiket_terjual;
 
-// 4. Hitung Simulasi Pendapatan (Tiket Terjual x Harga per Tiket)
-$query_pendapatan = mysqli_query($conn, "SELECT SUM(tiket_terjual * harga) as total_pendapatan FROM konser");
+// 4. Hitung Simulasi Pendapatan (Tiket Terjual x Harga per Tiket) (Kecualikan yang diarsip)
+$query_pendapatan = mysqli_query($conn, "SELECT SUM(tiket_terjual * harga) as total_pendapatan FROM konser WHERE status != 'Arsip'");
 $data_pendapatan = mysqli_fetch_assoc($query_pendapatan);
 $total_pendapatan = $data_pendapatan['total_pendapatan'] ? $data_pendapatan['total_pendapatan'] : 0;
 
-// Ubah format angka jadi jutaan (Contoh: 213000000 jadi 213,0)
-$pendapatan_jt = number_format($total_pendapatan / 1000000, 1, ',', '.');
+// Format rupiah dinamis ringkas (Miliar, Juta, Ribu, atau Rupiah biasa)
+function format_rupiah_ringkas($num) {
+    if ($num >= 1000000000) {
+        $val_str = str_replace('.', ',', sprintf("%.1f", $num / 1000000000));
+        if (substr($val_str, -2) === ',0') {
+            $val_str = substr($val_str, 0, -2);
+        }
+        return "Rp " . $val_str . " M";
+    } elseif ($num >= 1000000) {
+        $val_str = str_replace('.', ',', sprintf("%.1f", $num / 1000000));
+        if (substr($val_str, -2) === ',0') {
+            $val_str = substr($val_str, 0, -2);
+        }
+        return "Rp " . $val_str . " jt";
+    } elseif ($num >= 1000) {
+        $val_str = str_replace('.', ',', sprintf("%.1f", $num / 1000));
+        if (substr($val_str, -2) === ',0') {
+            $val_str = substr($val_str, 0, -2);
+        }
+        return "Rp " . $val_str . " rb";
+    } else {
+        return "Rp " . number_format($num, 0, ',', '.');
+    }
+}
+
+$pendapatan_formatted = format_rupiah_ringkas($total_pendapatan);
+
+// Ambil riwayat transaksi nyata untuk diplot pada grafik (7 hari terakhir secara kronologis)
+$chart_labels = [];
+$chart_data = [];
+$sales_by_date = [];
+
+// Inisialisasi data 7 hari terakhir dengan nilai 0
+for ($i = 6; $i >= 0; $i--) {
+    $date_str = date('Y-m-d', strtotime("-$i days"));
+    $label_str = date('d M', strtotime("-$i days"));
+    $sales_by_date[$date_str] = [
+        'label' => $label_str,
+        'count' => 0
+    ];
+}
+
+$seven_days_ago = date('Y-m-d', strtotime('-6 days')) . ' 00:00:00';
+$query_chart = mysqli_query($conn, "
+    SELECT DATE(tanggal_pesan) as tanggal, SUM(jumlah_tiket) as total_tiket 
+    FROM pesanan 
+    WHERE tanggal_pesan >= '$seven_days_ago'
+    GROUP BY DATE(tanggal_pesan)
+");
+
+if ($query_chart) {
+    while ($row_chart = mysqli_fetch_assoc($query_chart)) {
+        $date_key = $row_chart['tanggal'];
+        if (isset($sales_by_date[$date_key])) {
+            $sales_by_date[$date_key]['count'] = intval($row_chart['total_tiket']);
+        }
+    }
+}
+
+foreach ($sales_by_date as $date_info) {
+    $chart_labels[] = $date_info['label'];
+    $chart_data[] = $date_info['count'];
+}
 ?>
 
 <!DOCTYPE html>
@@ -38,23 +113,30 @@ $pendapatan_jt = number_format($total_pendapatan / 1000000, 1, ',', '.');
     <link rel="stylesheet" href="assets/style/admin-style.css">
     <link rel="stylesheet" href="assets/style/style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        window.dbStats = {
+            totalSold: <?php echo intval($total_tiket_terjual); ?>,
+            totalCapacity: <?php echo intval($total_kapasitas); ?>,
+            totalRevenue: <?php echo floatval($total_pendapatan); ?>
+        };
+        window.chartData = {
+            labels: <?php echo json_encode($chart_labels); ?>,
+            data: <?php echo json_encode($chart_data); ?>
+        };
+    </script>
     <script src="assets/script/script.js"></script>
     
 </head>
 <body class="admin-body">
 
     <header class="header-user">
-        <div class="logo-area">
+        <div class="logo-area" onclick="window.location.href='admin-dashboard.php'" style="cursor: pointer;">
             <img src="assets/img/logo.png" alt="Logo"> <label>NTBeat</label>
         </div>
-        <div class="user-profile-nav" style="cursor: pointer;" onclick="document.getElementById('profileModal').style.display='flex'">
-            <span style="color: white; font-size: 0.9rem;">Administrator</span>
-            <div class="avatar-placeholder" onclick="window.location.href = 'admin-profil.php'">A</div>
+        <div class="user-profile-nav" onclick="window.location.href = 'admin-profil.php'" style="cursor: pointer;">
+            <span style="color: white; font-size: 0.9rem; margin-right: 10px;"><?php echo htmlspecialchars($nama_user); ?></span>
+            <div class="avatar-placeholder" style="<?php echo $avatar_style; ?>"><?php echo $inisial; ?></div>
         </div>
-        <!-- <div class="user-profile-nav">
-            <span style="color: white; font-size: 0.9rem;">Administrator</span>
-            <div class="avatar-placeholder">A</div>
-        </div> -->
     </header>
 
     <div class="dashboard-layout">
@@ -83,24 +165,23 @@ $pendapatan_jt = number_format($total_pendapatan / 1000000, 1, ',', '.');
                     <div class="trend positive">↑ Data Realtime</div>
                 </div>
                 <div class="card-admin">
-                    <span class="stat-label">Sisa Kuota (All Events)</span>
+                    <span class="stat-label">Sisa Kuota (Semua Acara)</span>
                     <div class="stat-value" id="remaining-count">
                         <?php echo number_format($sisa_kuota, 0, ',', '.'); ?>
                     </div>
                     <div class="stat-sub">Kapasitas: <?php echo number_format($total_kapasitas, 0, ',', '.'); ?></div>
                 </div>
                 <div class="card-admin">
-                    <span class="stat-label">Simulasi Pendapatan</span>
+                    <span class="stat-label">Pendapatan</span>
                     <div class="stat-value gold-text" id="revenue-count">
-                        Rp <?php echo $pendapatan_jt; ?>jt
+                        <?php echo $pendapatan_formatted; ?>
                     </div>
-                    <div class="stat-sub">Target: Rp 300jt</div>
                 </div>
             </section>
 
             <div class="analytics-grid">
                 <div class="chart-box">
-                    <h3>Tren Penjualan Per Jam</h3>
+                    <h3>Tren Penjualan Per Hari</h3>
                     <div class="line-chart-wrapper">
                         <canvas id="ntbeatLineChart"></canvas>
                     </div>
@@ -118,8 +199,8 @@ $pendapatan_jt = number_format($total_pendapatan / 1000000, 1, ',', '.');
                         </thead>
                         <tbody>
                             <?php
-                            // Ambil data konser dari database (urutkan dari yang tiketnya paling banyak terjual)
-                            $query_konser = mysqli_query($conn, "SELECT nama_konser, tiket_terjual, kapasitas, status FROM konser ORDER BY tiket_terjual DESC LIMIT 4");
+                            // Ambil data konser dari database (urutkan dari yang tiketnya paling banyak terjual, kecualikan yang diarsip)
+                            $query_konser = mysqli_query($conn, "SELECT nama_konser, tiket_terjual, kapasitas, status FROM konser WHERE status != 'Arsip' ORDER BY tiket_terjual DESC LIMIT 4");
                             
                             // Looping (Ulangi) pembuatan baris tabel sebanyak jumlah konser yang ada
                             while ($row = mysqli_fetch_assoc($query_konser)) {

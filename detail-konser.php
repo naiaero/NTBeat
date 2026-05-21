@@ -20,8 +20,18 @@ if (mysqli_num_rows($query) > 0) {
     exit();
 }
 
-$nama_user = isset($_SESSION['nama']) ? $_SESSION['nama'] : 'User';
+$email_user = $_SESSION['email'];
+$query_user = mysqli_query($conn, "SELECT * FROM users WHERE email = '$email_user'");
+$user_data = mysqli_fetch_assoc($query_user);
+$nama_user = $user_data['nama'];
+$foto_user = isset($user_data['foto']) ? $user_data['foto'] : '';
 $inisial = strtoupper(substr($nama_user, 0, 1));
+
+$foto_path = "assets/img/" . $foto_user;
+$avatar_style = "";
+if (!empty($foto_user) && file_exists($foto_path) && $foto_user !== 'default-avatar.png' && $foto_user !== 'tds4.jpg' && $foto_user !== 'logo.png') {
+    $avatar_style = "background-image: url('$foto_path'); background-size: cover; background-position: center; color: transparent; border: 1px solid #d4af37;";
+}
 
 $sisa_tiket = intval($row['kapasitas']) - intval($row['tiket_terjual']);
 $badge_class = 'safe';
@@ -37,7 +47,7 @@ if ($sisa_tiket <= 0 || $row['status'] === 'Habis') {
 
 $poster_path = "assets/img/" . htmlspecialchars($row['poster']);
 if (empty($row['poster']) || !file_exists($poster_path)) {
-    $poster_path = "assets/img/default-poster.jpg";
+    $poster_path = "assets/img/default-poster.png";
 }
 ?>
 <!DOCTYPE html>
@@ -47,6 +57,88 @@ if (empty($row['poster']) || !file_exists($poster_path)) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detail Konser - <?php echo htmlspecialchars($row['nama_konser']); ?></title>
     <link rel="stylesheet" href="assets/style/style.css">
+    <style>
+        .qty-selector {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background-color: #1a1a1a;
+            border: 1px solid #333;
+            border-radius: 25px;
+            padding: 6px 16px;
+            width: fit-content;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);
+        }
+        .btn-qty {
+            background: none;
+            border: none;
+            color: #f1c40f;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            padding: 0 8px;
+            transition: transform 0.1s, color 0.2s;
+            outline: none;
+            display: inline-block;
+            line-height: 1;
+        }
+        .btn-qty:hover {
+            color: #fff;
+            transform: scale(1.25);
+        }
+        .btn-qty:active {
+            transform: scale(0.95);
+        }
+        .qty-input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid #444;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1.15rem;
+            font-weight: bold;
+            width: 55px;
+            padding: 4px 6px;
+            text-align: center;
+            outline: none;
+            -moz-appearance: textfield;
+            transition: all 0.2s ease-in-out;
+            cursor: text;
+        }
+        .qty-input:hover {
+            border-color: #666;
+            background: rgba(255, 255, 255, 0.08);
+        }
+        .qty-input:focus {
+            border-color: #d4af37;
+            background: rgba(212, 175, 55, 0.1);
+            box-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
+        }
+        .qty-input::-webkit-outer-spin-button,
+        .qty-input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        @media (max-width: 768px) {
+            .checkout-box {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 20px;
+            }
+            .checkout-left {
+                justify-content: space-between;
+                width: 100%;
+            }
+            .btn-pesan-sekarang {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+    <script>
+        window.detailStats = {
+            sisaTiket: <?php echo intval($sisa_tiket); ?>
+        };
+    </script>
     <script src="assets/script/script.js"></script>
 </head>
 <body>
@@ -57,7 +149,7 @@ if (empty($row['poster']) || !file_exists($poster_path)) {
         </div>
         <div class="user-profile-nav">
             <span>Halo, <?php echo htmlspecialchars($nama_user); ?>!</span>
-            <div class="avatar-placeholder" onclick="window.location.href = 'profil.php'"><?php echo $inisial; ?></div>
+            <div class="avatar-placeholder" onclick="window.location.href = 'profil.php'" style="<?php echo $avatar_style; ?>"><?php echo $inisial; ?></div>
         </div>
     </nav>
 
@@ -95,9 +187,21 @@ if (empty($row['poster']) || !file_exists($poster_path)) {
             </div>
 
             <div class="checkout-box">
-                <div class="price-area">
-                    <span class="price-label">Harga Tiket</span>
-                    <span class="price-total">Rp <?php echo number_format($row['harga'], 0, ',', '.'); ?></span>
+                <div class="checkout-left" style="display: flex; gap: 30px; align-items: center;">
+                    <div class="price-area">
+                        <span class="price-label">Total Harga</span>
+                        <span class="price-total" id="price-total-display">Rp <?php echo number_format($row['harga'], 0, ',', '.'); ?></span>
+                    </div>
+                    <?php if ($sisa_tiket > 0 && $row['status'] !== 'Habis') { ?>
+                        <div class="qty-picker-wrapper" style="display: flex; flex-direction: column; gap: 5px;">
+                            <span class="price-label">Jumlah Tiket</span>
+                            <div class="qty-selector">
+                                <button type="button" class="btn-qty" onclick="changeQty(-1)">-</button>
+                                <input type="number" id="qty-input" class="qty-input" value="1" min="1" max="<?php echo $sisa_tiket; ?>" oninput="updateQtyFromInput(this.value)" onblur="finalizeQtyInput(this)" onkeydown="if(event.key==='.' || event.key==='e' || event.key==='E' || event.key==='-' || event.key==='+') event.preventDefault();">
+                                <button type="button" class="btn-qty" onclick="changeQty(1)">+</button>
+                            </div>
+                        </div>
+                    <?php } ?>
                 </div>
                 <?php if ($sisa_tiket > 0 && $row['status'] !== 'Habis') { ?>
                     <button class="btn-pesan-sekarang" onclick="bookingTiket()">Pesan Tiket Sekarang</button>
@@ -110,15 +214,109 @@ if (empty($row['poster']) || !file_exists($poster_path)) {
 
     <form id="booking-form" action="pesan-tiket-proses.php" method="POST" style="display:none;">
         <input type="hidden" name="konser_id" value="<?php echo $row['id']; ?>">
-        <input type="hidden" name="jumlah_tiket" value="1">
-        <input type="hidden" name="total_harga" value="<?php echo $row['harga']; ?>">
+        <input type="hidden" id="jumlah_tiket_input" name="jumlah_tiket" value="1">
+        <input type="hidden" id="total_harga_input" name="total_harga" value="<?php echo $row['harga']; ?>">
     </form>
 
     <script>
+    const basePrice = <?php echo intval($row['harga']); ?>;
+    const maxQty = <?php echo intval($sisa_tiket); ?>;
+    let currentQty = 1;
+
+    function formatRupiah(number) {
+        return 'Rp ' + number.toLocaleString('id-ID');
+    }
+
+    function changeQty(amount) {
+        const nextQty = currentQty + amount;
+        if (nextQty >= 1 && nextQty <= maxQty) {
+            currentQty = nextQty;
+            
+            // Update input value
+            document.getElementById('qty-input').value = currentQty;
+            
+            // Calculate total price
+            const totalPrice = currentQty * basePrice;
+            
+            // Update display total price
+            document.getElementById('price-total-display').innerText = formatRupiah(totalPrice);
+            
+            // Update form inputs
+            document.getElementById('jumlah_tiket_input').value = currentQty;
+            document.getElementById('total_harga_input').value = totalPrice;
+        } else if (nextQty > maxQty && amount > 0) {
+            alert('Jumlah pembelian melebihi tiket yang tersedia.');
+        }
+    }
+
+    function updateQtyFromInput(val) {
+        if (val === '') {
+            currentQty = 0;
+            document.getElementById('price-total-display').innerText = formatRupiah(0);
+            document.getElementById('jumlah_tiket_input').value = '';
+            document.getElementById('total_harga_input').value = 0;
+            return;
+        }
+        
+        let numericVal = parseInt(val, 10);
+        if (isNaN(numericVal)) {
+            return;
+        }
+        
+        if (numericVal < 0) {
+            numericVal = 0;
+        } else if (numericVal > maxQty) {
+            numericVal = maxQty;
+            alert('Jumlah pembelian melebihi tiket yang tersedia.');
+        }
+        
+        currentQty = numericVal;
+        
+        // Sync input value in case of clamping
+        const qtyInput = document.getElementById('qty-input');
+        if (qtyInput && parseInt(qtyInput.value, 10) !== currentQty) {
+            qtyInput.value = currentQty;
+        }
+        
+        // Calculate total price
+        const totalPrice = currentQty * basePrice;
+        
+        // Update display total price
+        document.getElementById('price-total-display').innerText = formatRupiah(totalPrice);
+        
+        // Update form inputs
+        document.getElementById('jumlah_tiket_input').value = currentQty;
+        document.getElementById('total_harga_input').value = totalPrice;
+    }
+
+    function finalizeQtyInput(inputEl) {
+        let val = parseInt(inputEl.value, 10);
+        if (isNaN(val) || val < 1) {
+            val = 1;
+        } else if (val > maxQty) {
+            val = maxQty;
+        }
+        inputEl.value = val;
+        updateQtyFromInput(val.toString());
+    }
+
     function bookingTiket() {
+        const qtyInput = document.getElementById('qty-input');
+        if (qtyInput) {
+            finalizeQtyInput(qtyInput);
+        }
+        
+        if (currentQty < 1) {
+            alert('Silakan masukkan jumlah tiket minimal 1.');
+            if (qtyInput) {
+                qtyInput.focus();
+            }
+            return;
+        }
+        
         const namaKonser = <?php echo json_encode($row['nama_konser']); ?>;
-        const harga = <?php echo json_encode("Rp " . number_format($row['harga'], 0, ',', '.')); ?>;
-        const yakin = confirm(`Konfirmasi Pesanan:\n\nAcara: ${namaKonser}\nTotal: ${harga}\n\nApakah Anda ingin melanjutkan ke pembayaran?`);
+        const formattedTotal = formatRupiah(currentQty * basePrice);
+        const yakin = confirm(`Konfirmasi Pesanan:\n\nAcara: ${namaKonser}\nJumlah: ${currentQty} Tiket\nTotal: ${formattedTotal}\n\nApakah Anda ingin melanjutkan ke pembayaran?`);
         if (yakin) {
             document.getElementById('booking-form').submit();
         }

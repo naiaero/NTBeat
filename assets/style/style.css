@@ -1135,22 +1135,21 @@ body {
   margin-bottom: 15px;
   font-weight: bold;
   font-size: 0.8rem;
+  overflow: hidden;
+  border: 1px solid #333;
 }
 
-.btn-unduh {
-  background-color: transparent;
-  color: #f1c40f;
-  border: 1px solid #f1c40f;
-  padding: 8px 20px;
-  border-radius: 20px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: all 0.3s;
+.qr-placeholder img,
+.qr-placeholder canvas {
+  width: 90px;
+  height: 90px;
+  display: block;
 }
 
-.btn-unduh:hover {
-  background-color: #f1c40f;
-  color: #1a1a1a;
+.qr-placeholder.expired {
+  opacity: 0.5;
+  filter: grayscale(100%);
+  background-color: #e0e0e0;
 }
 
 /* --- Gaya untuk tiket yang sudah kedaluwarsa/riwayat --- */

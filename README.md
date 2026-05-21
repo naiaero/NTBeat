@@ -113,7 +113,7 @@ Skema pangkalan data proyek didukung oleh tiga entitas relasional utama:
 | `harga` | DECIMAL(10,2) | NOT NULL | Tarif nominal harga per tiket |
 | `kapasitas` | INT(11) | NOT NULL | Kuota kapasitas total penonton |
 | `tiket_terjual` | INT(11) | DEFAULT 0 | Kuantitas tiket yang sudah dipesan |
-| `poster` | VARCHAR(255) | DEFAULT 'default-poster.jpg' | Path berkas gambar poster konser |
+| `poster` | VARCHAR(255) | DEFAULT 'default-poster.png' | Path berkas gambar poster konser |
 | `status` | ENUM(...) | DEFAULT 'Tersedia' | Status kuota ('Tersedia','Hampir Habis','Habis','Selesai','Arsip') |
 | `created_at` | TIMESTAMP | DEFAULT current_timestamp() | Jejak penambahan data pertunjukan |
 

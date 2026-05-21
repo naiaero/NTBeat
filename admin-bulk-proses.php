@@ -16,11 +16,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ids']) && is_array($_P
     $ids_string = implode(',', $ids);
 
     if ($action_type === 'delete') {
-        // Hapus poster gambar jika bukan default-poster.jpg sebelum menghapus dari DB
+        // Hapus poster gambar jika bukan default-poster.png sebelum menghapus dari DB
         $query_get_posters = mysqli_query($conn, "SELECT poster FROM konser WHERE id IN ($ids_string)");
         while ($row = mysqli_fetch_assoc($query_get_posters)) {
             $poster = $row['poster'];
-            if ($poster !== 'default-poster.jpg' && !empty($poster)) {
+            if ($poster !== 'default-poster.png' && !empty($poster)) {
                 $file_path = "assets/img/" . $poster;
                 if (file_exists($file_path)) {
                     unlink($file_path);

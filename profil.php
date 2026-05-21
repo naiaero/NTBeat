@@ -8,8 +8,23 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'customer') {
     exit();
 }
 
-$nama_user = isset($_SESSION['nama']) ? $_SESSION['nama'] : 'User';
+$email_user = $_SESSION['email'];
+$query_user = mysqli_query($conn, "SELECT * FROM users WHERE email = '$email_user'");
+$user_data = mysqli_fetch_assoc($query_user);
+$nama_user = $user_data['nama'];
+$foto_user = isset($user_data['foto']) ? $user_data['foto'] : '';
 $inisial = strtoupper(substr($nama_user, 0, 1));
+
+$foto_path = "assets/img/" . $foto_user;
+$avatar_style = "";
+if (!empty($foto_user) && file_exists($foto_path) && $foto_user !== 'default-avatar.png' && $foto_user !== 'tds4.jpg' && $foto_user !== 'logo.png') {
+    $avatar_style = "background-image: url('$foto_path'); background-size: cover; background-position: center; color: transparent; border: 1px solid #d4af37;";
+}
+
+// Fallback for profile settings page picture preview image
+if (empty($foto_user) || !file_exists($foto_path) || $foto_user === 'default-avatar.png') {
+    $foto_path = "assets/img/default-avatar.png";
+}
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -31,21 +46,17 @@ $inisial = strtoupper(substr($nama_user, 0, 1));
       </div>
       <div class="user-profile-nav">
         <span>Halo, <?php echo htmlspecialchars($nama_user); ?>!</span>
-        <div class="avatar-placeholder" onclick="window.location.href = 'profil.php'"><?php echo $inisial; ?></div>
+        <div class="avatar-placeholder" onclick="window.location.href = 'profil.php'" style="<?php echo $avatar_style; ?>"><?php echo $inisial; ?></div>
       </div>
     </nav>
 
     <div class="dashboard-layout">
       <aside class="sidebar">
         <ul class="sidebar-menu">
-          <li onclick="window.location.href = 'halaman-awal.php'">
-            📅 Daftar Konser
-          </li>
-          <li onclick="window.location.href = 'tiket-saya.php'">
-            🎟️ Tiket Saya & Riwayat
-          </li>
-          <li class="active">⚙️ Profil Akun</li>
-          <li onclick="openLogoutModal()">🚪 Keluar</li>
+          <li onclick="window.location.href = 'halaman-awal.php'">Daftar Konser</li>
+          <li onclick="window.location.href = 'tiket-saya.php'">Tiket Saya & Riwayat</li>
+          <li class="active">Profil Akun</li>
+          <li onclick="openLogoutModal()">Keluar</li>
         </ul>
       </aside>
 
@@ -59,21 +70,24 @@ $inisial = strtoupper(substr($nama_user, 0, 1));
           </div>
 
           <div class="ps-card">
-            <div class="ps-avatar-section">
-              <div class="ps-avatar-wrapper">
-                <img src="assets/img/tds4.jpg" alt="Foto Profil" />
-                <div class="ps-edit-icon">✏️</div>
+            <form class="ps-form" action="update-profile-proses.php" method="POST" enctype="multipart/form-data" id="profile-form">
+              <div class="ps-avatar-section">
+                <div class="ps-avatar-wrapper">
+                  <img id="avatar-preview" src="<?php echo htmlspecialchars($foto_path); ?>" alt="Foto Profil" />
+                  <label for="avatar-input" class="ps-edit-icon">✏️</label>
+                  <input type="file" id="avatar-input" name="foto" style="display: none;" accept="image/*" />
+                </div>
               </div>
-            </div>
 
-            <form class="ps-form" action="#" id="profile-form">
               <div class="ps-form-group">
                 <label for="username">Nama</label>
                 <input
                   type="text"
                   id="username"
+                  name="nama"
                   class="ps-input"
                   value="<?php echo htmlspecialchars($nama_user); ?>"
+                  required
                 />
               </div>
 
@@ -96,6 +110,7 @@ $inisial = strtoupper(substr($nama_user, 0, 1));
                 <input
                   type="password"
                   id="current_password"
+                  name="current_password"
                   class="ps-input"
                   placeholder="Masukkan password lama"
                 />
@@ -106,6 +121,7 @@ $inisial = strtoupper(substr($nama_user, 0, 1));
                 <input
                   type="password"
                   id="new_password"
+                  name="new_password"
                   class="ps-input"
                   placeholder="Masukkan password baru"
                 />

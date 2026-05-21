@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS `konser` (
   `harga` decimal(10,2) NOT NULL,
   `kapasitas` int(11) NOT NULL,
   `tiket_terjual` int(11) DEFAULT 0,
-  `poster` varchar(255) DEFAULT 'default-poster.jpg',
+  `poster` varchar(255) DEFAULT 'default-poster.png',
   `status` enum('Tersedia','Hampir Habis','Habis','Selesai','Arsip') DEFAULT 'Tersedia',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   PRIMARY KEY (`id`)

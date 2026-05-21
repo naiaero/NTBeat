@@ -8,9 +8,23 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     exit();
 }
 
-$nama_user = isset($_SESSION['nama']) ? $_SESSION['nama'] : 'Administrator';
-$email_user = isset($_SESSION['email']) ? $_SESSION['email'] : 'admin@ntbeat.com';
+$email_user = $_SESSION['email'];
+$query_user = mysqli_query($conn, "SELECT * FROM users WHERE email = '$email_user'");
+$user_data = mysqli_fetch_assoc($query_user);
+$nama_user = $user_data['nama'];
+$foto_user = isset($user_data['foto']) ? $user_data['foto'] : '';
 $inisial = strtoupper(substr($nama_user, 0, 1));
+
+$foto_path = "assets/img/" . $foto_user;
+$avatar_style = "";
+if (!empty($foto_user) && file_exists($foto_path) && $foto_user !== 'default-avatar.png' && $foto_user !== 'tds4.jpg' && $foto_user !== 'logo.png') {
+    $avatar_style = "background-image: url('$foto_path'); background-size: cover; background-position: center; color: transparent; border: 1px solid #d4af37;";
+}
+
+// Fallback for profile settings page picture preview image
+if (empty($foto_user) || !file_exists($foto_path) || $foto_user === 'default-avatar.png') {
+    $foto_path = "assets/img/default-avatar.png";
+}
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -29,9 +43,9 @@ $inisial = strtoupper(substr($nama_user, 0, 1));
             <img src="assets/img/logo.png" alt="Logo"> 
             <label>NTBeat</label>
         </div>
-        <div class="user-profile-nav">
-            <span style="color: white; font-size: 0.9rem;">Administrator</span>
-            <div class="avatar-placeholder" onclick="window.location.href = 'admin-profil.php'"><?php echo $inisial; ?></div>
+        <div class="user-profile-nav" onclick="window.location.href = 'admin-profil.php'" style="cursor: pointer;">
+            <span style="color: white; font-size: 0.9rem; margin-right: 10px;"><?php echo htmlspecialchars($nama_user); ?></span>
+            <div class="avatar-placeholder" style="<?php echo $avatar_style; ?>"><?php echo $inisial; ?></div>
         </div>
     </header>
 
@@ -55,16 +69,18 @@ $inisial = strtoupper(substr($nama_user, 0, 1));
                 </div>
 
                 <div class="ps-card">
-                    <div class="ps-avatar-section">
-                        <div class="ps-avatar-wrapper">
-                            <div class="avatar-placeholder" style="width: 100px; height: 100px; font-size: 2.5rem; border-radius: 50%; margin: 0 auto;"><?php echo $inisial; ?></div>
+                    <form class="ps-form" id="admin-profile-form" action="update-profile-proses.php" method="POST" enctype="multipart/form-data">
+                        <div class="ps-avatar-section">
+                            <div class="ps-avatar-wrapper" style="position: relative; width: 100px; height: 100px; margin: 0 auto;">
+                                <img id="avatar-preview" src="<?php echo htmlspecialchars($foto_path); ?>" alt="Foto Profil" style="width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 1px solid #333;" />
+                                <label for="avatar-input" class="ps-edit-icon" style="position: absolute; bottom: 0; right: 0; background: #d4af37; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 0.8rem; border: 1px solid #333; z-index: 10;">✏️</label>
+                                <input type="file" id="avatar-input" name="foto" style="display: none;" accept="image/*" />
+                            </div>
                         </div>
-                    </div>
 
-                    <form class="ps-form" id="admin-profile-form" action="#">
                         <div class="ps-form-group">
                             <label for="nama">Nama</label>
-                            <input type="text" id="username" class="ps-input" value="<?php echo htmlspecialchars($nama_user); ?>" required />
+                            <input type="text" id="username" name="nama" class="ps-input" value="<?php echo htmlspecialchars($nama_user); ?>" required />
                         </div>
 
                         <div class="ps-form-group">
@@ -76,12 +92,12 @@ $inisial = strtoupper(substr($nama_user, 0, 1));
 
                         <div class="ps-form-group">
                             <label for="current_password">Password Saat Ini</label>
-                            <input type="password" id="current_password" class="ps-input" placeholder="Masukkan password lama" />
+                            <input type="password" id="current_password" name="current_password" class="ps-input" placeholder="Masukkan password lama" />
                         </div>
 
                         <div class="ps-form-group">
                             <label for="new_password">Password Baru</label>
-                            <input type="password" id="new_password" class="ps-input" placeholder="Masukkan password baru" />
+                            <input type="password" id="new_password" name="new_password" class="ps-input" placeholder="Masukkan password baru" />
                         </div>
 
                         <div class="ps-action-bar">

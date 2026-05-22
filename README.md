@@ -77,28 +77,23 @@ Sistem NTBeat membagi tingkat otorisasi hak akses ke dalam dua jenis pengguna ut
 
 ## 💻 Tech Stack & Pustaka Eksternal
 
-Aplikasi NTBeat dibangun menggunakan kombinasi teknologi modern berbasis web *native* tanpa framework berat, guna menjamin performa eksekusi kode yang cepat dan ringan pada sisi server maupun peramban:
+Aplikasi NTBeat dibangun menggunakan kombinasi teknologi modern berbasis web *native* tanpa framework.
 
 ### 🎨 Sisi Klien (Frontend)
-* **HTML5:** Kerangka dasar pengorganisasian elemen struktur halaman, formulir autentikasi, dan komponen tabel transaksional.
-* **CSS3 (Custom Grid Layout):** Penataan estetika visual global menggunakan metode *gradient flow* maroon-gelap (`radial-gradient`), interaksi responsif media queries, serta arsitektur tata letak khusus panel admin menggunakan fitur **CSS Grid**.
-* **JavaScript (Vanilla JS):** Logika interaktif pada antarmuka pengguna tanpa dependensi jQuery. Menangani operasi manipulasi DOM, fitur *live search filter* nama konser, fungsionalitas tombol aksi massal (*bulk checkbox UI*), peninjau instan unggahan poster (*FileReader Image Preview*), serta manajemen kontrol visual elemen modal jendela.
+* **HTML5**
+* **CSS3**
+* **JavaScript**
 
-### ⚙️ Sisi Server & Logika Bisnis (Backend)
-* **PHP Native (Kompatibilitas v8.2+):** Mesin pemroses logika sisi server utama. Mengimplementasikan beberapa teknik fungsionalitas tingkat lanjut seperti:
-    * **Ekstensi MySQLi:** Jembatan kueri relasional berorientasi objek/prosedural aman.
-    * **State Management Sessions:** Pemanfaatan `session_start()` untuk menjaga data persisten kredensial login dan pembatasan hak otorisasi multi-role (*Admin & Customer*).
-    * **Database Transaction (ACID System):** Menggunakan `mysqli_begin_transaction()`, `mysqli_commit()`, dan `mysqli_rollback()` pada skrip pemesanan tiket guna mencegah anomali data (kondisi balapan kuota/ *race condition*).
-    * **Keamanan Kriptografi:** Validasi akun menggunakan fungsi `password_hash()` (algoritma `PASSWORD_DEFAULT`) dan `password_verify()` untuk memitigasi kebocoran kredensial di pangkalan data.
-    * **Manipulasi Fail Sistem Lokal:** Operasi `move_uploaded_file()` untuk manajemen berkas gambar dinamis (poster konser dan avatar pengguna) serta `unlink()` untuk membersihkan berkas sampah yang sudah dihapus/diganti dari disk server.
+### ⚙️ Sisi Server (Backend)
+* **PHP Native (Kompatibilitas v8.2+)**
 
 ### 🗄️ Manajemen Data & Server Lokal
-* **MySQL / MariaDB:** Sistem Manajemen Basis Data Relasional (*RDBMS*) untuk menyimpan entitas tabel relasi pengguna, konser musik, dan log pesanan.
-* **Apache HTTP Server:** Server web lokal yang dijalankan melalui paket *XAMPP Control Panel*.
+* **MySQL / MariaDB**
+* **Apache HTTP Server**
 
-### 📚 Pustaka Eksternal Terintegrasi (via CDN)
-* **Chart.js (v4.x):** Library visualisasi grafik JavaScript untuk merender bagan tren penjualan tiket per hari secara dinamis dan interaktif menggunakan elemen `<canvas>` pada dasbor administrator.
-* **QRCode.js:** Library utilitas penampil enkripsi teks untuk mengubah kode invoice `order_id` transaksi pesanan menjadi bentuk visual kode QR (QR Code) siap-pindai pada tiket aktif pengguna.
+### 📚 Pustaka Eksternal
+* **Chart.js (v4.x)**
+* **QRCode.js**
 
 ---
 
@@ -179,7 +174,7 @@ Ikuti langkah-langkah di bawah ini untuk mengonfigurasi dan menguji sistem di li
 
 1. **Unduh atau Clone Repositori:**
 ```bash
-git clone [https://github.com/naiaero/ntbeat.git](https://github.com/naiaero/ntbeat.git)
+git clone [https://github.com/naiaero/ntbeat.git]
 
 ```
 

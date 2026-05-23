@@ -57,6 +57,7 @@ CREATE TABLE IF NOT EXISTS `konser` (
   `tanggal` date NOT NULL,
   `waktu` time NOT NULL,
   `lokasi` varchar(150) NOT NULL,
+  `deskripsi` text DEFAULT NULL,
   `harga` decimal(10,2) NOT NULL,
   `kapasitas` int(11) NOT NULL,
   `tiket_terjual` int(11) DEFAULT 0,

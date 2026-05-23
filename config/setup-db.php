@@ -33,6 +33,7 @@ $query_konser = "CREATE TABLE IF NOT EXISTS `konser` (
   `tanggal` date NOT NULL,
   `waktu` time NOT NULL,
   `lokasi` varchar(150) NOT NULL,
+  `deskripsi` text DEFAULT NULL,
   `harga` decimal(10,2) NOT NULL,
   `kapasitas` int(11) NOT NULL,
   `tiket_terjual` int(11) DEFAULT 0,
@@ -76,20 +77,20 @@ $row = mysqli_fetch_assoc($check_empty);
 
 if ($row['total'] == 0) {
     $insert_queries = [
-        "INSERT INTO `konser` (`nama_konser`, `lineup`, `tanggal`, `waktu`, `lokasi`, `harga`, `kapasitas`, `tiket_terjual`, `status`, `poster`) VALUES
-        ('Mataram Sound Wave', 'Pamungkas, Hindia, Isyana Sarasvati', '2026-08-25', '19:00:00', 'Eks Bandara Selaparang', 150000.00, 1000, 880, 'Hampir Habis', 'default-poster.png')",
+        "INSERT INTO `konser` (`nama_konser`, `lineup`, `tanggal`, `waktu`, `lokasi`, `deskripsi`, `harga`, `kapasitas`, `tiket_terjual`, `status`, `poster`) VALUES
+        ('Mataram Sound Wave', 'Pamungkas, Hindia, Isyana Sarasvati', '2026-08-25', '19:00:00', 'Eks Bandara Selaparang', 'Live music event featuring local and international artists.', 150000.00, 1000, 880, 'Hampir Habis', 'default-poster.png')",
         
-        "INSERT INTO `konser` (`nama_konser`, `lineup`, `tanggal`, `waktu`, `lokasi`, `harga`, `kapasitas`, `tiket_terjual`, `status`, `poster`) VALUES
-        ('Senggigi Jazz Night', 'Tompi, Raisa, Maliq & D\'Essentials', '2026-06-20', '20:00:00', 'Pantai Senggigi', 150000.00, 1000, 540, 'Tersedia', 'default-poster.png')",
+        "INSERT INTO `konser` (`nama_konser`, `lineup`, `tanggal`, `waktu`, `lokasi`, `deskripsi`, `harga`, `kapasitas`, `tiket_terjual`, `status`, `poster`) VALUES
+        ('Senggigi Jazz Night', 'Tompi, Raisa, Maliq & D\'Essentials', '2026-06-20', '20:00:00', 'Pantai Senggigi', 'Evening jazz performance featuring local and international artists.', 150000.00, 1000, 540, 'Tersedia', 'default-poster.png')",
         
-        "INSERT INTO `konser` (`nama_konser`, `lineup`, `tanggal`, `waktu`, `lokasi`, `harga`, `kapasitas`, `tiket_terjual`, `status`, `poster`) VALUES
-        ('Festival Budaya Sasak', 'Gendang Beleq community, Local Musicians', '2026-07-12', '16:00:00', 'Lapangan Mataram', 100000.00, 1500, 120, 'Tersedia', 'default-poster.png')",
+        "INSERT INTO `konser` (`nama_konser`, `lineup`, `tanggal`, `waktu`, `lokasi`, `deskripsi`, `harga`, `kapasitas`, `tiket_terjual`, `status`, `poster`) VALUES
+        ('Festival Budaya Sasak', 'Gendang Beleq community, Local Musicians', '2026-07-12', '16:00:00', 'Lapangan Mataram', 'Festival budaya yang menampilkan berbagai seni tradisional dari Pulau Lombok.', 100000.00, 1500, 120, 'Tersedia', 'default-poster.png')",
 
-        "INSERT INTO `konser` (`nama_konser`, `lineup`, `tanggal`, `waktu`, `lokasi`, `harga`, `kapasitas`, `tiket_terjual`, `status`, `poster`) VALUES
-        ('Symphony of Lombok', 'Lombok Philharmonic Orchestra', '2026-05-15', '19:00:00', 'Taman Budaya NTB, Mataram', 250000.00, 5000, 4955, 'Hampir Habis', 'default-poster.png')",
+        "INSERT INTO `konser` (`nama_konser`, `lineup`, `tanggal`, `waktu`, `lokasi`, `deskripsi`, `harga`, `kapasitas`, `tiket_terjual`, `status`, `poster`) VALUES
+        ('Symphony of Lombok', 'Lombok Philharmonic Orchestra', '2026-05-15', '19:00:00', 'Taman Budaya NTB, Mataram', 'Classical music performance by the Lombok Philharmonic Orchestra.', 250000.00, 5000, 4955, 'Hampir Habis', 'default-poster.png')",
         
-        "INSERT INTO `konser` (`nama_konser`, `lineup`, `tanggal`, `waktu`, `lokasi`, `harga`, `kapasitas`, `tiket_terjual`, `status`, `poster`) VALUES
-        ('NCT Dream Live on Screen', 'NCT Dream', '2026-06-20', '18:30:00', 'Epicentrum Mall Atrium', 150000.00, 2000, 1420, 'Tersedia', 'default-poster.png')"
+        "INSERT INTO `konser` (`nama_konser`, `lineup`, `tanggal`, `waktu`, `lokasi`, `deskripsi`, `harga`, `kapasitas`, `tiket_terjual`, `status`, `poster`) VALUES
+        ('NCT Dream Live on Screen', 'NCT Dream', '2026-06-20', '18:30:00', 'Epicentrum Mall Atrium', 'Live performance of the popular K-pop group NCT Dream.', 150000.00, 2000, 1420, 'Tersedia', 'default-poster.png')"
     ];
 
     $success = true;

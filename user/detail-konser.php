@@ -33,11 +33,19 @@ if (!empty($foto_user) && file_exists($foto_path) && $foto_user !== 'default-ava
     $avatar_style = "background-image: url('$foto_path'); background-size: cover; background-position: center; color: transparent; border: 1px solid #d4af37;";
 }
 
+date_default_timezone_set('Asia/Makassar'); // Menggunakan zona waktu WITA
+$waktu_sekarang = time();
+$waktu_konser = strtotime($row['tanggal'] . ' ' . $row['waktu']);
+$sudah_lewat = ($waktu_konser < $waktu_sekarang);
+
 $sisa_tiket = intval($row['kapasitas']) - intval($row['tiket_terjual']);
 $badge_class = 'safe';
 $sisa_text = 'Tersedia';
 
-if ($sisa_tiket <= 0 || $row['status'] === 'Habis') {
+if ($sudah_lewat) {
+    $badge_class = 'urgent';
+    $sisa_text = 'Berakhir';
+} elseif ($sisa_tiket <= 0 || $row['status'] === 'Habis') {
     $badge_class = 'urgent';
     $sisa_text = 'Habis';
 } elseif ($sisa_tiket <= 150 || $row['status'] === 'Hampir Habis') {
@@ -192,7 +200,7 @@ if (empty($row['poster']) || !file_exists($poster_path)) {
                     <span class="price-label">Total Harga</span>
                     <span class="price-total" id="price-total-display">Rp <?php echo number_format($row['harga'], 0, ',', '.'); ?></span>
                 </div>
-                <?php if ($sisa_tiket > 0 && $row['status'] !== 'Habis') { ?>
+                <?php if (!$sudah_lewat && $sisa_tiket > 0 && $row['status'] !== 'Habis') { ?>
                     <div class="qty-picker-wrapper" style="display: flex; flex-direction: column; gap: 5px; align-items: center;">
                         <span class="price-label">Jumlah Tiket</span>
                         <div class="qty-selector">
@@ -202,7 +210,10 @@ if (empty($row['poster']) || !file_exists($poster_path)) {
                         </div>
                     </div>
                 <?php } ?>
-                <?php if ($sisa_tiket > 0 && $row['status'] !== 'Habis') { ?>
+                
+                <?php if ($sudah_lewat) { ?>
+                    <button class="btn-pesan-sekarang" disabled style="background-color: #555; color: #888; cursor: not-allowed;">Sudah Berakhir</button>
+                <?php } elseif ($sisa_tiket > 0 && $row['status'] !== 'Habis') { ?>
                     <button class="btn-pesan-sekarang" onclick="bookingTiket()">Pesan</button>
                 <?php } else { ?>
                     <button class="btn-pesan-sekarang" disabled style="background-color: #555; color: #888; cursor: not-allowed;">Tiket Habis</button>

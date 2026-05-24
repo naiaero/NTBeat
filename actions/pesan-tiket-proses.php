@@ -28,6 +28,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['konser_id'])) {
     }
 
     $konser = mysqli_fetch_assoc($query_konser);
+    
+    // Validasi waktu konser (tidak boleh pesan jika sudah lewat)
+    date_default_timezone_set('Asia/Makassar');
+    $waktu_konser = strtotime($konser['tanggal'] . ' ' . $konser['waktu']);
+    if ($waktu_konser < time()) {
+        echo "<script>
+                alert('Gagal memesan! Acara ini sudah berakhir dan tiket tidak lagi tersedia.');
+                window.location.href = '../user/detail-konser.php?id=$konser_id';
+              </script>";
+        exit();
+    }
+
     $kapasitas = intval($konser['kapasitas']);
     $tiket_terjual = intval($konser['tiket_terjual']);
     $sisa_tiket = $kapasitas - $tiket_terjual;

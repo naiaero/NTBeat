@@ -73,11 +73,18 @@ if (!empty($foto_user) && file_exists($foto_path) && $foto_user !== 'default-ava
               while ($row = mysqli_fetch_assoc($query)) {
                   $sisa_tiket = intval($row['kapasitas']) - intval($row['tiket_terjual']);
                   
+                  date_default_timezone_set('Asia/Makassar');
+                  $waktu_konser = strtotime($row['tanggal'] . ' ' . $row['waktu']);
+                  $sudah_lewat = ($waktu_konser < time());
+
                   // Tentukan class/status sisa tiket
                   $badge_class = 'safe';
                   $sisa_text = number_format($sisa_tiket, 0, ',', '.') . " org";
                   
-                  if ($sisa_tiket <= 0 || $row['status'] === 'Habis') {
+                  if ($sudah_lewat) {
+                      $badge_class = 'urgent';
+                      $sisa_text = 'Berakhir';
+                  } elseif ($sisa_tiket <= 0 || $row['status'] === 'Habis') {
                       $badge_class = 'urgent';
                       $sisa_text = 'Habis';
                   } elseif ($sisa_tiket <= 150 || $row['status'] === 'Hampir Habis') {
@@ -133,7 +140,7 @@ if (!empty($foto_user) && file_exists($foto_path) && $foto_user !== 'default-ava
                         <button 
                           class="btn-beli" 
                           data-id="<?php echo $row['id']; ?>"
-                          <?php if ($sisa_tiket <= 0 || $row['status'] === 'Habis') echo 'disabled style="opacity: 0.5; cursor: not-allowed;"'; ?>
+                          <?php if ($sudah_lewat || $sisa_tiket <= 0 || $row['status'] === 'Habis') echo 'disabled style="opacity: 0.5; cursor: not-allowed;"'; ?>
                         >
                           Pesan
                         </button>

@@ -1,4 +1,4 @@
-/* === RESET & GLOBAL STYLES === */
+/* === GLOBAL STYLES === */
 body {
   background: radial-gradient(circle, #2a0202, rgb(92, 7, 7));
   margin: 0;
@@ -507,13 +507,12 @@ body {
 /* --- HALAMAN Register --- */
 /* halaman awal user */
 
-/* Mengatur container utama nav bar dengan warna background maroon baru */
 .header-user {
   display: flex;
-  align-items: center; /* Menyelaraskan item di tengah secara vertikal */
-  padding: 15px 5%; /* Memberikan jarak atas-bawah dan kiri-kanan */
-  background-color: #5d1016; /* Warna maroon yang dalam, diambil dari gambar */
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3); /* Bayangan yang sedikit lebih kuat untuk latar belakang gelap */
+  align-items: center;
+  padding: 15px 5%;
+  background-color: #5d1016;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   gap: 15px; /* Jarak standar antar elemen */
 }
@@ -529,9 +528,9 @@ body {
 .header-user label {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #ffffff; /* Warna putih agar kontras dengan latar belakang gelap */
-  margin-right: 20px; /* Memberi jarak lebih sebelum search bar */
-  white-space: nowrap; /* Mencegah teks turun ke baris baru */
+  color: #ffffff;
+  margin-right: 20px;
+  white-space: nowrap;
   cursor: pointer;
 }
 
@@ -542,7 +541,7 @@ body {
   padding: 10px 20px;
   background-color: #ffffff; /* Latar belakang search bar tetap putih */
   border: 1px solid #7e191b; /* Border sedikit lebih gelap untuk sedikit kontras */
-  border-radius: 25px; /* Membuat ujungnya membulat (pill shape) */
+  border-radius: 25px;
   outline: none;
   font-size: 0.95rem;
   color: #333333; /* Warna teks di dalam search bar */
@@ -564,7 +563,7 @@ body {
   list-style: none; /* Menghilangkan titik (bullet) bawaan ul */
   margin: 0;
   padding: 0;
-  gap: 25px; /* Jarak antar menu */
+  gap: 25px;
   margin-right: 10px;
 }
 
@@ -890,9 +889,7 @@ body {
   background-color: #e2b40d; /* Sedikit menggelap saat di-hover */
 }
 
-/* =========================================
-   STYLE UNTUK HALAMAN DETAIL KONSER
-========================================= */
+/* STYLE UNTUK HALAMAN DETAIL KONSER */
 .detail-container {
   max-width: 1000px;
   margin: 40px auto;
@@ -1025,13 +1022,7 @@ body {
   background-color: #e2b40d;
 }
 
-/* =========================================
-   STYLE UNTUK E-TICKET (TIKET SAYA)
-========================================= */
-
-/* =========================================
-   STYLE UNTUK E-TICKET (TATA LETAK DUA KOLOM)
-========================================= */
+/* STYLE UNTUK E-TICKET (TIKET SAYA) */
 
 .tickets-split-view {
   display: grid;
@@ -1191,11 +1182,9 @@ body {
   }
 }
 
-/* =========================================
-   STYLE UNTUK HALAMAN PROFIL AKUN (USER)
-========================================= */
+/*STYLE UNTUK HALAMAN PROFIL AKUN (USER) */
 .ps-container {
-  max-width: 800px; /* Lebar dibatasi agar form tidak terlalu memanjang ke samping */
+  max-width: 800px; /* Lebar dibatasi */
   margin: 0 auto;
 }
 
@@ -1345,9 +1334,7 @@ body {
   }
 }
 
-/* =========================================
-   STYLE UNTUK HALAMAN LOGOUT (SIMPLE)
-========================================= */
+/* STYLE UNTUK HALAMAN LOGOUT */
 
 /* Mengatur posisi ke tengah, background otomatis ikut global body */
 .logout-bg {
@@ -1499,13 +1486,12 @@ body {
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.7); /* Background gelap transparan */
-  backdrop-filter: blur(5px); /* Efek blur pada halaman di belakangnya */
-  z-index: 9999; /* Pastikan di atas segalanya */
+  backdrop-filter: blur(5px); /* Efek blur pada halaman di belakang */
+  z-index: 9999; /* Pastikan di atas semuanya */
   justify-content: center;
   align-items: center;
 }
 
-/* Pastikan logout-card tetap menggunakan style yang sudah kamu buat */
 .logout-card {
   background-color: #1a1a1a;
   padding: 35px;

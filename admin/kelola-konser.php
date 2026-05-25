@@ -97,6 +97,8 @@ if (!empty($foto_user) && file_exists($foto_path) && $foto_user !== 'default-ava
                                         $badge_class = 'badge-urgent';
                                     } elseif ($row['status'] == 'Habis') {
                                         $badge_class = 'badge-danger';
+                                    } elseif ($row['status'] == 'Selesai') {
+                                        $badge_class = 'badge-completed';
                                     }
 
                                     // Hitung sisa tiket

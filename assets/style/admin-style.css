@@ -108,6 +108,9 @@
 /* Badges Status */
 .badge-urgent { color: #ff4d4d; font-weight: bold; font-size: 0.8rem; }
 .badge-safe { color: #2ecc71; font-weight: bold; font-size: 0.8rem; }
+.badge-danger { color: #ff3838; font-weight: bold; font-size: 0.8rem; }
+.badge-completed { color: #3498db; font-weight: bold; font-size: 0.8rem; }
+.badge-archived { color: #e67e22; font-weight: bold; font-size: 0.8rem; }
 
 /* Admin Table */
 .admin-table {

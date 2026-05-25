@@ -97,7 +97,12 @@ if (!empty($foto_user) && file_exists($foto_path) && $foto_user !== 'default-ava
                                     $poster_path = "../assets/img/default-poster.png";
                                 }
                                 $badge_text = $row['status'];
-                                $badge_class = $row['status'] == 'Arsip' ? 'badge-archived' : 'badge-safe';
+                                $badge_class = 'badge-safe';
+                                if ($row['status'] == 'Arsip') {
+                                    $badge_class = 'badge-archived';
+                                } elseif ($row['status'] == 'Selesai') {
+                                    $badge_class = 'badge-completed';
+                                }
                                 ?>
                                 <tr class="past-event">
                                     <td><input type="checkbox" name="ids[]" class="row-checkbox" value="<?php echo $row['id']; ?>"></td>

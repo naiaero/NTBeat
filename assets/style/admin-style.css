@@ -130,6 +130,36 @@
     font-size: 0.9rem;
 }
 
+/* Styling Mini Poster */
+.mini-poster {
+    width: 60px;
+    height: 80px;
+    border-radius: 8px;
+    background-size: cover;
+    background-position: center;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+    display: inline-block;
+    vertical-align: middle;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.mini-poster:hover {
+    transform: scale(1.08);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.5);
+    border-color: var(--gold);
+}
+
+/* Poster untuk konser yang diarsip (ada filter filter agar bernuansa masa lalu/arsip) */
+.mini-poster.archived {
+    filter: grayscale(60%) brightness(70%);
+}
+
+.mini-poster.archived:hover {
+    filter: none;
+    transform: scale(1.08);
+}
+
 /* admin kelola konser */
 /* === BULK ACTION BAR === */
 .bulk-action-bar {

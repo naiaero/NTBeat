@@ -13,8 +13,8 @@
           alert("Kata sandi baru dan konfirmasi kata sandi tidak cocok!");
           return false;
         }
-        if (password.length < 6) {
-          alert("Kata sandi harus minimal 6 karakter!");
+        if (password.length < 8) {
+          alert("Kata sandi harus minimal 8 karakter!");
           return false;
         }
         return true;
@@ -52,7 +52,7 @@
               id="password"
               name="password" 
               class="auth-input"
-              placeholder="Minimal 6 karakter"
+              placeholder="Minimal 8 karakter"
               required
             />
           </div>

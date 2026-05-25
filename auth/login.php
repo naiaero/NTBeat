@@ -35,7 +35,7 @@
           <div class="auth-form-group">
             <div class="auth-label-row">
               <label for="password">Kata Sandi*</label>
-              <a href="#" class="auth-forgot-pw">Lupa kata sandi?</a>
+              <a href="forgot-password.php" class="auth-forgot-pw">Lupa kata sandi?</a>
             </div>
             <input
               type="password"

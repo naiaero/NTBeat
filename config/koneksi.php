@@ -2,7 +2,7 @@
 $host     = "localhost";
 $user     = "root"; // Username bawaan XAMPP
 $password = "";     // Password bawaan XAMPP (kosong)
-$db       = "ntbeat"; // Nama database yang tadi kamu buat
+$db       = "ntbeat"; // Nama database 
 
 $conn = mysqli_connect($host, $user, $password, $db);
 

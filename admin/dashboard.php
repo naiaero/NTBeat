@@ -66,7 +66,7 @@ function format_rupiah_ringkas($num) {
 
 $pendapatan_formatted = format_rupiah_ringkas($total_pendapatan);
 
-// Ambil riwayat transaksi nyata untuk diplot pada grafik (7 hari terakhir secara kronologis)
+// Ambil riwayat transaksi 
 $chart_labels = [];
 $chart_data = [];
 $sales_by_date = [];
@@ -221,18 +221,7 @@ foreach ($sales_by_date as $date_info) {
                             }
                             ?>
                         </tbody>
-                        <!-- <tbody>
-                            <tr>
-                                <td>Mataram Sound Wave</td>
-                                <td>880/1000</td>
-                                <td><span class="badge-urgent">Hampir Habis</span></td>
-                            </tr>
-                            <tr>
-                                <td>Senggigi Jazz</td>
-                                <td>540/1000</td>
-                                <td><span class="badge-safe">Tersedia</span></td>
-                            </tr>
-                        </tbody> -->
+                     
                     </table>
                 </div>
             </div>

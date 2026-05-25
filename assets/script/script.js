@@ -421,14 +421,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Fitur Lupa Password (dibiarkan di luar agar tidak nyangkut saat submit form)
-  const forgotPwLink = document.querySelector(".auth-forgot-pw");
-  if (forgotPwLink) {
-    forgotPwLink.addEventListener("click", (e) => {
-      e.preventDefault();
-      alert("Fitur pemulihan kata sandi akan dikirimkan ke email Anda.");
-    });
-  }
+
 });
 
 document.addEventListener("DOMContentLoaded", () => {

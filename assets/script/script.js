@@ -45,18 +45,18 @@ document.addEventListener("DOMContentLoaded", () => {
       function formatRupiahRingkas(num) {
         if (num >= 1000000000) {
           let val = (num / 1000000000).toFixed(1);
-          if (val.endsWith('.0')) val = val.substring(0, val.length - 2);
-          return `Rp ${val.replace('.', ',')} M`;
+          if (val.endsWith(".0")) val = val.substring(0, val.length - 2);
+          return `Rp ${val.replace(".", ",")} M`;
         } else if (num >= 1000000) {
           let val = (num / 1000000).toFixed(1);
-          if (val.endsWith('.0')) val = val.substring(0, val.length - 2);
-          return `Rp ${val.replace('.', ',')} jt`;
+          if (val.endsWith(".0")) val = val.substring(0, val.length - 2);
+          return `Rp ${val.replace(".", ",")} jt`;
         } else if (num >= 1000) {
           let val = (num / 1000).toFixed(1);
-          if (val.endsWith('.0')) val = val.substring(0, val.length - 2);
-          return `Rp ${val.replace('.', ',')} rb`;
+          if (val.endsWith(".0")) val = val.substring(0, val.length - 2);
+          return `Rp ${val.replace(".", ",")} rb`;
         } else {
-          return `Rp ${num.toLocaleString('id-ID')}`;
+          return `Rp ${num.toLocaleString("id-ID")}`;
         }
       }
       revenueCountDisplay.textContent = formatRupiahRingkas(totalRevenue);
@@ -103,7 +103,11 @@ document.addEventListener("DOMContentLoaded", () => {
     posterWrapper.style.cursor = "pointer";
     posterWrapper.addEventListener("click", (e) => {
       // Avoid double trigger if clicking label/input directly
-      if (e.target.tagName === 'LABEL' || e.target.closest('label') || e.target.tagName === 'INPUT') {
+      if (
+        e.target.tagName === "LABEL" ||
+        e.target.closest("label") ||
+        e.target.tagName === "INPUT"
+      ) {
         return;
       }
       posterInput.click();
@@ -116,12 +120,13 @@ document.addEventListener("DOMContentLoaded", () => {
         const reader = new FileReader();
 
         if (imagePreview) {
-          imagePreview.innerHTML = '<span style="color: #eee; font-size: 0.8rem;">Memuat...</span>';
+          imagePreview.innerHTML =
+            '<span style="color: #eee; font-size: 0.8rem;">Memuat...</span>';
         }
 
         reader.onload = function (e) {
           if (imagePreview) {
-            imagePreview.innerHTML = ""; 
+            imagePreview.innerHTML = "";
             imagePreview.style.backgroundImage = `url(${e.target.result})`;
             imagePreview.style.backgroundSize = "cover";
             imagePreview.style.backgroundPosition = "center";
@@ -135,54 +140,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-// document.addEventListener("DOMContentLoaded", () => {
-//   const posterInput = document.getElementById("poster-input");
-//   const imagePreview = document.getElementById("imagePreview");
-
-//   if (posterInput) {
-//     posterInput.addEventListener("change", function () {
-//       const file = this.files[0];
-
-//       if (file) {
-//         const reader = new FileReader();
-
-//         imagePreview.innerHTML =
-//           '<span style="color: #eee; font-size: 0.8rem;">Memuat...</span>';
-
-//         reader.onload = function (e) {
-//           imagePreview.style.backgroundImage = `url(${e.target.result})`;
-//           imagePreview.style.backgroundSize = "cover";
-//           imagePreview.style.backgroundPosition = "center";
-//           imagePreview.style.border = "none";
-//           imagePreview.innerHTML = "";
-//         };
-
-//         reader.readAsDataURL(file);
-//       } else {
-//         imagePreview.style.backgroundImage = "none";
-//         imagePreview.innerHTML = "<span>Preview Poster</span>";
-//       }
-//     });
-//   }
-
-//   const concertForm = document.querySelector("concert-form");
-//   if (concertForm) {
-//     concertForm.addEventListener("submit", (e) => {
-//       e.preventDefault();
-
-//       const btnSave = document.querySelector(".btn-ps-save");
-//       btnSave.textContent = "Menyimpan...";
-//       btnSave.disabled = true;
-
-//       setTimeout(() => {
-//         alert("Data Konser Berhasil Disimpan!");
-//         window.location.href = "admin-kelola-konser.php";
-//       }, 1500);
-//     });
-//   }
-// });
-
-// document.addEventListener("DOMContentLoaded", () => {
 document.addEventListener("DOMContentLoaded", () => {
   const checkAll = document.getElementById("check-all");
   const rowCheckboxes = document.querySelectorAll(".row-checkbox");
@@ -212,7 +169,8 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       if (checkAll) {
-        checkAll.checked = selectedCount === rowCheckboxes.length && rowCheckboxes.length > 0;
+        checkAll.checked =
+          selectedCount === rowCheckboxes.length && rowCheckboxes.length > 0;
         checkAll.indeterminate =
           selectedCount > 0 && selectedCount < rowCheckboxes.length;
       }
@@ -462,7 +420,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
-  
+
   // Fitur Lupa Password (dibiarkan di luar agar tidak nyangkut saat submit form)
   const forgotPwLink = document.querySelector(".auth-forgot-pw");
   if (forgotPwLink) {
@@ -482,7 +440,11 @@ document.addEventListener("DOMContentLoaded", () => {
     avatarWrapper.style.cursor = "pointer";
     avatarWrapper.addEventListener("click", (e) => {
       // Avoid double trigger if clicking label/input directly
-      if (e.target.tagName === 'LABEL' || e.target.closest('label') || e.target.tagName === 'INPUT') {
+      if (
+        e.target.tagName === "LABEL" ||
+        e.target.closest("label") ||
+        e.target.tagName === "INPUT"
+      ) {
         return;
       }
       avatarInput.click();
@@ -494,7 +456,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const reader = new FileReader();
         reader.onload = function (e) {
           if (avatarPreview) {
-            if (avatarPreview.tagName.toLowerCase() === 'img') {
+            if (avatarPreview.tagName.toLowerCase() === "img") {
               avatarPreview.src = e.target.result;
             } else {
               avatarPreview.style.backgroundImage = `url(${e.target.result})`;
@@ -526,7 +488,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (newPass !== "" && currentPass === "") {
         e.preventDefault();
-        alert("Silakan masukkan password saat ini untuk mengonfirmasi perubahan password baru.");
+        alert(
+          "Silakan masukkan password saat ini untuk mengonfirmasi perubahan password baru.",
+        );
         return;
       }
 
@@ -545,7 +509,8 @@ document.addEventListener("DOMContentLoaded", () => {
   if (adminProfileForm) {
     adminProfileForm.addEventListener("submit", (e) => {
       const username = adminProfileForm.querySelector("#username").value.trim();
-      const currentPass = adminProfileForm.querySelector("#current_password").value;
+      const currentPass =
+        adminProfileForm.querySelector("#current_password").value;
       const newPass = adminProfileForm.querySelector("#new_password").value;
 
       if (username === "") {
@@ -556,7 +521,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (newPass !== "" && currentPass === "") {
         e.preventDefault();
-        alert("Silakan masukkan password saat ini untuk mengonfirmasi perubahan password baru.");
+        alert(
+          "Silakan masukkan password saat ini untuk mengonfirmasi perubahan password baru.",
+        );
         return;
       }
 
@@ -609,11 +576,15 @@ document.addEventListener("DOMContentLoaded", () => {
     new Chart(ctx, {
       type: "line",
       data: {
-        labels: window.chartData ? window.chartData.labels : ["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"],
+        labels: window.chartData
+          ? window.chartData.labels
+          : ["Sen", "Sel", "Rab", "Kam", "Jum", "Sab", "Min"],
         datasets: [
           {
             label: "Tiket Terjual",
-            data: window.chartData ? window.chartData.data : [15, 30, 25, 45, 40, 60, 85], // Data simulasi
+            data: window.chartData
+              ? window.chartData.data
+              : [15, 30, 25, 45, 40, 60, 85], // Data simulasi
             borderColor: "#d4af37", // Emas NTBeat
             backgroundColor: "rgba(212, 175, 55, 0.1)", // Efek bayangan emas
             fill: true,
@@ -647,27 +618,26 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 });
 
-
 // lihat profile
 function openProfileModal() {
   const modal = document.getElementById("profileModal");
-  if(modal) modal.style.display = "flex";
+  if (modal) modal.style.display = "flex";
 }
 
 function closeProfileModal() {
   const modal = document.getElementById("profileModal");
-  if(modal) modal.style.display = "none";
+  if (modal) modal.style.display = "none";
 }
 
-window.onclick = function(event) {
+window.onclick = function (event) {
   const logoutModal = document.getElementById("logoutModal");
   const profileModal = document.getElementById("profileModal");
 
-  if(event.target == logoutModal) {
+  if (event.target == logoutModal) {
     logoutModal.style.display = "none";
   }
 
-  if(event.target == profileModal) {
+  if (event.target == profileModal) {
     profileModal.style.display = "none";
   }
 };

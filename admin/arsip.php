@@ -8,9 +8,13 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 }
 
 $email_user = $_SESSION['email'];
-$query_user = mysqli_query($conn, "SELECT * FROM users WHERE email = '$email_user'");
+$stmt_user = $conn->prepare("SELECT * FROM users WHERE email = ?");
+$stmt_user->bind_param("s", $email_user);
+$stmt_user->execute();
+$query_user = $stmt_user->get_result();
 $user_data = mysqli_fetch_assoc($query_user);
 $nama_user = $user_data['nama'];
+$nama_depan = explode(' ', trim($nama_user))[0];
 $foto_user = isset($user_data['foto']) ? $user_data['foto'] : '';
 $inisial = strtoupper(substr($nama_user, 0, 1));
 
@@ -39,7 +43,7 @@ if (!empty($foto_user) && file_exists($foto_path) && $foto_user !== 'default-ava
             <label>NTBeat</label>
         </div>
         <div class="user-profile-nav" onclick="window.location.href = 'profil.php'" style="cursor: pointer;">
-            <span style="color: white; font-size: 0.9rem; margin-right: 10px;"><?php echo htmlspecialchars($nama_user); ?></span>
+            <span style="color: white; font-size: 0.9rem; margin-right: 10px;"><?php echo htmlspecialchars($nama_depan); ?></span>
             <div class="avatar-placeholder" style="<?php echo $avatar_style; ?>"><?php echo $inisial; ?></div>
         </div>
     </header>
@@ -82,13 +86,15 @@ if (!empty($foto_user) && file_exists($foto_path) && $foto_user !== 'default-ava
                             <th>Poster</th>
                             <th>Nama Konser</th>
                             <th>Tanggal Terlaksana</th>
+                            <th>Harga Tiket</th>
                             <th>Total Penjualan</th>
+                            <th>Pendapatan</th>
                             <th>Status Akhir</th>
                         </tr>
                     </thead>
                     <tbody id="archive-list">
                         <?php
-                        $query = mysqli_query($conn, "SELECT * FROM konser WHERE status IN ('Arsip', 'Selesai') ORDER BY id DESC");
+                        $query = mysqli_query($conn, "SELECT * FROM konser WHERE status = 'Arsip' ORDER BY id DESC");
                         if (mysqli_num_rows($query) > 0) {
                             while ($row = mysqli_fetch_assoc($query)) {
                                 $tanggal_format = date('d M Y', strtotime($row['tanggal']));
@@ -114,22 +120,20 @@ if (!empty($foto_user) && file_exists($foto_path) && $foto_user !== 'default-ava
                                         <small>ID: <?php echo $row['id']; ?></small>
                                     </td>
                                     <td><?php echo $tanggal_format; ?></td>
+                                    <td>Rp <?php echo number_format($row['harga'], 0, ',', '.'); ?></td>
                                     <td><?php echo $row['tiket_terjual']; ?> / <?php echo $row['kapasitas']; ?> Tiket</td>
+                                    <td>Rp <?php echo number_format($row['tiket_terjual'] * $row['harga'], 0, ',', '.'); ?></td>
                                     <td><span class="<?php echo $badge_class; ?>"><?php echo $badge_text; ?></span></td>
                                 </tr>
                                 <?php
                             }
                         } else {
-                            echo "<tr><td colspan='6' style='text-align:center; padding: 20px; color:#888;'>Belum ada data konser yang diarsip atau selesai.</td></tr>";
+                            echo "<tr><td colspan='8' style='text-align:center; padding: 20px; color:#888;'>Belum ada data konser yang diarsip.</td></tr>";
                         }
                         ?>
                     </tbody>
                 </table>
                 </form>
-            </div>
-
-            <div class="archive-footer">
-                <p>Data di halaman ini bersifat permanen dan digunakan untuk keperluan audit keuangan organisasi.</p>
             </div>
         </main>
     </div>

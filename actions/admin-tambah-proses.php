@@ -9,12 +9,12 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 }
 
 if (isset($_POST['submit'])) {
-    $nama_konser = mysqli_real_escape_string($conn, $_POST['nama_konser']);
-    $lineup      = mysqli_real_escape_string($conn, $_POST['lineup']);
-    $tanggal     = mysqli_real_escape_string($conn, $_POST['tanggal']);
-    $waktu       = mysqli_real_escape_string($conn, $_POST['waktu']);
-    $lokasi      = mysqli_real_escape_string($conn, $_POST['lokasi']);
-    $deskripsi   = mysqli_real_escape_string($conn, $_POST['deskripsi']);
+    $nama_konser = trim($_POST['nama_konser']);
+    $lineup      = trim($_POST['lineup']);
+    $tanggal     = trim($_POST['tanggal']);
+    $waktu       = trim($_POST['waktu']);
+    $lokasi      = trim($_POST['lokasi']);
+    $deskripsi   = trim($_POST['deskripsi']);
     $harga       = floatval($_POST['harga']);
     $kapasitas   = intval($_POST['kapasitas']);
 
@@ -44,17 +44,13 @@ if (isset($_POST['submit'])) {
                 if (move_uploaded_file($_FILES["poster"]["tmp_name"], $target_file)) {
                     $poster = $unique_name;
                 } else {
-                    echo "<script>
-                            alert('Gagal memindahkan file poster ke folder tujuan.');
-                            window.history.back();
-                          </script>";
+                    setcookie("flash_msg", "Gagal memindahkan file poster ke folder tujuan.", time() + 5, "/");
+                    header("Location: ../admin/form-konser.php");
                     exit();
                 }
             } else {
-                echo "<script>
-                        alert('Format file poster tidak didukung. Harap unggah gambar (jpg, jpeg, png, gif).');
-                        window.history.back();
-                      </script>";
+                setcookie("flash_msg", "Format file poster tidak didukung. Harap unggah gambar (jpg, jpeg, png, gif).", time() + 5, "/");
+                header("Location: ../admin/form-konser.php");
                 exit();
             }
         } else {
@@ -80,28 +76,25 @@ if (isset($_POST['submit'])) {
                     $error_msg = "Ekstensi PHP membatalkan proses upload.";
                     break;
             }
-            echo "<script>
-                    alert('Gagal mengunggah poster: $error_msg');
-                    window.history.back();
-                  </script>";
+            setcookie("flash_msg", "Gagal mengunggah poster: $error_msg", time() + 5, "/");
+            header("Location: ../admin/form-konser.php");
             exit();
         }
     }
 
     // Insert ke database
-    $query = "INSERT INTO konser (nama_konser, lineup, tanggal, waktu, lokasi, deskripsi, harga, kapasitas, tiket_terjual, poster, status) 
-              VALUES ('$nama_konser', '$lineup', '$tanggal', '$waktu', '$lokasi', '$deskripsi', $harga, $kapasitas, 0, '$poster', 'Tersedia')";
+    $status = 'Tersedia';
+    $tiket_terjual = 0;
+    
+    $stmt = $conn->prepare("INSERT INTO konser (nama_konser, lineup, tanggal, waktu, lokasi, deskripsi, harga, kapasitas, tiket_terjual, poster, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("ssssssdiiss", $nama_konser, $lineup, $tanggal, $waktu, $lokasi, $deskripsi, $harga, $kapasitas, $tiket_terjual, $poster, $status);
 
-    if (mysqli_query($conn, $query)) {
-        echo "<script>
-                alert('Konser berhasil ditambahkan!');
-                window.location.href = '../admin/kelola-konser.php';
-              </script>";
+    if ($stmt->execute()) {
+        setcookie("flash_msg", "Konser berhasil ditambahkan!", time() + 5, "/");
+        header("Location: ../admin/kelola-konser.php");
     } else {
-        echo "<script>
-                alert('Gagal menambahkan konser: " . mysqli_error($conn) . "');
-                window.location.href = '../admin/form-konser.php';
-              </script>";
+        setcookie("flash_msg", "Gagal menambahkan konser: " . mysqli_error($conn), time() + 5, "/");
+        header("Location: ../admin/form-konser.php");
     }
 } else {
     header("Location: ../admin/form-konser.php");

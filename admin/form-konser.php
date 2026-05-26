@@ -8,9 +8,13 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 }
 
 $email_user = $_SESSION['email'];
-$query_user = mysqli_query($conn, "SELECT * FROM users WHERE email = '$email_user'");
+$stmt_user = $conn->prepare("SELECT * FROM users WHERE email = ?");
+$stmt_user->bind_param("s", $email_user);
+$stmt_user->execute();
+$query_user = $stmt_user->get_result();
 $user_data = mysqli_fetch_assoc($query_user);
 $nama_user = $user_data['nama'];
+$nama_depan = explode(' ', trim($nama_user))[0];
 $foto_user = isset($user_data['foto']) ? $user_data['foto'] : '';
 $inisial = strtoupper(substr($nama_user, 0, 1));
 
@@ -38,7 +42,7 @@ if (!empty($foto_user) && file_exists($foto_path) && $foto_user !== 'default-ava
             <label>NTBeat</label>
         </div>
         <div class="user-profile-nav" onclick="window.location.href = 'profil.php'" style="cursor: pointer;">
-            <span style="color: white; font-size: 0.9rem; margin-right: 10px;"><?php echo htmlspecialchars($nama_user); ?></span>
+            <span style="color: white; font-size: 0.9rem; margin-right: 10px;"><?php echo htmlspecialchars($nama_depan); ?></span>
             <div class="avatar-placeholder" style="<?php echo $avatar_style; ?>"><?php echo $inisial; ?></div>
         </div>
     </header>

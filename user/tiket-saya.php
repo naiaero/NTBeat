@@ -9,9 +9,13 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'customer') {
 }
 
 $user_email = $_SESSION['email'];
-$query_user = mysqli_query($conn, "SELECT * FROM users WHERE email = '$user_email'");
+$stmt_user = $conn->prepare("SELECT * FROM users WHERE email = ?");
+$stmt_user->bind_param("s", $user_email);
+$stmt_user->execute();
+$query_user = $stmt_user->get_result();
 $user_data = mysqli_fetch_assoc($query_user);
 $nama_user = $user_data['nama'];
+$nama_depan = explode(' ', trim($nama_user))[0];
 $foto_user = isset($user_data['foto']) ? $user_data['foto'] : '';
 $inisial = strtoupper(substr($nama_user, 0, 1));
 
@@ -55,22 +59,28 @@ function format_indonesian_date($date_str) {
 }
 
 // Tiket aktif: status konser bukan 'Arsip'/'Selesai' dan tanggal belum lewat
-$query_active = mysqli_query($conn, "
+$stmt_active = $conn->prepare("
     SELECT p.*, k.nama_konser, k.tanggal, k.waktu, k.lokasi 
     FROM pesanan p
     JOIN konser k ON p.konser_id = k.id
-    WHERE p.user_email = '$user_email' AND k.status NOT IN ('Arsip', 'Selesai') AND k.tanggal >= CURDATE()
+    WHERE p.user_email = ? AND k.status NOT IN ('Arsip', 'Selesai') AND k.tanggal >= CURDATE()
     ORDER BY p.id DESC
 ");
+$stmt_active->bind_param("s", $user_email);
+$stmt_active->execute();
+$query_active = $stmt_active->get_result();
 
 // Riwayat tiket: status konser 'Arsip'/'Selesai' atau tanggal sudah lewat
-$query_past = mysqli_query($conn, "
+$stmt_past = $conn->prepare("
     SELECT p.*, k.nama_konser, k.tanggal, k.waktu, k.lokasi 
     FROM pesanan p
     JOIN konser k ON p.konser_id = k.id
-    WHERE p.user_email = '$user_email' AND (k.status IN ('Arsip', 'Selesai') OR k.tanggal < CURDATE())
+    WHERE p.user_email = ? AND (k.status IN ('Arsip', 'Selesai') OR k.tanggal < CURDATE())
     ORDER BY p.id DESC
 ");
+$stmt_past->bind_param("s", $user_email);
+$stmt_past->execute();
+$query_past = $stmt_past->get_result();
 ?>
 <!DOCTYPE html>
 <html lang="id">
@@ -89,7 +99,7 @@ $query_past = mysqli_query($conn, "
         <label>NTBeat</label>
       </div>
      <div class="user-profile-nav">
-        <span>Halo, <?php echo htmlspecialchars($nama_user); ?>!</span>
+        <span>Halo, <?php echo htmlspecialchars($nama_depan); ?>!</span>
         <div class="avatar-placeholder" onclick="window.location.href = 'profil.php'" style="<?php echo $avatar_style; ?>"><?php echo $inisial; ?></div>
       </div>
     </nav>

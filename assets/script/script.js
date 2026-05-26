@@ -1,3 +1,71 @@
+// --- GLOBAL MODAL SYSTEM ---
+window.showGlobalModal = function(title, message) {
+  let modal = document.getElementById("globalAlertModal");
+  if (!modal) {
+    const modalHtml = `
+      <div id="globalAlertModal" class="modal-overlay" style="display: flex; z-index: 9999;">
+          <div class="logout-card" style="text-align: center;">
+              <h2 id="globalAlertTitle" style="margin-bottom: 15px; color: #d4af37;">${title}</h2>
+              <p id="globalAlertMessage" style="margin-bottom: 25px; color: #ccc;">${message}</p>
+              <div class="logout-actions" style="justify-content: center;">
+                  <button class="btn-yakin" onclick="document.getElementById('globalAlertModal').style.display='none'">Tutup</button>
+              </div>
+          </div>
+      </div>
+    `;
+    document.body.insertAdjacentHTML("beforeend", modalHtml);
+  } else {
+    document.getElementById("globalAlertTitle").innerText = title;
+    document.getElementById("globalAlertMessage").innerText = message;
+    modal.style.display = "flex";
+  }
+};
+
+window.showGlobalConfirm = function(title, message, onConfirm) {
+  let modal = document.getElementById("globalConfirmModal");
+  if (!modal) {
+    const modalHtml = `
+      <div id="globalConfirmModal" class="modal-overlay" style="display: flex; z-index: 9999;">
+          <div class="logout-card" style="text-align: center;">
+              <h2 id="globalConfirmTitle" style="margin-bottom: 15px; color: #d4af37;">${title}</h2>
+              <p id="globalConfirmMessage" style="margin-bottom: 25px; color: #ccc;">${message}</p>
+              <div class="logout-actions" style="justify-content: center; gap: 10px;">
+                  <button class="btn-batal" onclick="document.getElementById('globalConfirmModal').style.display='none'">Batal</button>
+                  <button class="btn-yakin" id="globalConfirmBtn">Yakin</button>
+              </div>
+          </div>
+      </div>
+    `;
+    document.body.insertAdjacentHTML("beforeend", modalHtml);
+    modal = document.getElementById("globalConfirmModal");
+  } else {
+    document.getElementById("globalConfirmTitle").innerText = title;
+    document.getElementById("globalConfirmMessage").innerText = message;
+    modal.style.display = "flex";
+  }
+
+  document.getElementById("globalConfirmBtn").onclick = function() {
+    modal.style.display = 'none';
+    if(typeof onConfirm === 'function') onConfirm();
+  };
+};
+
+document.addEventListener("DOMContentLoaded", () => {
+  function getCookie(name) {
+    let matches = document.cookie.match(new RegExp(
+      "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+    ));
+    return matches ? decodeURIComponent(matches[1]) : undefined;
+  }
+
+  let flashMsg = getCookie("flash_msg");
+  if (flashMsg) {
+    flashMsg = flashMsg.replace(/\+/g, ' ');
+    showGlobalModal("Pemberitahuan", flashMsg);
+    document.cookie = "flash_msg=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+  }
+});
+
 function openLogoutModal() {
   document.getElementById("logoutModal").style.display = "flex";
 }
@@ -14,10 +82,7 @@ window.onclick = function (event) {
 };
 
 function konfirmasiPembelian() {
-  alert(
-    "✅ Pembelian Berhasil!\n\nTiket 'Symphony of Lombok' telah ditambahkan ke akun Anda.",
-  );
-
+  document.cookie = "flash_msg=" + encodeURIComponent("✅ Pembelian Berhasil! Tiket 'Symphony of Lombok' telah ditambahkan ke akun Anda.") + "; path=/;";
   window.location.href = "tiket-saya.php";
 }
 
@@ -193,14 +258,14 @@ document.addEventListener("DOMContentLoaded", () => {
   if (btnDelete) {
     btnDelete.addEventListener("click", () => {
       const count = document.querySelectorAll(".row-checkbox:checked").length;
-      if (
-        confirm(
-          `Apakah Anda yakin ingin menghapus ${count} data konser yang terpilih?`,
-        )
-      ) {
-        document.getElementById("action-type").value = "delete";
-        document.getElementById("bulk-action-form").submit();
-      }
+      showGlobalConfirm(
+        "Konfirmasi Hapus",
+        `Apakah Anda yakin ingin menghapus ${count} data konser yang terpilih?`,
+        () => {
+          document.getElementById("action-type").value = "delete";
+          document.getElementById("bulk-action-form").submit();
+        }
+      );
     });
   }
 
@@ -219,10 +284,14 @@ document.addEventListener("DOMContentLoaded", () => {
     btnArchive.addEventListener("click", () => {
       const count = document.querySelectorAll(".row-checkbox:checked").length;
 
-      if (confirm(`Pindahkan ${count} konser ke arsip?`)) {
-        document.getElementById("action-type").value = "archive";
-        document.getElementById("bulk-action-form").submit();
-      }
+      showGlobalConfirm(
+        "Konfirmasi Arsip",
+        `Pindahkan ${count} konser ke arsip?`,
+        () => {
+          document.getElementById("action-type").value = "archive";
+          document.getElementById("bulk-action-form").submit();
+        }
+      );
     });
   }
 });
@@ -232,22 +301,20 @@ document.addEventListener("DOMContentLoaded", () => {
     const namaKonser = document.querySelector(".detail-title").innerText;
     const harga = document.querySelector(".price-total").innerText;
 
-    const yakin = confirm(
-      `Konfirmasi Pesanan:\n\nAcara: ${namaKonser}\nTotal: ${harga}\n\nApakah Anda ingin melanjutkan ke pembayaran?`,
+    showGlobalConfirm(
+      "Konfirmasi Pesanan",
+      `Acara: ${namaKonser}\nTotal: ${harga}\n\nApakah Anda ingin melanjutkan ke pembayaran?`,
+      () => {
+        const btnPesan = document.querySelector(".btn-pesan-sekarang");
+        btnPesan.innerText = "Memproses...";
+        btnPesan.disabled = true;
+
+        setTimeout(() => {
+          document.cookie = "flash_msg=" + encodeURIComponent("Sukses! Tiket Anda telah dipesan. Silakan cek email atau menu riwayat pesanan.") + "; path=/;";
+          window.location.href = "beranda.php"; // Kembali ke dashboard user
+        }, 2000);
+      }
     );
-
-    if (yakin) {
-      const btnPesan = document.querySelector(".btn-pesan-sekarang");
-      btnPesan.innerText = "Memproses...";
-      btnPesan.disabled = true;
-
-      setTimeout(() => {
-        alert(
-          "Sukses! Tiket Anda telah dipesan. Silakan cek email atau menu riwayat pesanan.",
-        );
-        window.location.href = "halaman-user.php"; // Kembali ke dashboard user
-      }, 2000);
-    }
   };
 
   const remainingStat = document.querySelector(".remaining .stat-value");
@@ -298,13 +365,13 @@ document.addEventListener("DOMContentLoaded", () => {
         .closest(".concert-card")
         .querySelector(".concert-title").innerText;
       const concertId = btn.getAttribute("data-id");
-      const confirmBuy = confirm(
+      showGlobalConfirm(
+        "Pesan Tiket",
         `Apakah Anda ingin langsung memesan tiket ${concertName}?`,
+        () => {
+          window.location.href = "detail-konser.php?id=" + concertId;
+        }
       );
-
-      if (confirmBuy) {
-        window.location.href = "detail-konser.php?id=" + concertId;
-      }
     });
   });
 });
@@ -398,7 +465,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (password.length < 8) {
           e.preventDefault(); // Batalkan submit jika password terlalu pendek
-          alert("Kata sandi minimal harus 8 karakter.");
+          showGlobalModal("Pemberitahuan", "Kata sandi minimal harus 8 karakter.");
           if (submitBtn) submitBtn.disabled = false;
           return;
         }
@@ -475,15 +542,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (username === "") {
         e.preventDefault();
-        alert("Nama tidak boleh kosong!");
+        showGlobalModal("Pemberitahuan", "Nama tidak boleh kosong!");
         return;
       }
 
       if (newPass !== "" && currentPass === "") {
         e.preventDefault();
-        alert(
-          "Silakan masukkan password saat ini untuk mengonfirmasi perubahan password baru.",
-        );
+        showGlobalModal("Pemberitahuan", "Silakan masukkan password saat ini untuk mengonfirmasi perubahan password baru.");
         return;
       }
 
@@ -508,15 +573,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (username === "") {
         e.preventDefault();
-        alert("Nama tidak boleh kosong!");
+        showGlobalModal("Pemberitahuan", "Nama tidak boleh kosong!");
         return;
       }
 
       if (newPass !== "" && currentPass === "") {
         e.preventDefault();
-        alert(
-          "Silakan masukkan password saat ini untuk mengonfirmasi perubahan password baru.",
-        );
+        showGlobalModal("Pemberitahuan", "Silakan masukkan password saat ini untuk mengonfirmasi perubahan password baru.");
         return;
       }
 

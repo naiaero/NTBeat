@@ -4,12 +4,14 @@ include '../config/koneksi.php'; // Memanggil jembatan database
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Menangkap email dan password yang diketik user
-    $email = mysqli_real_escape_string($conn, $_POST['email']);
+    $email = trim($_POST['email']);
     $hashed_password = $_POST['password'];
 
     // Mencari adakah user dengan email
-    $query = "SELECT * FROM users WHERE email='$email'";
-    $result = mysqli_query($conn, $query);
+    $stmt = $conn->prepare("SELECT * FROM users WHERE email=?");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
 
     if (mysqli_num_rows($result) > 0) {
@@ -21,28 +23,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['role']    = $user['role'];
 
             if ($user['role'] == 'admin') {
-                echo "<script>
-                        alert('Selamat datang, Administrator!'); 
-                        window.location.href='../admin/dashboard.php';
-                    </script>";
+                setcookie("flash_msg", "Selamat datang, Administrator!", time() + 5, "/");
+                header("Location: ../admin/dashboard.php");
+                exit();
             } else if ($user['role'] == 'customer') {
-                echo "<script>
-                        alert('Login Berhasil! Selamat datang di NTBeat.'); 
-                        window.location.href='../user/beranda.php';
-                    </script>";
+                setcookie("flash_msg", "Login Berhasil! Selamat datang di NTBeat.", time() + 5, "/");
+                header("Location: ../user/beranda.php");
+                exit();
             }
         } else {
-            echo "<script>
-                    alert('Email atau Kata Sandi salah. Silakan coba lagi!'); 
-                    window.location.href='../auth/login.php';
-                  </script>";
+            setcookie("flash_msg", "Email atau Kata Sandi salah. Silakan coba lagi!", time() + 5, "/");
+            header("Location: ../auth/login.php");
+            exit();
         }
     } else {
         // Kalau datanya nggak ketemu (email/password salah)
-            echo "<script>
-                    alert('Email atau Kata Sandi salah. Silakan coba lagi!'); 
-                    window.location.href='../auth/login.php';
-                </script>";
+        setcookie("flash_msg", "Email atau Kata Sandi salah. Silakan coba lagi!", time() + 5, "/");
+        header("Location: ../auth/login.php");
+        exit();
     }
 }
 ?>

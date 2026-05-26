@@ -21,9 +21,13 @@ if (mysqli_num_rows($query) > 0) {
 }
 
 $email_user = $_SESSION['email'];
-$query_user = mysqli_query($conn, "SELECT * FROM users WHERE email = '$email_user'");
+$stmt_user = $conn->prepare("SELECT * FROM users WHERE email = ?");
+$stmt_user->bind_param("s", $email_user);
+$stmt_user->execute();
+$query_user = $stmt_user->get_result();
 $user_data = mysqli_fetch_assoc($query_user);
 $nama_user = $user_data['nama'];
+$nama_depan = explode(' ', trim($nama_user))[0];
 $foto_user = isset($user_data['foto']) ? $user_data['foto'] : '';
 $inisial = strtoupper(substr($nama_user, 0, 1));
 
@@ -152,7 +156,7 @@ if (empty($row['poster']) || !file_exists($poster_path)) {
             <label>NTBeat</label>
         </div>
         <div class="user-profile-nav">
-            <span>Halo, <?php echo htmlspecialchars($nama_user); ?>!</span>
+            <span>Halo, <?php echo htmlspecialchars($nama_depan); ?>!</span>
             <div class="avatar-placeholder" onclick="window.location.href = 'profil.php'" style="<?php echo $avatar_style; ?>"><?php echo $inisial; ?></div>
         </div>
     </nav>

@@ -18,7 +18,6 @@
 
       <div class="auth-card">
         <h2>Login</h2>
-        <p class="auth-subtitle">Lorem ipsum dolor sit amet hean</p>
         <form action="../actions/login_proses.php" method="POST">
           <div class="auth-form-group">
             <label for="email">Email*</label>

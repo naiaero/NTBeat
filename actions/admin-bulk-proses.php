@@ -15,12 +15,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ids']) && is_array($_P
     
     // Konversi array ID menjadi integer aman
     $ids = array_map('intval', $_POST['ids']);
-    $ids_string = implode(',', $ids);
+    $placeholders = implode(',', array_fill(0, count($ids), '?'));
+    $types = str_repeat('i', count($ids));
 
     if ($action_type === 'delete') {
         // Hapus poster gambar jika bukan default-poster.png sebelum menghapus dari DB
-        $query_get_posters = mysqli_query($conn, "SELECT poster FROM konser WHERE id IN ($ids_string)");
-        while ($row = mysqli_fetch_assoc($query_get_posters)) {
+        $stmt_get = $conn->prepare("SELECT poster FROM konser WHERE id IN ($placeholders)");
+        $stmt_get->bind_param($types, ...$ids);
+        $stmt_get->execute();
+        $query_get_posters = $stmt_get->get_result();
+        while ($row = $query_get_posters->fetch_assoc()) {
             $poster = $row['poster'];
             if ($poster !== 'default-poster.png' && !empty($poster)) {
                 $file_path = "../assets/img/" . $poster;
@@ -30,30 +34,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ids']) && is_array($_P
             }
         }
 
-        $query = "DELETE FROM konser WHERE id IN ($ids_string)";
-        if (mysqli_query($conn, $query)) {
-            echo "<script>
-                    alert('Data konser berhasil dihapus!');
-                    window.location.href = '$redirect_url';
-                  </script>";
+        $stmt_delete = $conn->prepare("DELETE FROM konser WHERE id IN ($placeholders)");
+        $stmt_delete->bind_param($types, ...$ids);
+        if ($stmt_delete->execute()) {
+            setcookie("flash_msg", "Data konser berhasil dihapus!", time() + 5, "/");
+            header("Location: $redirect_url");
+            exit();
         } else {
-            echo "<script>
-                    alert('Gagal menghapus konser: " . mysqli_error($conn) . "');
-                    window.location.href = '$redirect_url';
-                  </script>";
+            setcookie("flash_msg", "Gagal menghapus konser: " . mysqli_error($conn), time() + 5, "/");
+            header("Location: $redirect_url");
+            exit();
         }
     } elseif ($action_type === 'archive') {
-        $query = "UPDATE konser SET status = 'Arsip' WHERE id IN ($ids_string)";
-        if (mysqli_query($conn, $query)) {
-            echo "<script>
-                    alert('Konser berhasil diarsipkan!');
-                    window.location.href = '$redirect_url';
-                  </script>";
+        $stmt_archive = $conn->prepare("UPDATE konser SET status = 'Arsip' WHERE id IN ($placeholders)");
+        $stmt_archive->bind_param($types, ...$ids);
+        if ($stmt_archive->execute()) {
+            setcookie("flash_msg", "Konser berhasil diarsipkan!", time() + 5, "/");
+            header("Location: $redirect_url");
+            exit();
         } else {
-            echo "<script>
-                    alert('Gagal mengarsipkan konser: " . mysqli_error($conn) . "');
-                    window.location.href = '$redirect_url';
-                  </script>";
+            setcookie("flash_msg", "Gagal mengarsipkan konser: " . mysqli_error($conn), time() + 5, "/");
+            header("Location: $redirect_url");
+            exit();
         }
     } else {
         header("Location: $redirect_url");
@@ -62,9 +64,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['ids']) && is_array($_P
 } else {
     $source_page = isset($_POST['source_page']) ? $_POST['source_page'] : 'kelola-konser.php';
     $redirect_url = "../admin/" . $source_page;
-    echo "<script>
-            alert('Tidak ada konser yang dipilih.');
-            window.location.href = '$redirect_url';
-          </script>";
+    setcookie("flash_msg", "Tidak ada konser yang dipilih.", time() + 5, "/");
+    header("Location: $redirect_url");
+    exit();
 }
 ?>

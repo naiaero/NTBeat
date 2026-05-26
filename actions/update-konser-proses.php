@@ -10,22 +10,23 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 
 if (isset($_POST['submit_update'])) {
     $id          = intval($_POST['id']);
-    $nama_konser = mysqli_real_escape_string($conn, $_POST['nama_konser']);
-    $lineup      = mysqli_real_escape_string($conn, $_POST['lineup']);
-    $tanggal     = mysqli_real_escape_string($conn, $_POST['tanggal']);
-    $waktu       = mysqli_real_escape_string($conn, $_POST['waktu']);
-    $lokasi      = mysqli_real_escape_string($conn, $_POST['lokasi']);
-    $deskripsi   = mysqli_real_escape_string($conn, $_POST['deskripsi']);
+    $nama_konser = trim($_POST['nama_konser']);
+    $lineup      = trim($_POST['lineup']);
+    $tanggal     = trim($_POST['tanggal']);
+    $waktu       = trim($_POST['waktu']);
+    $lokasi      = trim($_POST['lokasi']);
+    $deskripsi   = trim($_POST['deskripsi']);
     $harga       = floatval($_POST['harga']);
     $kapasitas   = intval($_POST['kapasitas']);
 
     // Ambil data lama untuk poster dan tiket_terjual
-    $query_old = mysqli_query($conn, "SELECT poster, tiket_terjual, status FROM konser WHERE id = $id");
-    if (mysqli_num_rows($query_old) == 0) {
-        echo "<script>
-                alert('Konser tidak ditemukan!');
-                window.location.href = '../admin/kelola-konser.php';
-              </script>";
+    $stmt_old = $conn->prepare("SELECT poster, tiket_terjual, status FROM konser WHERE id = ?");
+    $stmt_old->bind_param("i", $id);
+    $stmt_old->execute();
+    $query_old = $stmt_old->get_result();
+    if ($query_old->num_rows == 0) {
+        setcookie("flash_msg", "Konser tidak ditemukan!", time() + 5, "/");
+        header("Location: ../admin/kelola-konser.php");
         exit();
     }
     $old_data = mysqli_fetch_assoc($query_old);
@@ -63,17 +64,13 @@ if (isset($_POST['submit_update'])) {
                     }
                     $poster = $unique_name;
                 } else {
-                    echo "<script>
-                            alert('Gagal memindahkan file poster baru ke folder tujuan.');
-                            window.history.back();
-                          </script>";
+                    setcookie("flash_msg", "Gagal memindahkan file poster baru ke folder tujuan.", time() + 5, "/");
+                    header("Location: ../admin/edit-konser.php?id=$id");
                     exit();
                 }
             } else {
-                echo "<script>
-                        alert('Format file poster tidak didukung. Harap unggah gambar (jpg, jpeg, png, gif).');
-                        window.history.back();
-                      </script>";
+                setcookie("flash_msg", "Format file poster tidak didukung. Harap unggah gambar (jpg, jpeg, png, gif).", time() + 5, "/");
+                header("Location: ../admin/edit-konser.php?id=$id");
                 exit();
             }
         } else {
@@ -99,10 +96,8 @@ if (isset($_POST['submit_update'])) {
                     $error_msg = "Ekstensi PHP membatalkan proses upload.";
                     break;
             }
-            echo "<script>
-                    alert('Gagal mengunggah poster baru: $error_msg');
-                    window.history.back();
-                  </script>";
+            setcookie("flash_msg", "Gagal mengunggah poster baru: $error_msg", time() + 5, "/");
+            header("Location: ../admin/edit-konser.php?id=$id");
             exit();
         }
     }
@@ -123,29 +118,26 @@ if (isset($_POST['submit_update'])) {
     }
 
     // Update ke database
-    $query = "UPDATE konser SET 
-                nama_konser = '$nama_konser', 
-                lineup = '$lineup', 
-                tanggal = '$tanggal', 
-                waktu = '$waktu', 
-                lokasi = '$lokasi', 
-                deskripsi = '$deskripsi', 
-                harga = $harga, 
-                kapasitas = $kapasitas, 
-                poster = '$poster', 
-                status = '$status' 
-              WHERE id = $id";
+    $stmt_update = $conn->prepare("UPDATE konser SET 
+                nama_konser = ?, 
+                lineup = ?, 
+                tanggal = ?, 
+                waktu = ?, 
+                lokasi = ?, 
+                deskripsi = ?, 
+                harga = ?, 
+                kapasitas = ?, 
+                poster = ?, 
+                status = ? 
+              WHERE id = ?");
+    $stmt_update->bind_param("ssssssdiisi", $nama_konser, $lineup, $tanggal, $waktu, $lokasi, $deskripsi, $harga, $kapasitas, $poster, $status, $id);
 
-    if (mysqli_query($conn, $query)) {
-        echo "<script>
-                alert('Konser berhasil diperbarui!');
-                window.location.href = '../admin/kelola-konser.php';
-              </script>";
+    if ($stmt_update->execute()) {
+        setcookie("flash_msg", "Konser berhasil diperbarui!", time() + 5, "/");
+        header("Location: ../admin/kelola-konser.php");
     } else {
-        echo "<script>
-                alert('Gagal memperbarui konser: " . mysqli_error($conn) . "');
-                window.location.href = '../admin/edit-konser.php?id=$id';
-              </script>";
+        setcookie("flash_msg", "Gagal memperbarui konser: " . mysqli_error($conn), time() + 5, "/");
+        header("Location: ../admin/edit-konser.php?id=$id");
     }
 } else {
     header("Location: ../admin/kelola-konser.php");

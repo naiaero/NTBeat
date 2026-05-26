@@ -16,7 +16,6 @@
 
       <div class="auth-card">
         <h2>Register</h2>
-        <p class="auth-subtitle">Lorem ipsum dolor sit amet hean</p>
 
        <form action="../actions/register_proses.php" method="POST">
           <div class="auth-form-group">

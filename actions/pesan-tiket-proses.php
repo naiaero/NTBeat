@@ -18,12 +18,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['konser_id'])) {
     }
 
     // 1. Ambil info konser saat ini untuk validasi kapasitas
-    $query_konser = mysqli_query($conn, "SELECT * FROM konser WHERE id = $konser_id AND status != 'Arsip'");
-    if (mysqli_num_rows($query_konser) == 0) {
-        echo "<script>
-                alert('Konser tidak ditemukan atau sudah tidak tersedia.');
-                window.location.href = '../user/beranda.php';
-              </script>";
+    $stmt_konser = $conn->prepare("SELECT * FROM konser WHERE id = ? AND status != 'Arsip'");
+    $stmt_konser->bind_param("i", $konser_id);
+    $stmt_konser->execute();
+    $query_konser = $stmt_konser->get_result();
+    if ($query_konser->num_rows == 0) {
+        setcookie("flash_msg", "Konser tidak ditemukan atau sudah tidak tersedia.", time() + 5, "/");
+        header("Location: ../user/beranda.php");
         exit();
     }
 
@@ -33,10 +34,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['konser_id'])) {
     date_default_timezone_set('Asia/Makassar');
     $waktu_konser = strtotime($konser['tanggal'] . ' ' . $konser['waktu']);
     if ($waktu_konser < time()) {
-        echo "<script>
-                alert('Gagal memesan! Acara ini sudah berakhir dan tiket tidak lagi tersedia.');
-                window.location.href = '../user/detail-konser.php?id=$konser_id';
-              </script>";
+        setcookie("flash_msg", "Gagal memesan! Acara ini sudah berakhir dan tiket tidak lagi tersedia.", time() + 5, "/");
+        header("Location: ../user/detail-konser.php?id=$konser_id");
         exit();
     }
 
@@ -47,10 +46,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['konser_id'])) {
 
     // Validasi sisa kuota
     if ($sisa_tiket < $jumlah_tiket) {
-        echo "<script>
-                alert('Gagal memesan! Sisa tiket tidak mencukupi kuota pemesanan Anda.');
-                window.location.href = '../user/detail-konser.php?id=$konser_id';
-              </script>";
+        setcookie("flash_msg", "Gagal memesan! Sisa tiket tidak mencukupi kuota pemesanan Anda.", time() + 5, "/");
+        header("Location: ../user/detail-konser.php?id=$konser_id");
         exit();
     }
 
@@ -66,10 +63,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['konser_id'])) {
 
     try {
         // 3. Masukkan record pesanan baru ke tabel pesanan
-        $insert_pesanan = "INSERT INTO pesanan (order_id, user_email, konser_id, jumlah_tiket, total_harga, status_bayar) 
-                           VALUES ('$order_id', '$user_email', $konser_id, $jumlah_tiket, $total_harga, 'Lunas')";
+        $status_bayar = 'Lunas';
+        $stmt_insert = $conn->prepare("INSERT INTO pesanan (order_id, user_email, konser_id, jumlah_tiket, total_harga, status_bayar) VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt_insert->bind_param("ssiids", $order_id, $user_email, $konser_id, $jumlah_tiket, $total_harga, $status_bayar);
         
-        if (!mysqli_query($conn, $insert_pesanan)) {
+        if (!$stmt_insert->execute()) {
             throw new Exception("Gagal membuat data pesanan.");
         }
 
@@ -89,27 +87,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['konser_id'])) {
             }
         }
 
-        $update_konser = "UPDATE konser SET tiket_terjual = $tiket_terjual_baru, status = '$status_baru' WHERE id = $konser_id";
-        if (!mysqli_query($conn, $update_konser)) {
+        $stmt_update = $conn->prepare("UPDATE konser SET tiket_terjual = ?, status = ? WHERE id = ?");
+        $stmt_update->bind_param("isi", $tiket_terjual_baru, $status_baru, $konser_id);
+        if (!$stmt_update->execute()) {
             throw new Exception("Gagal memperbarui kuota tiket konser.");
         }
 
         // Commit transaksi
         mysqli_commit($conn);
 
-        echo "<script>
-                alert('Pemesanan Sukses! Tiket Anda berhasil dipesan.');
-                window.location.href = '../user/tiket-saya.php';
-              </script>";
+        setcookie("flash_msg", "Pemesanan Sukses! Tiket Anda berhasil dipesan.", time() + 5, "/");
+        header("Location: ../user/tiket-saya.php");
         exit();
 
     } catch (Exception $e) {
         // Rollback transaksi jika gagal
         mysqli_rollback($conn);
-        echo "<script>
-                alert('Terjadi kesalahan sistem: " . $e->getMessage() . "');
-                window.location.href = '../user/detail-konser.php?id=$konser_id';
-              </script>";
+        setcookie("flash_msg", "Terjadi kesalahan sistem: " . $e->getMessage(), time() + 5, "/");
+        header("Location: ../user/detail-konser.php?id=$konser_id");
         exit();
     }
 

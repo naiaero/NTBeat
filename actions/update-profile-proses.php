@@ -9,21 +9,23 @@ if (!isset($_SESSION['email'])) {
 
 $email = $_SESSION['email'];
 $role = $_SESSION['role'];
+$redirect_url = ($role === 'admin') ? '../admin/profil.php' : '../user/profil.php';
 
 // Ambil data POST
-$nama = mysqli_real_escape_string($conn, $_POST['nama']);
+$nama = trim($_POST['nama']);
 $current_password = isset($_POST['current_password']) ? $_POST['current_password'] : '';
 $new_password = isset($_POST['new_password']) ? $_POST['new_password'] : '';
 
 // Ambil data user dari database saat ini
-$query = mysqli_query($conn, "SELECT * FROM users WHERE email = '$email'");
-$user = mysqli_fetch_assoc($query);
+$stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
+$stmt->bind_param("s", $email);
+$stmt->execute();
+$result = $stmt->get_result();
+$user = $result->fetch_assoc();
 
 if (!$user) {
-    echo "<script>
-            alert('User tidak ditemukan.');
-            window.history.back();
-          </script>";
+    setcookie("flash_msg", "User tidak ditemukan.", time() + 5, "/");
+    header("Location: $redirect_url");
     exit();
 }
 
@@ -54,17 +56,13 @@ if (isset($_FILES['foto']) && $_FILES['foto']['error'] !== UPLOAD_ERR_NO_FILE) {
             if (move_uploaded_file($fileTmpPath, $dest_path)) {
                 $foto_name = $newFileName;
             } else {
-                echo "<script>
-                        alert('Gagal mengunggah foto ke direktori server.');
-                        window.history.back();
-                      </script>";
+                setcookie("flash_msg", "Gagal mengunggah foto ke direktori server.", time() + 5, "/");
+                header("Location: $redirect_url");
                 exit();
             }
         } else {
-            echo "<script>
-                    alert('Format file tidak didukung. Harap unggah gambar (jpg, jpeg, png, gif).');
-                    window.history.back();
-                  </script>";
+            setcookie("flash_msg", "Format file tidak didukung. Harap unggah gambar (jpg, jpeg, png, gif).", time() + 5, "/");
+            header("Location: $redirect_url");
             exit();
         }
     } else {
@@ -90,59 +88,48 @@ if (isset($_FILES['foto']) && $_FILES['foto']['error'] !== UPLOAD_ERR_NO_FILE) {
                 $error_msg = "Ekstensi PHP membatalkan proses upload.";
                 break;
         }
-        echo "<script>
-                alert('Gagal mengunggah foto profil: $error_msg');
-                window.history.back();
-              </script>";
+        setcookie("flash_msg", "Gagal mengunggah foto profil: $error_msg", time() + 5, "/");
+        header("Location: $redirect_url");
         exit();
     }
 }
 
-// Susun query update bidang dasar
-$update_fields = "nama = '$nama', foto = '$foto_name'";
+$stmt_update = null;
 
 // Proses Update Password (jika admin/customer ingin mengganti password)
 if (!empty($new_password)) {
     // Validasi apakah password saat ini dimasukkan
     if (empty($current_password)) {
-        echo "<script>
-                alert('Harap masukkan password saat ini untuk mengonfirmasi perubahan kata sandi.');
-                window.history.back();
-              </script>";
+        setcookie("flash_msg", "Harap masukkan password saat ini untuk mengonfirmasi perubahan kata sandi.", time() + 5, "/");
+        header("Location: $redirect_url");
         exit();
     }
 
     // Verifikasi password saat ini
     if (password_verify($current_password, $user['password'])) {
         $hashed_new_password = password_hash($new_password, PASSWORD_DEFAULT);
-        $update_fields .= ", password = '$hashed_new_password'";
+        $stmt_update = $conn->prepare("UPDATE users SET nama = ?, foto = ?, password = ? WHERE email = ?");
+        $stmt_update->bind_param("ssss", $nama, $foto_name, $hashed_new_password, $email);
     } else {
-        echo "<script>
-                alert('Password saat ini salah. Perubahan kata sandi gagal.');
-                window.history.back();
-              </script>";
+        setcookie("flash_msg", "Password saat ini salah. Perubahan kata sandi gagal.", time() + 5, "/");
+        header("Location: $redirect_url");
         exit();
     }
+} else {
+    $stmt_update = $conn->prepare("UPDATE users SET nama = ?, foto = ? WHERE email = ?");
+    $stmt_update->bind_param("sss", $nama, $foto_name, $email);
 }
 
 // Eksekusi update ke database
-$sql = "UPDATE users SET $update_fields WHERE email = '$email'";
-if (mysqli_query($conn, $sql)) {
+if ($stmt_update->execute()) {
     // Perbarui data nama dan foto di Session agar langsung tampil di header & sidebar
     $_SESSION['nama'] = $nama;
     $_SESSION['foto'] = $foto_name;
     
-    // Tentukan arah kembali berdasarkan role pengguna
-    $redirect_url = ($role === 'admin') ? '../admin/profil.php' : '../user/profil.php';
-    
-    echo "<script>
-            alert('Profil berhasil diperbarui!');
-            window.location.href = '$redirect_url';
-          </script>";
+    setcookie("flash_msg", "Profil berhasil diperbarui!", time() + 5, "/");
+    header("Location: $redirect_url");
 } else {
-    echo "<script>
-            alert('Gagal memperbarui profil di database: " . mysqli_error($conn) . "');
-            window.history.back();
-          </script>";
+    setcookie("flash_msg", "Gagal memperbarui profil di database: " . mysqli_error($conn), time() + 5, "/");
+    header("Location: $redirect_url");
 }
 ?>

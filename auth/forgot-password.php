@@ -5,16 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ubah Kata Sandi - NTBeat</title>
     <link rel="stylesheet" href="../assets/style/style.css" />
+    <script src="../assets/script/script.js"></script>
     <script>
       function validateForm() {
         var password = document.getElementById("password").value;
         var confirmPassword = document.getElementById("confirm_password").value;
         if (password !== confirmPassword) {
-          alert("Kata sandi baru dan konfirmasi kata sandi tidak cocok!");
+          showGlobalModal("Peringatan", "Kata sandi baru dan konfirmasi kata sandi tidak cocok!");
           return false;
         }
         if (password.length < 8) {
-          alert("Kata sandi harus minimal 8 karakter!");
+          showGlobalModal("Peringatan", "Kata sandi harus minimal 8 karakter!");
           return false;
         }
         return true;

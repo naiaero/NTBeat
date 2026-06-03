@@ -310,7 +310,7 @@ document.addEventListener("DOMContentLoaded", () => {
         btnPesan.disabled = true;
 
         setTimeout(() => {
-          document.cookie = "flash_msg=" + encodeURIComponent("Sukses! Tiket Anda telah dipesan. Silakan cek email atau menu riwayat pesanan.") + "; path=/;";
+          document.cookie = "flash_msg=" + encodeURIComponent("Sukses! Tiket Anda telah dipesan. Silakan cek menu tiket saya dan riwayat.") + "; path=/;";
           window.location.href = "beranda.php"; // Kembali ke dashboard user
         }, 2000);
       }

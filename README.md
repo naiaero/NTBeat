@@ -104,8 +104,8 @@ Proyek ini dikembangkan secara kolaboratif oleh tim pengembang berikut:
 | Nama | NIM | Role |
 | --- | --- | --- |
 | **Salsabila Nailafahdi** | F1D02410135 | Project Manager & Full-stack Developer |
-| **Tegu Ilham Pebrian Saputra** | F1D02410097 | Front-end Developer |
-| **M. Alfatih** | F1D02410013 | Front-end Developer |
+| **Tegu Ilham Pebrian Saputra** | F1D02410097 | Full-stack Developer |
+| **M. Alfatih** | F1D02410013 | Full-stack Developer |
 
 ---
 

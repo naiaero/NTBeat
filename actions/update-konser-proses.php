@@ -130,7 +130,7 @@ if (isset($_POST['submit_update'])) {
                 poster = ?, 
                 status = ? 
               WHERE id = ?");
-    $stmt_update->bind_param("ssssssdiisi", $nama_konser, $lineup, $tanggal, $waktu, $lokasi, $deskripsi, $harga, $kapasitas, $poster, $status, $id);
+    $stmt_update->bind_param("ssssssdissi", $nama_konser, $lineup, $tanggal, $waktu, $lokasi, $deskripsi, $harga, $kapasitas, $poster, $status, $id);
 
     if ($stmt_update->execute()) {
         setcookie("flash_msg", "Konser berhasil diperbarui!", time() + 5, "/");

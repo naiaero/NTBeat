@@ -275,7 +275,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (checkedBox) {
         const konserId = checkedBox.value;
-        window.location.href = `admin-edit-konser.php?id=${konserId}`;
+        window.location.href = `edit-konser.php?id=${konserId}`;
       }
     });
   }

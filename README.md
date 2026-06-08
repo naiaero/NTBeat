@@ -50,8 +50,7 @@ NTBeat/
 │
 ├── 📁 config/                       # Konfigurasi sistem dan basis data
 │   ├── 📄 koneksi.php               # Jembatan penghubung ke ekstensi MySQLi server lokal
-│   ├── 📄 ntbeat.sql                # Skema database relational (tabel: users, konser, pesanan)
-│   └── 📄 setup-db.php              # Skrip penginisialisasi otomatis pangkalan data dan data sampel
+│   └── 📄 ntbeat.sql                # Skema database relational (tabel: users, konser, pesanan) 
 │
 ├── 📁 user/                         # Halaman-halaman panel kendali untuk aktor Customer
 │   ├── 📄 beranda.php               # Menampilkan katalog daftar konser mendatang & fitur live-search

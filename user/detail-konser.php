@@ -9,7 +9,12 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'customer') {
 }
 
 $id_konser = isset($_GET['id']) ? intval($_GET['id']) : 0;
-$query = mysqli_query($conn, "SELECT * FROM konser WHERE id = $id_konser AND status != 'Arsip'");
+$query = mysqli_query($conn, "
+    SELECT k.*, u.nama as nama_eo 
+    FROM konser k 
+    LEFT JOIN users u ON k.eo_email = u.email 
+    WHERE k.id = $id_konser AND k.status != 'Arsip'
+");
 if (mysqli_num_rows($query) > 0) {
     $row = mysqli_fetch_assoc($query);
 } else {
@@ -173,6 +178,7 @@ if (empty($row['poster']) || !file_exists($poster_path)) {
             <h1 class="detail-title"><?php echo htmlspecialchars($row['nama_konser']); ?></h1>
             
             <div class="detail-meta">
+                <p style="color: #f1c40f; font-weight: bold; font-size: 1.1rem; margin-bottom: 10px;">🏢 <strong>Penyelenggara:</strong> <?php echo htmlspecialchars($row['nama_eo'] ?? 'Penyelenggara Tidak Diketahui'); ?></p>
                 <p>📅 <strong>Tanggal & Waktu:</strong> <?php echo date('d M Y', strtotime($row['tanggal'])); ?> • <?php echo date('H:i', strtotime($row['waktu'])); ?> WITA</p>
                 <p>📍 <strong>Tempat:</strong> <?php echo htmlspecialchars($row['lokasi']); ?></p>
                 <p>👥 <strong>Line-up:</strong> <?php echo empty($row['lineup']) ? 'Musisi Pilihan' : htmlspecialchars($row['lineup']); ?></p>
@@ -233,12 +239,12 @@ if (empty($row['poster']) || !file_exists($poster_path)) {
     </form>
 
     <!-- Modals untuk Feedback Pembelian -->
-    <div id="warningModal" class="modal-overlay" style="display: none;">
+    <div id="warningModal" class="modal-overlay" style="display: none; z-index: 9999;">
         <div class="logout-card">
             <h2>⚠️ Peringatan</h2>
             <p id="warningMessage"></p>
             <div class="logout-actions">
-                <button class="btn-yakin" onclick="document.getElementById('warningModal').style.display='none'">Tutup</button>
+                <button class="btn-yakin" onclick="document.getElementById('warningModal').style.display='none'">Mengerti</button>
             </div>
         </div>
     </div>
@@ -251,10 +257,21 @@ if (empty($row['poster']) || !file_exists($poster_path)) {
                 <p style="margin: 5px 0; color: #ccc;"><strong>Jumlah:</strong> <span id="confirmJumlah"></span> Tiket</p>
                 <p style="margin: 5px 0; color: #ccc;"><strong>Total:</strong> <span id="confirmTotal" style="color: #f1c40f; font-weight: bold;"></span></p>
             </div>
-            <p>Apakah Anda ingin melanjutkan ke pembayaran?</p>
+            <div style="margin: 15px 0; text-align: left;">
+                <label for="bank_selector" style="color: #ccc; font-weight: bold; display: block; margin-bottom: 5px;">Pilih Metode Pembayaran (Transfer Bank):</label>
+                <select id="bank_selector" name="bank" form="booking-form" style="width: 100%; padding: 10px; background: #222; color: #fff; border: 1px solid #444; border-radius: 5px;" required onchange="document.getElementById('bankErrorText').style.display='none';">
+                    <option value="" disabled selected>-- Pilih Bank --</option>
+                    <option value="BCA">BCA Virtual Account</option>
+                    <option value="Mandiri">Mandiri Virtual Account</option>
+                    <option value="BNI">BNI Virtual Account</option>
+                    <option value="BRI">BRI Virtual Account</option>
+                </select>
+                <p id="bankErrorText" style="color: #e74c3c; font-size: 0.9rem; margin-top: 5px; display: none;">⚠️ Harap pilih bank terlebih dahulu!</p>
+            </div>
+            <p style="color: #888; font-size: 0.9rem;">Pilih bank, lalu klik Lanjut untuk memesan tiket Anda.</p>
             <div class="logout-actions">
                 <button class="btn-batal" onclick="document.getElementById('bookingModal').style.display='none'">Batal</button>
-                <button class="btn-yakin" onclick="document.getElementById('booking-form').submit()">Lanjut</button>
+                <button class="btn-yakin" onclick="submitBookingForm()">Lanjut</button>
             </div>
         </div>
     </div>
@@ -367,6 +384,20 @@ if (empty($row['poster']) || !file_exists($poster_path)) {
         document.getElementById('confirmJumlah').innerText = currentQty;
         document.getElementById('confirmTotal').innerText = formattedTotal;
         document.getElementById('bookingModal').style.display = 'flex';
+    }
+
+    function submitBookingForm() {
+        const bankSelector = document.getElementById('bank_selector');
+        if (!bankSelector.value) {
+            document.getElementById('bankErrorText').style.display = 'block';
+            
+            // Tambahkan juga animasi getar (shake) ringan pada elemen select jika diinginkan (opsional)
+            bankSelector.style.border = '1px solid #e74c3c';
+            setTimeout(() => { bankSelector.style.border = '1px solid #444'; }, 2000);
+            
+            return;
+        }
+        document.getElementById('booking-form').submit();
     }
     </script>
 </body>

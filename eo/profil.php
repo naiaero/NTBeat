@@ -3,7 +3,7 @@ session_start();
 include '../config/koneksi.php';
 
 // Membatasi akses hanya untuk admin
-if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'eo') {
     header("Location: ../auth/login.php");
     exit();
 }
@@ -15,6 +15,8 @@ $stmt_user->execute();
 $query_user = $stmt_user->get_result();
 $user_data = mysqli_fetch_assoc($query_user);
 $nama_user = $user_data['nama'];
+$email_user = $user_data['email'];
+$alamat = htmlspecialchars($user_data['alamat'] ?? '');
 $nama_depan = explode(' ', trim($nama_user))[0];
 $foto_user = isset($user_data['foto']) ? $user_data['foto'] : '';
 $inisial = strtoupper(substr($nama_user, 0, 1));
@@ -35,32 +37,44 @@ if (empty($foto_user) || !file_exists($foto_path) || $foto_user === 'default-ava
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profil Administrator - NTBeat</title>
+    <title>Profil Penyelenggara - NTBeat</title>
     <link rel="stylesheet" href="../assets/style/admin-style.css">
     <link rel="stylesheet" href="../assets/style/style.css">
     <script src="../assets/script/script.js"></script>
 </head>
 <body class="admin-body">
 
-    <header class="header-user">
-        <div class="logo-area" onclick="window.location.href = 'dashboard.php'">
+        <header class="header-user">
+        <div class="logo-area" onclick="window.location.href = 'dashboard.php'" style="cursor: pointer;">
             <img src="../assets/img/logo.png" alt="Logo"> 
             <label>NTBeat</label>
         </div>
         <div class="user-profile-nav" onclick="window.location.href = 'profil.php'" style="cursor: pointer;">
-            <span>Halo, <?php echo htmlspecialchars($nama_depan); ?>!</span>
+            <span style="color: white; font-size: 0.9rem; margin-right: 10px;">Halo, <?php echo htmlspecialchars($nama_depan); ?>!</span>
             <div class="avatar-placeholder" style="<?php echo $avatar_style; ?>"><?php echo $inisial; ?></div>
         </div>
     </header>
 
     <div class="dashboard-layout">
         <aside class="sidebar">
+            
+            <?php
+            $query_notif = mysqli_query($conn, "
+                SELECT COUNT(p.id) as total_pending 
+                FROM pesanan p 
+                JOIN konser k ON p.konser_id = k.id 
+                WHERE p.status_bayar = 'Menunggu Verifikasi' AND p.is_read_eo = 0 AND k.eo_email = '$email_user'
+            ");
+            $data_pending = mysqli_fetch_assoc($query_notif);
+            $jumlah_pending = $data_pending['total_pending'];
+            $badge_pending = ($jumlah_pending > 0) ? " <span style='background: #e74c3c; color: white; padding: 2px 6px; border-radius: 10px; font-size: 0.75rem; font-weight: bold; margin-left: 5px; box-shadow: 0 0 5px rgba(231,76,60,0.5);'>" . $jumlah_pending . "</span>" : "";
+            ?>
             <ul class="sidebar-menu">
-                <li onclick="window.location.href = 'dashboard.php'">Dashboard Platform</li>
-                <li onclick="window.location.href = 'kelola-eo.php'">Kelola Pengguna EO</li>
+                <li onclick="window.location.href = 'dashboard.php'">Dashboard Acara</li>
                 <li onclick="window.location.href = 'form-konser.php'">Tambah Acara Baru</li>
                 <li onclick="window.location.href = 'kelola-konser.php'">Kelola Data Konser</li>
                 <li onclick="window.location.href = 'arsip.php'">Arsip Penyelenggaraan</li>
+                <li onclick="window.location.href = 'verifikasi-pembayaran.php'">Verifikasi Pembayaran<?php echo $badge_pending; ?></li>
                 <li class="active" onclick="window.location.href = 'profil.php'">Pengaturan Profil</li>
                 <li onclick="openLogoutModal()">Keluar</li>
             </ul>
@@ -69,8 +83,8 @@ if (empty($foto_user) || !file_exists($foto_path) || $foto_user === 'default-ava
         <main class="content-area">
             <div class="ps-container">
                 <div class="section-header">
-                    <h2>Profil Administrator</h2>
-                    <p>Kelola data login dan keamanan akun utama sistem NTBeat.</p>
+                    <h2>Profil Penyelenggara</h2>
+                    <p>Kelola data operasional bisnis dan keamanan akun EO Anda di platform NTBeat.</p>
                 </div>
 
                 <div class="ps-card">
@@ -101,11 +115,23 @@ if (empty($foto_user) || !file_exists($foto_path) || $foto_user === 'default-ava
                         </div>
 
                         <div class="ps-form-group">
-                            <label for="new_password">Password Baru</label>
-                            <input type="password" id="new_password" name="new_password" class="ps-input" placeholder="Masukkan password baru" />
+                            <label for="new_password">Sandi Baru (Opsional)</label>
+                            <input type="password" id="new_password" name="new_password" class="ps-input" placeholder="Masukkan sandi baru jika ingin mengubah" />
                         </div>
 
-                        <div class="ps-action-bar">
+                        <div class="ps-form-group">
+                            <label>Konfirmasi Sandi Baru</label>
+                            <input type="password" name="confirm_password" class="ps-input" placeholder="Ketik ulang sandi baru">
+                        </div>
+
+                        <h3 class="ps-subheading">Informasi Operasional</h3>
+
+                        <div class="ps-form-group">
+                            <label>Alamat Penyelenggara</label>
+                            <textarea name="alamat" style="width: 100%; padding: 12px; background: #222; border: 1px solid #444; color: #fff; border-radius: 6px; box-sizing: border-box; resize: vertical; min-height: 100px; font-family: inherit; font-size: 0.95rem; margin-top: 5px;" placeholder="Masukkan alamat lengkap perusahaan..."><?php echo $alamat; ?></textarea>
+                        </div>
+
+                        <div style="margin-top: 20px; display: flex; justify-content: flex-end; gap: 15px;">
                             <button type="button" class="btn-ps-cancel" onclick="window.location.href = 'dashboard.php'">
                                 Batal
                             </button>

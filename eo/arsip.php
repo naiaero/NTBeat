@@ -2,7 +2,7 @@
 session_start();
 include '../config/koneksi.php';
 
-if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'eo') {
     header("Location: ../auth/login.php");
     exit();
 }
@@ -37,25 +37,37 @@ if (!empty($foto_user) && file_exists($foto_path) && $foto_user !== 'default-ava
 </head>
 <body class="admin-body">
 
-    <header class="header-user">
-        <div class="logo-area" onclick="window.location.href='dashboard.php'" style="cursor: pointer;">
+        <header class="header-user">
+        <div class="logo-area" onclick="window.location.href = 'dashboard.php'" style="cursor: pointer;">
             <img src="../assets/img/logo.png" alt="Logo"> 
             <label>NTBeat</label>
         </div>
-        <div class="user-profile-nav">
-            <span>Halo, <?php echo htmlspecialchars($nama_depan); ?>!</span>
-            <div class="avatar-placeholder" onclick="window.location.href = 'profil.php'" style="<?php echo $avatar_style; ?>"><?php echo $inisial; ?></div>
+        <div class="user-profile-nav" onclick="window.location.href = 'profil.php'" style="cursor: pointer;">
+            <span style="color: white; font-size: 0.9rem; margin-right: 10px;">Halo, <?php echo htmlspecialchars($nama_depan); ?>!</span>
+            <div class="avatar-placeholder" style="<?php echo $avatar_style; ?>"><?php echo $inisial; ?></div>
         </div>
     </header>
 
     <div class="dashboard-layout">
         <aside class="sidebar">
+            
+            <?php
+            $query_notif = mysqli_query($conn, "
+                SELECT COUNT(p.id) as total_pending 
+                FROM pesanan p 
+                JOIN konser k ON p.konser_id = k.id 
+                WHERE p.status_bayar = 'Menunggu Verifikasi' AND p.is_read_eo = 0 AND k.eo_email = '$email_user'
+            ");
+            $data_pending = mysqli_fetch_assoc($query_notif);
+            $jumlah_pending = $data_pending['total_pending'];
+            $badge_pending = ($jumlah_pending > 0) ? " <span style='background: #e74c3c; color: white; padding: 2px 6px; border-radius: 10px; font-size: 0.75rem; font-weight: bold; margin-left: 5px; box-shadow: 0 0 5px rgba(231,76,60,0.5);'>" . $jumlah_pending . "</span>" : "";
+            ?>
             <ul class="sidebar-menu">
-                <li onclick="window.location.href = 'dashboard.php'">Dashboard Platform</li>
-                <li onclick="window.location.href = 'kelola-eo.php'">Kelola Pengguna EO</li>
+                <li onclick="window.location.href = 'dashboard.php'">Dashboard Acara</li>
                 <li onclick="window.location.href = 'form-konser.php'">Tambah Acara Baru</li>
                 <li onclick="window.location.href = 'kelola-konser.php'">Kelola Data Konser</li>
                 <li class="active" onclick="window.location.href = 'arsip.php'">Arsip Penyelenggaraan</li>
+                <li onclick="window.location.href = 'verifikasi-pembayaran.php'">Verifikasi Pembayaran<?php echo $badge_pending; ?></li>
                 <li onclick="window.location.href = 'profil.php'">Pengaturan Profil</li>
                 <li onclick="openLogoutModal()">Keluar</li>
             </ul>
@@ -95,7 +107,7 @@ if (!empty($foto_user) && file_exists($foto_path) && $foto_user !== 'default-ava
                     </thead>
                     <tbody id="archive-list">
                         <?php
-                        $query_konser = mysqli_query($conn, "SELECT * FROM konser WHERE status = 'Arsip' ORDER BY tanggal DESC");
+                        $query_konser = mysqli_query($conn, "SELECT * FROM konser WHERE status = 'Arsip' AND eo_email = '$email_user' ORDER BY tanggal DESC");
                         if (mysqli_num_rows($query_konser) > 0) {
                             while ($row = mysqli_fetch_assoc($query_konser)) {
                                 $tanggal_format = date('d M Y', strtotime($row['tanggal']));

@@ -9,7 +9,13 @@ if (!isset($_SESSION['email'])) {
 
 $email = $_SESSION['email'];
 $role = $_SESSION['role'];
-$redirect_url = ($role === 'admin') ? '../admin/profil.php' : '../user/profil.php';
+if ($role === 'admin') {
+    $redirect_url = '../admin/profil.php';
+} else if ($role === 'eo') {
+    $redirect_url = '../eo/profil.php';
+} else {
+    $redirect_url = '../user/profil.php';
+}
 
 // Ambil data POST
 $nama = trim($_POST['nama']);
@@ -123,10 +129,21 @@ if (!empty($new_password)) {
 // Eksekusi update ke database
 if ($stmt_update->execute()) {
     // Perbarui data nama dan foto di Session agar langsung tampil di header & sidebar
-    $_SESSION['nama'] = $nama;
-    $_SESSION['foto'] = $foto_name;
-    
-    setcookie("flash_msg", "Profil berhasil diperbarui!", time() + 5, "/");
+    if ($stmt_update->affected_rows === 0) {
+        setcookie("flash_msg", "Tidak ada perubahan data yang dilakukan.", time() + 5, "/");
+    } else {
+        $_SESSION['nama'] = $nama;
+        $_SESSION['foto'] = $foto_name;
+        setcookie("flash_msg", "Profil berhasil diperbarui!", time() + 5, "/");
+        
+        // Cek update alamat
+        if (isset($_POST['alamat']) && $_SESSION['role'] === 'eo') {
+            $alamat = $_POST['alamat'];
+            $stmt_al = $conn->prepare("UPDATE users SET alamat = ? WHERE email = ?");
+            $stmt_al->bind_param("ss", $alamat, $email);
+            $stmt_al->execute();
+        }
+    }
     header("Location: $redirect_url");
 } else {
     setcookie("flash_msg", "Gagal memperbarui profil di database: " . mysqli_error($conn), time() + 5, "/");

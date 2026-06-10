@@ -18,6 +18,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $user = mysqli_fetch_assoc($result);
         
         if(password_verify($hashed_password, $user['password'])) {
+            // Cek status aktif/nonaktif
+            if (isset($user['status']) && $user['status'] == 'nonaktif') {
+                setcookie("flash_msg", "Akses Ditolak: Akun Anda sedang dinonaktifkan oleh Administrator.", time() + 5, "/");
+                header("Location: ../auth/login.php");
+                exit();
+            }
             $_SESSION['email'] = $user['email'];
             $_SESSION['nama']    = $user['nama'];
             $_SESSION['role']    = $user['role'];
@@ -25,6 +31,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if ($user['role'] == 'admin') {
                 setcookie("flash_msg", "Selamat datang, Administrator!", time() + 5, "/");
                 header("Location: ../admin/dashboard.php");
+                exit();
+            } else if ($user['role'] == 'eo') {
+                setcookie("flash_msg", "Selamat datang, Event Organizer!", time() + 5, "/");
+                header("Location: ../eo/dashboard.php");
                 exit();
             } else if ($user['role'] == 'customer') {
                 setcookie("flash_msg", "Login Berhasil! Selamat datang di NTBeat.", time() + 5, "/");

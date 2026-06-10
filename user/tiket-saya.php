@@ -8,6 +8,52 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'customer') {
     exit();
 }
 
+// ==========================================
+// AUTO CANCEL TICKETS (Kedaluwarsa VA 30 Menit)
+// ==========================================
+$stmt_cancel = $conn->prepare("SELECT id, konser_id, jumlah_tiket FROM pesanan WHERE status_bayar = 'Pending' AND waktu_kadaluarsa < NOW()");
+$stmt_cancel->execute();
+$res_cancel = $stmt_cancel->get_result();
+
+while ($row = $res_cancel->fetch_assoc()) {
+    $p_id = $row['id'];
+    $k_id = $row['konser_id'];
+    $jml = $row['jumlah_tiket'];
+    
+    // 1. Batalkan pesanan
+    $update_pesanan = $conn->prepare("UPDATE pesanan SET status_bayar = 'Dibatalkan' WHERE id = ?");
+    $update_pesanan->bind_param("i", $p_id);
+    $update_pesanan->execute();
+    
+    // 2. Kembalikan stok
+    $update_konser = $conn->prepare("UPDATE konser SET tiket_terjual = GREATEST(tiket_terjual - ?, 0) WHERE id = ?");
+    $update_konser->bind_param("ii", $jml, $k_id);
+    $update_konser->execute();
+
+    // 3. Update status konser (jika tadinya Habis, menjadi Tersedia)
+    $cek_konser = $conn->prepare("SELECT kapasitas, tiket_terjual, status FROM konser WHERE id = ?");
+    $cek_konser->bind_param("i", $k_id);
+    $cek_konser->execute();
+    $res_konser = $cek_konser->get_result()->fetch_assoc();
+    
+    if ($res_konser && $res_konser['status'] !== 'Selesai' && $res_konser['status'] !== 'Arsip') {
+        $sisa = $res_konser['kapasitas'] - $res_konser['tiket_terjual'];
+        $new_status = $res_konser['status'];
+        if ($sisa > 150) {
+            $new_status = 'Tersedia';
+        } elseif ($sisa > 0) {
+            $new_status = 'Hampir Habis';
+        }
+        
+        if ($new_status !== $res_konser['status']) {
+            $update_status = $conn->prepare("UPDATE konser SET status = ? WHERE id = ?");
+            $update_status->bind_param("si", $new_status, $k_id);
+            $update_status->execute();
+        }
+    }
+}
+// ==========================================
+
 $user_email = $_SESSION['email'];
 $stmt_user = $conn->prepare("SELECT * FROM users WHERE email = ?");
 $stmt_user->bind_param("s", $user_email);
@@ -126,23 +172,76 @@ $query_past = $stmt_past->get_result();
               <?php
               if (mysqli_num_rows($query_active) > 0) {
                   while ($row = mysqli_fetch_assoc($query_active)) {
+                      $status_bayar = $row['status_bayar'];
                       ?>
                       <div class="e-ticket-card">
                         <div class="ticket-main-info">
                           <div class="ticket-header">
-                            <span class="badge-active">Tiket Aktif</span>
+                            <?php if ($status_bayar === 'Lunas') { ?>
+                                <span class="badge-active">Tiket Aktif</span>
+                            <?php } elseif ($status_bayar === 'Pending') { ?>
+                                <span class="badge-active" style="background: #f39c12; color: #fff;">Menunggu Pembayaran</span>
+                            <?php } elseif ($status_bayar === 'Menunggu Verifikasi') { ?>
+                                <span class="badge-active" style="background: #3498db; color: #fff;">Menunggu Verifikasi</span>
+                            <?php } else { ?>
+                                <span class="badge-expired" style="background: #e74c3c; color: #fff;">Dibatalkan</span>
+                            <?php } ?>
                             <span class="order-id">#<?php echo htmlspecialchars($row['order_id']); ?></span>
                           </div>
                           <h3><?php echo htmlspecialchars($row['nama_konser']); ?></h3>
                           <p class="ticket-detail">📅 <?php echo format_indonesian_date($row['tanggal']); ?> • <?php echo date('H:i', strtotime($row['waktu'])); ?> WITA</p>
                           <p class="ticket-detail">📍 <?php echo htmlspecialchars($row['lokasi']); ?></p>
                           <p class="ticket-detail">👤 Nama: <?php echo htmlspecialchars($nama_user); ?> (<?php echo $row['jumlah_tiket']; ?> Tiket)</p>
+
+                          <?php if ($status_bayar === 'Pending' || $status_bayar === 'Menunggu Verifikasi') { ?>
+                            <div style="margin-top: 15px; padding: 15px; background: #1a1a1a; border: 1px solid #333; border-radius: 8px;">
+                                <?php if ($status_bayar === 'Menunggu Verifikasi') { ?>
+                                    <p style="color: #3498db; font-weight: bold; margin: 0;">✅ Bukti bayar terunggah. Menunggu Verifikasi.</p>
+                                <?php } else { ?>
+                                    <p style="margin: 0 0 10px 0;">Transfer sebesar <strong>Rp <?php echo number_format($row['total_harga'], 0, ',', '.'); ?></strong> ke <?php echo htmlspecialchars($row['bank']); ?> Virtual Account:</p>
+                                    <p style="font-size: 1.5rem; letter-spacing: 2px; color: #f1c40f; margin: 0 0 10px 0; font-weight: bold;"><?php echo htmlspecialchars($row['va_number']); ?></p>
+                                    <p style="margin: 0 0 15px 0; font-size: 0.9rem; color: #e74c3c;">Batas Waktu: <strong id="countdown-<?php echo $row['id']; ?>">...</strong></p>
+                                    <script>
+                                        (function() {
+                                            var distance = <?php echo strtotime($row['waktu_kadaluarsa']) - time(); ?> * 1000;
+                                            var x = setInterval(function() {
+                                                distance -= 1000;
+                                                if (distance < 0) {
+                                                    clearInterval(x);
+                                                    document.getElementById("countdown-<?php echo $row['id']; ?>").innerHTML = "KADALUARSA";
+                                                    setTimeout(function() { location.reload(); }, 2000);
+                                                } else {
+                                                    var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                                                    var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                                                    document.getElementById("countdown-<?php echo $row['id']; ?>").innerHTML = minutes + "m " + seconds + "s ";
+                                                }
+                                            }, 1000);
+                                        })();
+                                    </script>
+                                    <form action="../actions/upload-bukti-proses.php" method="POST" enctype="multipart/form-data" style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                                        <input type="hidden" name="order_id" value="<?php echo htmlspecialchars($row['order_id']); ?>">
+                                        <input type="file" name="bukti_bayar" accept="image/*" required style="font-size: 0.8rem;">
+                                        <button type="submit" class="auth-btn-submit" style="padding: 8px 15px; font-size: 0.9rem; width: auto; margin: 0;">Unggah</button>
+                                    </form>
+                                <?php } ?>
+                            </div>
+                          <?php } ?>
                         </div>
 
                         <div class="ticket-qr-section">
-                          <div class="qr-placeholder" data-code="<?php echo htmlspecialchars($row['order_id']); ?>">
-                            <span>[QR Code]</span>
-                          </div>
+                          <?php if ($status_bayar === 'Lunas') { ?>
+                              <div class="qr-placeholder" data-code="<?php echo htmlspecialchars($row['order_id']); ?>">
+                                <span>[QR Code]</span>
+                              </div>
+                          <?php } elseif ($status_bayar === 'Pending' || $status_bayar === 'Menunggu Verifikasi') { ?>
+                              <div class="qr-placeholder expired" style="border-color: #f39c12; color: #f39c12;">
+                                <span>[Menunggu]</span>
+                              </div>
+                          <?php } else { ?>
+                              <div class="qr-placeholder expired" style="border-color: #e74c3c; color: #e74c3c;">
+                                <span>[Dibatalkan]</span>
+                              </div>
+                          <?php } ?>
                         </div>
                       </div>
                       <?php

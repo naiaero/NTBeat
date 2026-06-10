@@ -11,6 +11,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'customer') {
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['konser_id'])) {
     $konser_id = intval($_POST['konser_id']);
     $jumlah_tiket = intval($_POST['jumlah_tiket']);
+    $bank = isset($_POST['bank']) ? $_POST['bank'] : 'Lainnya';
     $user_email = $_SESSION['email'];
 
     if ($jumlah_tiket <= 0) {
@@ -58,14 +59,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['konser_id'])) {
     $unique_suffix = strtoupper(substr(md5(uniqid(rand(), true)), 0, 4));
     $order_id = "NTB-" . date("ym") . "-" . $unique_suffix;
 
+    // Generate VA Number berdasarkan Bank
+    $va_number = "";
+    $rand_va = rand(1000000000, 9999999999);
+    if ($bank === "BCA") {
+        $va_number = "3901" . $rand_va;
+    } elseif ($bank === "Mandiri") {
+        $va_number = "89508" . $rand_va;
+    } elseif ($bank === "BNI") {
+        $va_number = "8098" . $rand_va;
+    } elseif ($bank === "BRI") {
+        $va_number = "2200" . $rand_va;
+    } else {
+        $va_number = "8000" . $rand_va;
+    }
+
+    $waktu_kadaluarsa = date('Y-m-d H:i:s', strtotime('+30 minutes'));
+
     // Mulai transaksi database
     mysqli_begin_transaction($conn);
 
     try {
         // 3. Masukkan record pesanan baru ke tabel pesanan
-        $status_bayar = 'Lunas';
-        $stmt_insert = $conn->prepare("INSERT INTO pesanan (order_id, user_email, konser_id, jumlah_tiket, total_harga, status_bayar) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt_insert->bind_param("ssiids", $order_id, $user_email, $konser_id, $jumlah_tiket, $total_harga, $status_bayar);
+        $status_bayar = 'Pending';
+        $stmt_insert = $conn->prepare("INSERT INTO pesanan (order_id, user_email, konser_id, jumlah_tiket, total_harga, status_bayar, bank, va_number, waktu_kadaluarsa) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt_insert->bind_param("ssiidssss", $order_id, $user_email, $konser_id, $jumlah_tiket, $total_harga, $status_bayar, $bank, $va_number, $waktu_kadaluarsa);
         
         if (!$stmt_insert->execute()) {
             throw new Exception("Gagal membuat data pesanan.");

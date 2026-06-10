@@ -25,87 +25,34 @@ if (!empty($foto_user) && file_exists($foto_path) && $foto_user !== 'default-ava
 }
 
 
-// 1. Hitung Total Tiket Terjual (Kecualikan yang diarsip)
-$query_tiket = mysqli_query($conn, "SELECT SUM(tiket_terjual) as total_tiket FROM konser WHERE status != 'Arsip'");
-$data_tiket = mysqli_fetch_assoc($query_tiket);
-$total_tiket_terjual = $data_tiket['total_tiket'] ? $data_tiket['total_tiket'] : 0;
+// Hitung total EO terdaftar
+$query_eo = mysqli_query($conn, "SELECT COUNT(*) as total_eo FROM users WHERE role = 'eo'");
+$total_eo = mysqli_fetch_assoc($query_eo)['total_eo'];
 
-// 2. Hitung Total Kapasitas Semua Konser (Kecualikan yang diarsip)
-$query_kapasitas = mysqli_query($conn, "SELECT SUM(kapasitas) as total_kapasitas FROM konser WHERE status != 'Arsip'");
-$data_kapasitas = mysqli_fetch_assoc($query_kapasitas);
-$total_kapasitas = $data_kapasitas['total_kapasitas'] ? $data_kapasitas['total_kapasitas'] : 0;
+// Hitung Total Pengunjung Keseluruhan
+$query_total_visitor = mysqli_query($conn, "SELECT SUM(jumlah) as total_semua FROM pengunjung");
+$total_semua_pengunjung = mysqli_fetch_assoc($query_total_visitor)['total_semua'] ?? 0;
 
-// 3. Hitung Sisa Kuota
-$sisa_kuota = $total_kapasitas - $total_tiket_terjual;
+// Hitung Kunjungan Hari Ini
+$today = date('Y-m-d');
+$query_today_visitor = mysqli_query($conn, "SELECT jumlah FROM pengunjung WHERE tanggal = '$today'");
+$today_row = mysqli_fetch_assoc($query_today_visitor);
+$pengunjung_hari_ini = $today_row ? $today_row['jumlah'] : 0;
 
-// 4. Hitung Simulasi Pendapatan (Tiket Terjual x Harga per Tiket) (Kecualikan yang diarsip)
-$query_pendapatan = mysqli_query($conn, "SELECT SUM(tiket_terjual * harga) as total_pendapatan FROM konser WHERE status != 'Arsip'");
-$data_pendapatan = mysqli_fetch_assoc($query_pendapatan);
-$total_pendapatan = $data_pendapatan['total_pendapatan'] ? $data_pendapatan['total_pendapatan'] : 0;
-
-// Format rupiah dinamis ringkas (Miliar, Juta, Ribu, atau Rupiah biasa)
-function format_rupiah_ringkas($num) {
-    if ($num >= 1000000000) {
-        $val_str = str_replace('.', ',', sprintf("%.1f", $num / 1000000000));
-        if (substr($val_str, -2) === ',0') {
-            $val_str = substr($val_str, 0, -2);
-        }
-        return "Rp " . $val_str . " M";
-    } elseif ($num >= 1000000) {
-        $val_str = str_replace('.', ',', sprintf("%.1f", $num / 1000000));
-        if (substr($val_str, -2) === ',0') {
-            $val_str = substr($val_str, 0, -2);
-        }
-        return "Rp " . $val_str . " jt";
-    } elseif ($num >= 1000) {
-        $val_str = str_replace('.', ',', sprintf("%.1f", $num / 1000));
-        if (substr($val_str, -2) === ',0') {
-            $val_str = substr($val_str, 0, -2);
-        }
-        return "Rp " . $val_str . " rb";
-    } else {
-        return "Rp " . number_format($num, 0, ',', '.');
-    }
+// Data untuk grafik pengunjung (7 hari terakhir)
+$query_visitor = mysqli_query($conn, "SELECT * FROM pengunjung ORDER BY tanggal DESC LIMIT 7");
+$dates = [];
+$counts = [];
+while($row = mysqli_fetch_assoc($query_visitor)) {
+    $dates[] = date('d M', strtotime($row['tanggal']));
+    $counts[] = $row['jumlah'];
 }
+// Balik urutan agar dari hari terlama ke terbaru (kiri ke kanan di grafik)
+$dates = array_reverse($dates);
+$counts = array_reverse($counts);
+$dates_json = json_encode($dates);
+$counts_json = json_encode($counts);
 
-$pendapatan_formatted = format_rupiah_ringkas($total_pendapatan);
-
-// Ambil riwayat transaksi 
-$chart_labels = [];
-$chart_data = [];
-$sales_by_date = [];
-
-// Inisialisasi data 7 hari terakhir dengan nilai 0
-for ($i = 6; $i >= 0; $i--) {
-    $date_str = date('Y-m-d', strtotime("-$i days"));
-    $label_str = date('d M', strtotime("-$i days"));
-    $sales_by_date[$date_str] = [
-        'label' => $label_str,
-        'count' => 0
-    ];
-}
-
-$seven_days_ago = date('Y-m-d', strtotime('-6 days')) . ' 00:00:00';
-$query_chart = mysqli_query($conn, "
-    SELECT DATE(tanggal_pesan) as tanggal, SUM(jumlah_tiket) as total_tiket 
-    FROM pesanan 
-    WHERE tanggal_pesan >= '$seven_days_ago'
-    GROUP BY DATE(tanggal_pesan)
-");
-
-if ($query_chart) {
-    while ($row_chart = mysqli_fetch_assoc($query_chart)) {
-        $date_key = $row_chart['tanggal'];
-        if (isset($sales_by_date[$date_key])) {
-            $sales_by_date[$date_key]['count'] = intval($row_chart['total_tiket']);
-        }
-    }
-}
-
-foreach ($sales_by_date as $date_info) {
-    $chart_labels[] = $date_info['label'];
-    $chart_data[] = $date_info['count'];
-}
 ?>
 
 <!DOCTYPE html>
@@ -117,17 +64,114 @@ foreach ($sales_by_date as $date_info) {
     <link rel="stylesheet" href="../assets/style/admin-style.css">
     <link rel="stylesheet" href="../assets/style/style.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
-        window.dbStats = {
-            totalSold: <?php echo intval($total_tiket_terjual); ?>,
-            totalCapacity: <?php echo intval($total_kapasitas); ?>,
-            totalRevenue: <?php echo floatval($total_pendapatan); ?>
-        };
-        window.chartData = {
-            labels: <?php echo json_encode($chart_labels); ?>,
-            data: <?php echo json_encode($chart_data); ?>
-        };
-    </script>
+    <style>
+        /* Modern Boxed Dashboard Style */
+        .content-area {
+            padding: 30px 40px;
+            background-color: #121212;
+            min-height: 100vh;
+        }
+        .section-header h2 {
+            font-size: 2rem;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+        .section-header p {
+            color: #888;
+            font-size: 1rem;
+            margin-bottom: 30px;
+        }
+        
+        /* Boxed Grid Layout */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+        
+        .data-box {
+            background: linear-gradient(145deg, #1f1f1f, #181818);
+            border: 1px solid #2a2a2a;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+            display: flex;
+            align-items: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .data-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(241, 196, 15, 0.15);
+            border-color: #3a3a3a;
+        }
+        
+        .box-icon {
+            font-size: 2.5rem;
+            width: 70px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+            margin-right: 20px;
+        }
+        
+        .box-content h3 {
+            font-size: 0.95rem;
+            color: #aaa;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .box-content .value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #fff;
+        }
+        
+        /* Specific Box Colors */
+        .box-visitor {
+            background: rgba(52, 152, 219, 0.1);
+            color: #3498db;
+        }
+        .box-today {
+            background: rgba(46, 204, 113, 0.1);
+            color: #2ecc71;
+        }
+        .box-eo {
+            background: rgba(241, 196, 15, 0.1);
+            color: #f1c40f;
+        }
+        
+        /* Chart Box */
+        .chart-box-container {
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        }
+        .chart-box-container h3 {
+            color: #fff;
+            font-size: 1.2rem;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+        }
+        .chart-box-container h3::before {
+            content: '';
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            background: #f1c40f;
+            border-radius: 50%;
+            margin-right: 12px;
+        }
+    </style>
     <script src="../assets/script/script.js"></script>
     
 </head>
@@ -138,7 +182,7 @@ foreach ($sales_by_date as $date_info) {
             <img src="../assets/img/logo.png" alt="Logo"> <label>NTBeat</label>
         </div>
         <div class="user-profile-nav" onclick="window.location.href = 'profil.php'" style="cursor: pointer;">
-            <span style="color: white; font-size: 0.9rem; margin-right: 10px;"><?php echo htmlspecialchars($nama_depan); ?></span>
+            <span style="color: white; font-size: 0.9rem; margin-right: 10px;">Halo, <?php echo htmlspecialchars($nama_depan); ?>!</span>
             <div class="avatar-placeholder" style="<?php echo $avatar_style; ?>"><?php echo $inisial; ?></div>
         </div>
     </header>
@@ -146,7 +190,8 @@ foreach ($sales_by_date as $date_info) {
     <div class="dashboard-layout">
         <aside class="sidebar">
             <ul class="sidebar-menu">
-                <li class="active" onclick="window.location.href = 'dashboard.php'">Dashboard</li>
+                <li class="active" onclick="window.location.href = 'dashboard.php'">Dashboard Platform</li>
+                <li onclick="window.location.href = 'kelola-eo.php'">Kelola Pengguna EO</li>
                 <li onclick="window.location.href = 'form-konser.php'">Tambah Acara Baru</li>
                 <li onclick="window.location.href = 'kelola-konser.php'">Kelola Data Konser</li>
                 <li onclick="window.location.href = 'arsip.php'">Arsip Penyelenggaraan</li>
@@ -157,79 +202,84 @@ foreach ($sales_by_date as $date_info) {
 
         <main class="content-area">
             <div class="section-header">
-                <h2>Ringkasan Penjualan</h2>
-                <p>Pantau antusiasme penonton dan kuota tiket secara langsung.</p>
+                <h2>Ringkasan Platform</h2>
+                <p>Pantau statistik lalu lintas pengunjung dan jumlah penyelenggara (EO) di platform.</p>
             </div>
-            <section class="stats-container">
-                <div class="card-admin">
-                    <span class="stat-label">Total Tiket Terjual</span>
-                    <div class="stat-value gold-text" id="sold-count">
-                        <?php echo number_format($total_tiket_terjual, 0, ',', '.'); ?>
-                    </div>
-                    <div class="trend positive">↑ Data Realtime</div>
-                </div>
-                <div class="card-admin">
-                    <span class="stat-label">Sisa Kuota (Semua Acara)</span>
-                    <div class="stat-value" id="remaining-count">
-                        <?php echo number_format($sisa_kuota, 0, ',', '.'); ?>
-                    </div>
-                    <div class="stat-sub">Kapasitas: <?php echo number_format($total_kapasitas, 0, ',', '.'); ?></div>
-                </div>
-                <div class="card-admin">
-                    <span class="stat-label">Pendapatan</span>
-                    <div class="stat-value gold-text" id="revenue-count">
-                        <?php echo $pendapatan_formatted; ?>
-                    </div>
-                </div>
-            </section>
 
-            <div class="analytics-grid">
-                <div class="chart-box">
-                    <h3>Tren Penjualan Per Hari</h3>
-                    <div class="line-chart-wrapper">
-                        <canvas id="ntbeatLineChart"></canvas>
+            <div class="dashboard-grid">
+                <!-- Box 1: Total Visitors -->
+                <div class="data-box">
+                    <div class="box-icon box-visitor">📈</div>
+                    <div class="box-content">
+                        <h3>Total Pengunjung</h3>
+                        <div class="value"><?php echo number_format($total_semua_pengunjung); ?></div>
                     </div>
                 </div>
-                    
-                <div class="table-box">
-                    <h3>Status Kuota Terkini</h3>
-                    <table class="admin-table">
-                        <thead>
-                            <tr>
-                                <th>Konser</th>
-                                <th>Terjual</th>
-                                <th>Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php
-                            // Ambil data konser dari database (urutkan dari yang tiketnya paling banyak terjual, kecualikan yang diarsip)
-                            $query_konser = mysqli_query($conn, "SELECT nama_konser, tiket_terjual, kapasitas, status FROM konser WHERE status != 'Arsip' ORDER BY tiket_terjual DESC LIMIT 4");
-                            
-                            // Looping (Ulangi) pembuatan baris tabel sebanyak jumlah konser yang ada
-                            while ($row = mysqli_fetch_assoc($query_konser)) {
-                                
-                                // Tentukan warna badge (label) otomatis berdasarkan status
-                                $badge_class = 'badge-safe'; // Default warna hijau untuk 'Tersedia'
-                                if ($row['status'] == 'Hampir Habis') {
-                                    $badge_class = 'badge-urgent'; // Warna merah/oranye
-                                } elseif ($row['status'] == 'Habis' || $row['status'] == 'Selesai') {
-                                    $badge_class = 'badge-danger'; // Tambahkan class ini di CSS kamu untuk warna abu/gelap kalau mau
-                                }
 
-                                echo "<tr>";
-                                echo "<td>" . htmlspecialchars($row['nama_konser']) . "</td>";
-                                echo "<td>" . $row['tiket_terjual'] . "/" . $row['kapasitas'] . "</td>";
-                                echo "<td><span class='" . $badge_class . "'>" . $row['status'] . "</span></td>";
-                                echo "</tr>";
-                            }
-                            ?>
-                        </tbody>
-                     
-                    </table>
+                <!-- Box 2: Visitors Today -->
+                <div class="data-box">
+                    <div class="box-icon box-today">🎯</div>
+                    <div class="box-content">
+                        <h3>Pengunjung Hari Ini</h3>
+                        <div class="value"><?php echo number_format($pengunjung_hari_ini); ?></div>
+                    </div>
                 </div>
+
+                <!-- Box 3: Total EO -->
+                <div class="data-box" style="cursor: pointer;" onclick="window.location.href='kelola-eo.php'">
+                    <div class="box-icon box-eo">🏢</div>
+                    <div class="box-content">
+                        <h3>Mitra EO Terdaftar</h3>
+                        <div class="value"><?php echo number_format($total_eo); ?></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Box 4: Chart -->
+            <div class="chart-box-container">
+                <h3>Analisis Kunjungan 7 Hari Terakhir</h3>
+                <canvas id="visitorChart" style="max-height: 380px;"></canvas>
             </div>
         </main>
+
+        <!-- Skrip Inisialisasi Chart.js -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                var ctx = document.getElementById('visitorChart').getContext('2d');
+                var visitorChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: <?php echo $dates_json; ?>,
+                        datasets: [{
+                            label: 'Jumlah Kunjungan Unik',
+                            data: <?php echo $counts_json; ?>,
+                            borderColor: '#f1c40f',
+                            backgroundColor: 'rgba(241, 196, 15, 0.2)',
+                            borderWidth: 3,
+                            pointBackgroundColor: '#111',
+                            pointBorderColor: '#f1c40f',
+                            pointBorderWidth: 2,
+                            pointRadius: 4,
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                labels: { color: '#fff', font: { size: 14 } }
+                            }
+                        },
+                        scales: {
+                            x: { ticks: { color: '#ccc' }, grid: { color: '#333' } },
+                            y: { ticks: { color: '#ccc', beginAtZero: true, precision: 0 }, grid: { color: '#333' } }
+                        }
+                    }
+                });
+            });
+        </script>
     </div>
 
     <div id="logoutModal" class="modal-overlay">

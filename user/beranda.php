@@ -2,6 +2,13 @@
 session_start();
 include '../config/koneksi.php';
 
+// Catat pengunjung
+if (!isset($_SESSION['visited_today'])) {
+    $_SESSION['visited_today'] = true;
+    $today = date('Y-m-d');
+    mysqli_query($conn, "INSERT INTO pengunjung (tanggal, jumlah) VALUES ('$today', 1) ON DUPLICATE KEY UPDATE jumlah = jumlah + 1");
+}
+
 // Membatasi akses hanya untuk customer
 if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'customer') {
     header("Location: ../auth/login.php");
@@ -71,8 +78,14 @@ if (!empty($foto_user) && file_exists($foto_path) && $foto_user !== 'default-ava
 
         <div class="concert-grid">
           <?php
-          // Query konser yang statusnya selain 'Arsip'
-          $query = mysqli_query($conn, "SELECT * FROM konser WHERE status != 'Arsip' ORDER BY id DESC");
+          // Query konser yang statusnya selain 'Arsip' dan join untuk dapatkan nama EO
+          $query = mysqli_query($conn, "
+              SELECT k.*, u.nama as nama_eo 
+              FROM konser k 
+              LEFT JOIN users u ON k.eo_email = u.email 
+              WHERE k.status != 'Arsip' 
+              ORDER BY k.id DESC
+          ");
           if (mysqli_num_rows($query) > 0) {
               while ($row = mysqli_fetch_assoc($query)) {
                   $sisa_tiket = intval($row['kapasitas']) - intval($row['tiket_terjual']);
@@ -116,6 +129,7 @@ if (!empty($foto_user) && file_exists($foto_path) && $foto_user !== 'default-ava
                     <div class="card-info">
                       <h3 class="concert-title"><?php echo htmlspecialchars($row['nama_konser']); ?></h3>
                       <div class="concert-details">
+                        <p style="color: #f1c40f; font-weight: bold; font-size: 0.9rem; margin-bottom: 5px;">🏢 <?php echo htmlspecialchars($row['nama_eo'] ?? 'Penyelenggara Tidak Diketahui'); ?></p>
                         <p>📅 <?php echo $tanggal_format; ?> • <?php echo $waktu_format; ?> WITA</p>
                         <p>📍 <?php echo htmlspecialchars($row['lokasi']); ?></p>
                         <p class="concert-price"><?php echo $harga_format; ?></p>

@@ -17,49 +17,68 @@ NTBeat/
 │
 ├── 📁 actions/                      # Berisi skrip pemrosesan logika backend (server-side)
 │   ├── 📄 admin-bulk-proses.php     # Memproses aksi massal admin (hapus/arsip konser)
-│   ├── 📄 admin-tambah-proses.php   # Memproses validasi upload poster dan input konser baru
-│   ├── 📄 login_proses.php          # Memproses verifikasi kredensial login & pembagian hak akses (role)
+│   ├── 📄 admin-tambah-proses.php   # Memproses validasi upload poster dan input konser baru oleh admin
+│   ├── 📄 edit-eo-proses.php        # Memproses perubahan data profile/akun milik Event Organizer
+│   ├── 📄 forgot_password_proses.php# Memproses pemulihan kata sandi pengguna
+│   ├── 📄 login_proses.php          # Memproses verifikasi kredensial login & pembagian hak akses (3 role)
+│   ├── 📄 nonaktif-eo-proses.php    # Memproses penonaktifan akun Event Organizer oleh Admin
 │   ├── 📄 pesan-tiket-proses.php    # Memproses transaksi pemesanan tiket dengan database transaction
 │   ├── 📄 register_proses.php       # Memproses pendaftaran akun pengguna baru (customer)
+│   ├── 📄 tambah-eo-proses.php      # Memproses pembuatan/pendaftaran akun Event Organizer baru oleh Admin
 │   ├── 📄 update-konser-proses.php  # Memproses pembaruan data konser dan manipulasi file poster lama
-│   └── 📄 update-profile-proses.php # Memproses pembaruan profil pengguna (nama, foto, & password)
+│   ├── 📄 update-profile-proses.php # Memproses pembaruan profil pengguna (nama, foto, & password)
+│   ├── 📄 upload-bukti-proses.php   # Memproses unggahan foto bukti pembayaran tiket oleh Customer
+│   └── 📄 verifikasi-bayar-proses.php# Memproses persetujuan/penolakan bukti pembayaran oleh EO atau Admin
 │
 ├── 📁 admin/                        # Halaman-halaman panel kendali untuk aktor Administrator
 │   ├── 📄 arsip.php                 # Menampilkan data audit/laporan konser masa lalu yang telah selesai
 │   ├── 📄 dashboard.php             # Panel utama analitik penjualan, pendapatan, statistik, dan Chart.js
 │   ├── 📄 edit-konser.php           # Formulir untuk mengubah informasi detail konser tertentu
 │   ├── 📄 form-konser.php           # Formulir pembuatan agenda/acara konser baru
+│   ├── 📄 kelola-eo.php             # Pusat manajemen untuk memantau, menambah, dan menonaktifkan akun EO
 │   ├── 📄 kelola-konser.php         # Pusat kendali tabel data konser aktif untuk aksi massal
 │   └── 📄 profil.php                # Pengaturan akun dan keamanan administrator
 │
-├── 📁 assets/                      # Direktori aset statis aplikasi
-│   ├── 📁 img/                     # Penyimpanan gambar sistem, avatar pengguna, dan poster konser
+├── 📁 assets/                       # Direktori aset statis aplikasi
+│   ├── 📁 img/                      # Penyimpanan gambar sistem, avatar, poster, dan bukti transfer
+│   │   ├── 📁 bukti_bayar/          # Tempat penyimpanan file gambar bukti transfer dari Customer
 │   │   ├── 📄 default-avatar.png
 │   │   ├── 📄 default-poster.png
 │   │   └── 📄 logo.png
 │   ├── 📁 script/
 │   │   └── 📄 script.js             # Logika interaktif frontend (modal, preview upload, AJAX checkbox)
 │   └── 📁 style/
-│       ├── 📄 admin-style.css       # Penataan visual grid layout khusus panel admin
+│       ├── 📄 admin-style.css       # Penataan visual grid layout khusus panel admin & EO
 │       └── 📄 style.css             # Penataan visual global, landing page, auth, dan customer dashboard
 │
 ├── 📁 auth/                         # Gerbang autentikasi sistem
+│   ├── 📄 forgot-password.php       # Halaman pemulihan akun/lupa kata sandi
 │   ├── 📄 login.php                 # Halaman masuk akun
 │   ├── 📄 logout.php                # Pembersihan data session pengguna
-│   └── 📄 register.php              # Halaman pendaftaran akun baru
+│   └── 📄 register.php              # Halaman pendaftaran akun baru khusus customer
 │
 ├── 📁 config/                       # Konfigurasi sistem dan basis data
 │   ├── 📄 koneksi.php               # Jembatan penghubung ke ekstensi MySQLi server lokal
-│   └── 📄 ntbeat.sql                # Skema database relational (tabel: users, konser, pesanan) 
+│   └── 📄 ntbeat.sql                # Skema database relational lengkap
+│
+├── 📁 eo/                           # Halaman panel kendali khusus Event Organizer (Mitra)
+│   ├── 📄 arsip.php                 # Rekam jejak acara milik EO yang telah terlaksana atau diarsip
+│   ├── 📄 dashboard.php             # Analitik penjualan tiket khusus untuk acara yang dikelola oleh EO
+│   ├── 📄 edit-konser.php           # Formulir pengubahan data konser kelolaan EO
+│   ├── 📄 form-konser.php           # Formulir bagi EO untuk mendaftarkan acara musik baru
+│   ├── 📄 kelola-konser.php         # Tabel manajemen performa penjualan tiket acara milik EO
+│   ├── 📄 profil.php                # Manajemen profil instansi/organisasi dan kata sandi EO
+│   └── 📄 verifikasi-pembayaran.php # Halaman validasi bukti transfer masuk dari pemesan tiket
 │
 ├── 📁 user/                         # Halaman-halaman panel kendali untuk aktor Customer
 │   ├── 📄 beranda.php               # Menampilkan katalog daftar konser mendatang & fitur live-search
-│   ├── 📄 detail-konser.php         # Halaman detail informasi acara, deskripsi, & selector kuantitas tiket
+│   ├── 📄 detail-konser.php         # Detail informasi acara, deskripsi, & selector kuantitas tiket
 │   ├── 📄 profil.php                # Pengaturan nama, foto profil, dan kata sandi customer
-│   └── 📄 tiket-saya.php            # Menampilkan e-ticket aktif (dengan QRCode) dan riwayat masa lalu
+│   └── 📄 tiket-saya.php            # Riwayat pemesanan, tempat unggah bukti bayar, dan akses e-ticket (QRCode)
 │
-├── 📄 index.php                    # Halaman landing utama (Akses Publik)
-└── 📄 README.md                    # Dokumentasi proyek
+├── 📄 index.php                     # Halaman landing utama (Akses Publik)
+├── 📄 setup-visitors.php            # Skrip pembantu inisialisasi / counter data statistik pengunjung
+└── 📄 README.md                     # Dokumentasi proyek
 
 ```
 
@@ -70,7 +89,8 @@ NTBeat/
 Sistem NTBeat membagi tingkat otorisasi hak akses ke dalam dua jenis pengguna utama:
 
 1. **👑 Administrator:** Berwenang penuh di balik layar untuk melakukan manipulasi data acara (CRUD), memantau ringkasan kuota tiket, melakukan aksi massal (*bulk action*), serta meninjau laporan pendapatan melalui analitik grafik realtime.
-2. **👤 Customer:** Pengguna umum yang dapat menjelajahi daftar konser mendatang, menggunakan fitur pencarian instan artis (*live search*), menilik detail info acara, melakukan simulasi pemesanan, serta melacak e-ticket digital pribadi.
+2. **🤝 Event Organizer (EO):** Aktor mitra yang memiliki hak akses terbatas untuk mengelola acaranya sendiri. Dapat membuat agenda konser, mengubah informasi acara, memantau grafik pendapatan berkala, serta melakukan verifikasi langsung terhadap bukti pembayaran tiket dari penonton.
+3. **👤 Customer:** Pengguna umum yang dapat menjelajahi daftar konser mendatang, menggunakan fitur pencarian instan artis (*live search*), menilik detail info acara, melakukan simulasi pemesanan, serta melacak e-ticket digital pribadi.
 
 ---
 
@@ -131,8 +151,10 @@ $db       = "ntbeat";
 | `nama` | VARCHAR(255) |
 | `email` | VARCHAR(255) |
 | `password` | VARCHAR(255) |
-| `role` | ENUM('admin','user') |
+| `role` | ENUM('customer','admin', 'eo') |
+| `alamat` | TEXT |
 | `foto` | VARCHAR(255) |
+| `status` | VARCHAR(20) |
 
 #### B. Tabel `pesanan`
 
@@ -144,14 +166,20 @@ $db       = "ntbeat";
 | `konser_id` | INT(11) |
 | `jumlah_tiket` | INT(11) |
 | `total_harga` | DECIMAL(12,2) |
-| `status_bayar` | ENUM('Pending', 'Lunas', 'Dibatalkan') |
+| `status_bayar` | ENUM('Pending', 'Menunggu Verifikasi', 'Lunas', 'Dibatalkan') |
 | `tanggal_pesan` | TIMESTAMP |
+| `bank` | VARCHAR(50) |
+| `va_number` | VARCHAR(50) |
+| `waktu_kadaluarsa` | DATETIME |
+| `bukti_bayar` | VARCHAR(255) |
+| `is_read_eo` | TINYINT(1) |
 
 #### C. Tabel `konser`
 
 | Nama Kolom | Tipe Data |
 | --- | --- |
 | `id` | INT(11) |
+| `eo_email` | VARCHAR(255) |
 | `nama_konser` | VARCHAR(150) |
 | `lineup` | TEXT |
 | `tanggal` | DATE |
@@ -164,6 +192,14 @@ $db       = "ntbeat";
 | `poster` | VARCHAR(255) |
 | `status` | ENUM('Tersedia', 'Hampir Habis', 'Habis', 'Selesai', 'Arsip') |
 | `created_at` | TIMESTAMP |
+
+#### C. Tabel `pengunjung`
+
+| Nama Kolom | Tipe Data |
+| --- | --- |
+| `id` | INT(11) |
+| `tanggal` | DATE |
+| `jumlah` | INT(11) |
 
 ---
 

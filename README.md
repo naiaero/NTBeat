@@ -151,7 +151,7 @@ $db       = "ntbeat";
 | `nama` | VARCHAR(255) |
 | `email` | VARCHAR(255) |
 | `password` | VARCHAR(255) |
-| `role` | ENUM('customer','admin', 'eo') |
+| `role` | ENUM('customer', 'admin', 'eo') |
 | `alamat` | TEXT |
 | `foto` | VARCHAR(255) |
 | `status` | VARCHAR(20) |

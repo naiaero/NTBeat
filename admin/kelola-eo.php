@@ -195,9 +195,9 @@ $query_eo = mysqli_query($conn, "SELECT nama, email, alamat, foto, status FROM u
                                             <button class="auth-btn-submit" style="padding: 6px 12px; font-size: 0.8rem; width: auto; margin: 0; background: #3498db; color: white; border: none;" onclick="openEditModal('<?php echo htmlspecialchars(addslashes($row['email'])); ?>', '<?php echo htmlspecialchars(addslashes($row['nama'])); ?>', '<?php echo htmlspecialchars(addslashes(str_replace(array("\r", "\n"), array('', '\\n'), $row['alamat']))); ?>')">Edit</button>
                                             
                                             <?php if($status_eo == 'aktif') { ?>
-                                            <button class="auth-btn-submit" style="padding: 6px 12px; font-size: 0.8rem; width: auto; margin: 0; background: #e74c3c; color: white; border: none;" onclick="if(confirm('Yakin menonaktifkan akun EO ini? Mereka tidak akan bisa login ke sistem.')) window.location.href='../actions/nonaktif-eo-proses.php?email=<?php echo urlencode($row['email']); ?>&aksi=nonaktifkan'">Nonaktifkan</button>
+                                            <button class="auth-btn-submit" style="padding: 6px 12px; font-size: 0.8rem; width: auto; margin: 0; background: #e74c3c; color: white; border: none;" onclick="openConfirmActionModal('../actions/nonaktif-eo-proses.php?email=<?php echo urlencode($row['email']); ?>&aksi=nonaktifkan', '⚠️ Nonaktifkan Akun', 'Yakin menonaktifkan akun EO ini? Mereka tidak akan bisa login ke sistem.')">Nonaktifkan</button>
                                             <?php } else { ?>
-                                            <button class="auth-btn-submit" style="padding: 6px 12px; font-size: 0.8rem; width: auto; margin: 0; background: #2ecc71; color: white; border: none;" onclick="window.location.href='../actions/nonaktif-eo-proses.php?email=<?php echo urlencode($row['email']); ?>&aksi=aktifkan'">Aktifkan</button>
+                                            <button class="auth-btn-submit" style="padding: 6px 12px; font-size: 0.8rem; width: auto; margin: 0; background: #2ecc71; color: white; border: none;" onclick="openConfirmActionModal('../actions/nonaktif-eo-proses.php?email=<?php echo urlencode($row['email']); ?>&aksi=aktifkan', '✅ Aktifkan Akun', 'Yakin mengaktifkan kembali akun EO ini? Mereka akan bisa login dan mengelola acara lagi.')">Aktifkan</button>
                                             <?php } ?>
                                         </div>
                                     </td>
@@ -248,6 +248,19 @@ $query_eo = mysqli_query($conn, "SELECT nama, email, alamat, foto, status FROM u
                 </div>
             </form>
         </div>
+        </div>
+    </div>
+
+    <!-- Modal Konfirmasi Aksi (Nonaktifkan/Aktifkan EO) -->
+    <div id="confirmActionModal" class="modal-overlay" style="display: none; z-index: 9999;">
+        <div class="logout-card">
+            <h2 id="confirmActionTitle">Konfirmasi</h2>
+            <p id="confirmActionText" style="margin-bottom: 20px; color: #ccc;"></p>
+            <div class="logout-actions">
+                <button class="btn-batal" onclick="closeConfirmActionModal()">Batal</button>
+                <button class="btn-yakin" id="confirmActionBtn">Yakin</button>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -261,6 +274,26 @@ $query_eo = mysqli_query($conn, "SELECT nama, email, alamat, foto, status FROM u
         function closeEditModal() {
             document.getElementById('editEoModal').style.display = 'none';
         }
+
+        let currentUrlToNavigate = null;
+
+        function openConfirmActionModal(url, title, text) {
+            currentUrlToNavigate = url;
+            document.getElementById('confirmActionTitle').innerText = title;
+            document.getElementById('confirmActionText').innerText = text;
+            document.getElementById('confirmActionModal').style.display = 'flex';
+        }
+
+        function closeConfirmActionModal() {
+            currentUrlToNavigate = null;
+            document.getElementById('confirmActionModal').style.display = 'none';
+        }
+
+        document.getElementById('confirmActionBtn').addEventListener('click', function() {
+            if (currentUrlToNavigate) {
+                window.location.href = currentUrlToNavigate;
+            }
+        });
     </script>
 </body>
 </html>
